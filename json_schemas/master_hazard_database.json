@@ -1,0 +1,132 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome8",
+    "definitions": {
+        "Welcome8": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "coastal flooding": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "river and lake flooding": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "extreme rain flooding": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "ice jam flooding": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "extreme snow": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "extreme heat": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "extreme cold": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "permafrost loss": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "high winds": {
+                    "$ref": "#/definitions/main_props"
+                },
+                "wildfire": {
+                    "$ref": "#/definitions/main_props"
+                }
+            },
+            "required": [
+                "coastal flooding"
+            ],
+            "title": "Welcome8"
+        },
+
+
+        "main_props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "resources": {
+                    "$ref": "#/definitions/resources_props"
+                },
+                "direction_statement": {
+                    "type": "string"
+                },
+                "direction_confidence": {
+                    "type": "string"
+                },
+                "magnitude_confidence": {
+                    "type": "string"
+                },
+                "impact_statement":{
+                    "$ref": "#/definitions/impact_statement_props"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "resources",
+                "direction_statement",
+                "direction_confidence",
+                "magnitude_confidence",
+                "impact_statement",
+                "notes"
+            ],
+            "title": "main_props"
+        },
+
+
+        "resources_props": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+                "^(?!^z$).*": {
+                  "properties": {
+                    "source": { "type": "string" },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "qt-uri-protocols": [
+                            "https"
+                        ]
+                    },
+                    "var": { "type": "string" },
+                    "group": { "type": "string" },
+                    "season": { "type": "string" },
+                    "units": { "type": "string" },
+                    "description": { "type": "string" },
+                    "type": { "type": "string" },
+                    "tier":{ "type": "string" }
+                  },
+                  "required": ["source", "url","description","type"]
+                }
+            },
+            "title": "resources_props"
+        },
+
+
+        "impact_statement_props": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "building": {
+                    "type": "string"
+                },
+                "contaminated_sites": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "building",
+                "contaminated_sites"
+            ],
+            "title": "impact_statement_props"
+        }
+    }
+}

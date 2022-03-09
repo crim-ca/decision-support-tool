@@ -1,0 +1,81 @@
+{
+   "_metadata" : {
+      "application":"Decision Support Tool",
+      "name":"Building inputs: component",
+      "description":"Model containing data for building",
+      "version":"0.1"
+   },
+   "components" :{
+      "sources":{
+         "groups":["acid_rock_drainage", "leachate_source", "tailings_ponds_source", "contaminated_soil_source" ]
+      },
+      "receptor pathways":{
+         "groups":["surface_water_receptor_pathways","airborne_receptor_pathways","soil_based_receptor_pathways"]
+         },
+      "receptors":{
+         "groups":["human_uptake","fish_and_wildlife_uptake","animal_uptake"]
+      }
+   },
+   "groups":{
+      "foundations" : {
+         "eng": "foundations",
+         "fr": ""
+      },
+      "basements" : {
+         "eng": "basements",
+         "fr": ""
+      },
+      "superstructure" : {
+         "eng": "superstructure",
+         "fr": ""
+      },
+      "exterior_closures" : {
+         "eng": "exterior closures",
+         "fr": ""
+      },
+      "roofing" : {
+         "eng": "roofing",
+         "fr": ""
+      },
+      "doors" : {
+         "eng": "doors",
+         "fr": ""
+      },
+      "staircases" : {
+         "eng": "staircases",
+         "fr": ""
+      },
+      "interior_finishing" : {
+         "eng": "interior finishing",
+         "fr": ""
+      },
+      "conveying_systems" : {
+         "eng": "conveying systems",
+         "fr": ""
+      },
+      "plumbing" : {
+         "eng": "plumbing",
+         "fr": ""
+      },
+      "heating_systems" : {
+         "eng": "heating systems",
+         "fr": ""
+      },
+      "cooling_systems" : {
+         "eng": "cooling systems",
+         "fr": ""
+      },
+      "ventilation" : {
+         "eng": "ventilation",
+         "fr": ""
+      },
+      "fire_protection" : {
+         "eng": "fire protection",
+         "fr": ""
+      },
+      "electrical" : {
+         "eng": "electrical",
+         "fr": ""
+      }
+   }
+}

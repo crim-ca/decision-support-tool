@@ -1,0 +1,61 @@
+{
+   "_metadata" : {
+      "application":"Decision Support Tool",
+      "name":"Contaminated site inputs: component",
+      "description":"Model containing data for contaminated site",
+      "version":"0.1"
+   },
+   "components" :{
+      "sources":{
+         "groups":["acid_rock_drainage", "leachate_source", "tailings_ponds_source", "contaminated_soil_source" ]
+      },
+      "receptor pathways":{
+         "groups":["surface_water_receptor_pathways","airborne_receptor_pathways","soil_based_receptor_pathways"]
+         },
+      "receptors":{
+         "groups":["human_uptake","fish_and_wildlife_uptake","animal_uptake"]
+      }
+   },
+   "groups":{
+      "acid_rock_drainage": {
+         "eng": "acid rock drainage source",
+         "fr": "source de drainage rocheux acide"
+      },
+      "leachate_source" : {
+         "eng": "leachate source",
+         "fr": ""
+      },
+      "tailings_ponds_source" : {
+         "eng": "tailings ponds source",
+         "fr": ""
+      },
+      "contaminated_soil_source" : {
+         "eng": "contaminated soil source",
+         "fr": ""
+      },
+      "surface_water_receptor_pathways" : {
+         "eng": "surface water receptor pathways",
+         "fr": ""
+      },
+      "airborne_receptor_pathways" : {
+         "eng": "airborne receptor pathways",
+         "fr": ""
+      },
+      "soil_based_receptor_pathways" : {
+         "eng": "soil-based receptor pathways",
+         "fr": ""
+      },
+      "human_uptake" : {
+         "eng": "human uptake",
+         "fr": ""
+      },
+      "fish_and_wildlife_uptake" : {
+         "eng": "fish and wildlife uptake",
+         "fr": ""
+      },
+      "animal_uptake" : {
+         "eng": "animal uptake",
+         "fr": ""
+      }
+   }
+}

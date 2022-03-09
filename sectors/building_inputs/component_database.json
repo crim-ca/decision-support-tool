@@ -1,0 +1,26 @@
+{
+   "substructure":{
+      "sentence_start":"an",
+      "description":"Includes foundations and basements",
+      "group":["foundations","basements"],
+      "possible_hazards":[]
+   },  
+   "shell":{
+      "sentence_start":"a",
+      "description":"Includes superstructure, exterior closures, and roofing",
+      "group":["superstructure","exterior closures","roofing"],
+      "possible_hazards":[]
+      },
+   "interiors":{
+      "sentence_start":"a",
+      "description":"Includes doors, partitions, staircases and wall finishes",
+      "group":["doors","staircases","interior finishing"],
+      "possible_hazards":[]
+      },
+   "services":{
+      "sentence_start":"a",
+      "description":"Includes elevators, plumbing, HVAC, fire protection, and electrical",
+      "group":["conveying systems","plumbing","heating systems","cooling systems","ventilation","fire protection","electrical"],
+      "possible_hazards":[]
+      }
+}

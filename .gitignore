@@ -6,3 +6,7 @@ __pycache__/textart.cpython-37.pyc
 *.pyc
 .ipynb_checkpoints/*
 .DS_Store
+
+# to delete
+draft.txt
+dst_env/
