@@ -5,17 +5,38 @@
       "description":"Model containing data for building",
       "version":"0.1"
    },
-   "components" :{
-      "sources":{
-         "groups":["acid_rock_drainage", "leachate_source", "tailings_ponds_source", "contaminated_soil_source" ]
-      },
-      "receptor pathways":{
-         "groups":["surface_water_receptor_pathways","airborne_receptor_pathways","soil_based_receptor_pathways"]
+   "components" :[
+      {
+         "id" : "substructure",
+         "name" : {
+             "en" : "substructure",
+             "fr" : ""
          },
-      "receptors":{
-         "groups":["human_uptake","fish_and_wildlife_uptake","animal_uptake"]
-      }
-   },
+         "sentence_start":"an",
+         "description" : {
+            "eng":"Includes foundations and basements",
+            "fr" : ""
+         },
+         "groups" : ["foundations", "basements"],
+         "possible_hazards" : []
+     },
+     {
+         "id" : "shell",
+         "name" : {
+            "en" : "shell",
+            "fr" : ""
+         },
+         "sentence_start":"a",
+         "description" : {
+            "eng":"Includes superstructure, exterior closures, and roofing",
+            "fr" : ""
+         },
+         "groups" : ["superstructure", "exterior_closures", "roofing"],
+         "possible_hazards" : []
+      },
+// ...
+
+   ],
    "groups":{
       "foundations" : {
          "eng": "foundations",

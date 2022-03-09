@@ -5,17 +5,32 @@
       "description":"Model containing data for contaminated site",
       "version":"0.1"
    },
-   "components" :{
-      "sources":{
-         "groups":["acid_rock_drainage", "leachate_source", "tailings_ponds_source", "contaminated_soil_source" ]
-      },
-      "receptor pathways":{
-         "groups":["surface_water_receptor_pathways","airborne_receptor_pathways","soil_based_receptor_pathways"]
+   "components" :[
+      {
+         "id" : "sources",
+         "name" : {
+             "en" : "sources",
+             "fr" : ""
          },
-      "receptors":{
+         "groups":["acid_rock_drainage", "leachate_source", "tailings_ponds_source", "contaminated_soil_source" ]
+     },
+     {
+         "id" : "receptor_pathways",
+         "name" : {
+            "en" : "receptor pathways",
+            "fr" : ""
+         },
+         "groups":["surface_water_receptor_pathways","airborne_receptor_pathways","soil_based_receptor_pathways"]
+      },
+      {
+         "id" : "receptors",
+         "name" : {
+            "en" : "receptors",
+            "fr" : ""
+         },
          "groups":["human_uptake","fish_and_wildlife_uptake","animal_uptake"]
       }
-   },
+   ],
    "groups":{
       "acid_rock_drainage": {
          "eng": "acid rock drainage source",
