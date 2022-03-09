@@ -1,20 +1,36 @@
+# SUPPORTED HOOKS: https://pre-commit.com/hooks.html
 repos:
+# JSON schema
 - repo: https://github.com/sirosen/check-jsonschema
   rev: 0.8.2
   hooks:
+    # master_general_resources_database
     - id: check-jsonschema
-      name: "Validate JSON files against JSON Schemas"
-      files: building_inputs/master_general_resources_database.json
+      name: "Validate JSON file (master_general_resources_database) against JSON Schemas"
+      files: master_general_resources_database.json
+      exclude: ^(building_inputs/|json_schemas/)
       types: [json]
       args: ["--schemafile", "json_schemas/master_general_resources_database.json"]
+
+    # master_hazard_database
+    - id: check-jsonschema
+      name: "Validate JSON file (master_hazard_database) against JSON Schemas"
+      files: master_hazard_database.json
+      exclude: ^(building_inputs/|json_schemas/)
+      types: [json]
+      args: ["--schemafile", "json_schemas/master_hazard_database.json"]
+
+# Lint (Black)
 - repo: https://github.com/psf/black
   rev: 21.12b0
   hooks:
     - id: black-jupyter
       name: "Lint Jupyter notebooks using Black"
       files: decision-support-tool.ipynb
+
 # - repo: https://github.com/mwouts/jupytext
 #   rev: v1.11.0
 #   hooks:
 #     - id: jupytext
+
 #       args: [--from, ipynb, --to, "py"]

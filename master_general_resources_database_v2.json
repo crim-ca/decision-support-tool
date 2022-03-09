@@ -12,10 +12,7 @@
                 "en" : "Future climate change scenarios",
                 "fr" : "Futurs scénarios de changement climatique"
             },
-            "source" : {
-                "eng":"ClimateData.ca",
-                "fr" : "ClimateData.ca"
-             },
+            "source" : "ClimateData.ca",
             "url":"https://climatedata.ca/resource/introduction-to-decision-making-using-climate-scenarios/",
             "description" : {
                 "eng":"A learning zone on what future climate change scenarios are, and how to use them during decision making.",

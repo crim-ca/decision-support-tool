@@ -33,8 +33,7 @@
          },
          "groups" : ["superstructure", "exterior_closures", "roofing"],
          "possible_hazards" : []
-      },
-// ...
+      }
 
    ],
    "groups":{
