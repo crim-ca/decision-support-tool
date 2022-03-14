@@ -1,23 +1,23 @@
 {
 
-"coastal flooding":{
+"marine coastal flooding":{
     "resources":{
         "An Inventory of Methods for Estimating Climate Change-Informed Design Water Levels for Floodplain Mapping":{
             "source":"The National Research Council",
-            "url":"https://nrc-publications.canada.ca/eng/view/ft/?id=d72127b3-f93b-48fb-ad82-8eb09992b6b8",
+            "URL":"https://nrc-publications.canada.ca/eng/view/ft/?id=d72127b3-f93b-48fb-ad82-8eb09992b6b8",
             "description":"provides a comprehensive overview of methods to integrate climate change into flood planning.",
             "type":"guidance"
         },
         "Canadian extreme coastal water levels":{
             "source":"Canadian Extreme Water Level Adaptation Tool",
-            "url":"https://www.bio.gc.ca/science/data-donnees/can-ewlat/index-en.php",
+            "URL":"https://www.bio.gc.ca/science/data-donnees/can-ewlat/index-en.php",
             "description":"provides estimates future extreme water levels for a range of Canadian coastal locations.",
             "type":"tool"
         },        
         "Relative sea level change":{
             "source":"ClimateData.ca",
-            "url":"https://climatedata.ca/explore/variable/?coords=",
-            "var":"slr",
+            "URL":"https://climatedata.ca/explore/variable/?coords=",
+            "var":"sea_level",
             "group":"other",
             "season":"ann",
             "units": "metres",
@@ -28,30 +28,27 @@
     "direction_statement": "Relative sea level is expected to rise along many Canadian coastlines.  However, particularly in the North, sea level may actually fall because of ongoing natural land uplift.",
     "direction_confidence": "There is reasonably high confidence in the direction of projected sea level changes around Canada's coastlines.",
     "magnitude_confidence":"There is less confidence in the exact magnitude of changes to sea level at specific locations.",
-    "impact_statement":{
-        "building":"Via coastal flood events, sea level rise can indundate building interiors, erode foundations and surrounding property, and decrease user accessibility.",
-        "contaminated_sites":"Via coastal flood events, sea level rise can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
-    },
+    "impact_statement":"Via coastal flood events, sea level rise can indundate building interiors, erode foundations and surrounding property, and decrease user accessibility.",
     "notes":"Remember, sea level rise will most likely impact your building through it's role in increasing the severity and frequency of storm and tide-driven extreme coastal flooding events."
 },
 
-"river and lake flooding":{
+"river and lake spring flooding":{
     "resources":{
         "An Inventory of Methods for Estimating Climate Change-Informed Design Water Levels for Floodplain Mapping":{
             "source":"The National Research Council",
-            "url":"https://nrc-publications.canada.ca/eng/view/ft/?id=d72127b3-f93b-48fb-ad82-8eb09992b6b8",
+            "URL":"https://nrc-publications.canada.ca/eng/view/ft/?id=d72127b3-f93b-48fb-ad82-8eb09992b6b8",
             "description":"provides a comprehensive overview of methods to integrate climate change into flood planning.",
             "type":"guidance"
         },
         "PAVICS cloud-based hydrologic model":{
             "source":"Power Analytics and Visualization for Climate Science",
-            "url":"https://pavics.ouranos.ca/hydrology.html",
+            "URL":"https://pavics.ouranos.ca/hydrology.html",
             "description":"provides an advanced tool for estimating changes to streamflow due to climate change.",
             "type":"tool"
         },        
         "Maximum annual 1-day rain":{
             "source":"ClimateData.ca", 
-            "url":"https://climatedata.ca/explore/variable/?coords=",
+            "URL":"https://climatedata.ca/explore/variable/?coords=",
             "var":"rx1day",
             "units":"millimeters",
             "group":"precipitation",
@@ -61,7 +58,7 @@
         },
         "Change in 1-in-50 year snow load":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
             "var":"SLs",
             "units": "%",
             "description":"describes changes in extreme snow loads, based on levels of global warming.",
@@ -72,10 +69,7 @@
     "direction_statement": "Climate change will cause changes to river and lake flooding severity and frequency that will depend very closely on location, season, and local watershed factors.",
     "direction_confidence": "It is difficult to make confident statements regarding the direction of climate-driven changes to river and lake flooding severity, without added local information about flood mechanisms and local watershed conditions.",
     "magnitude_confidence":"Because of local factors, estimating the magnitude of changes to river and lake flooding due to climate change is difficult without undertaking a detailed local assessment.",
-    "impact_statement":{
-        "building":"River/lake flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
-        "contaminated_sites":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
-    },
+    "impact_statement":"River/lake flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
     "type":"continuous",
     "notes":"Add in CanFlood and PAVICS Raven resources"
 },
@@ -83,13 +77,13 @@
     "resources":{
         "An Inventory of Methods for Estimating Climate Change-Informed Design Water Levels for Floodplain Mapping":{
             "source":"The National Research Council",
-            "url":"https://nrc-publications.canada.ca/eng/view/ft/?id=d72127b3-f93b-48fb-ad82-8eb09992b6b8",
+            "URL":"https://nrc-publications.canada.ca/eng/view/ft/?id=d72127b3-f93b-48fb-ad82-8eb09992b6b8",
             "description":"provides a comprehensive overview of methods to integrate climate change into flood planning.",
             "type":"guidance"
         },
         "Maximum annual 1-day rain":{
             "source":"ClimateData.ca", 
-            "url":"https://climatedata.ca/explore/variable/?coords=",
+            "URL":"https://climatedata.ca/explore/variable/?coords=",
             "var":"rx1day",
             "units":"millimeters",
             "group":"precipitation",
@@ -99,7 +93,7 @@
         },
         "Maximum annual 5-day rain":{
             "source":"ClimateData.ca", 
-            "url":"https://climatedata.ca/explore/variable/?coords=",
+            "URL":"https://climatedata.ca/explore/variable/?coords=",
             "var":"rx5day",
             "units":"millimeters",
             "group":"precipitation",
@@ -109,7 +103,7 @@
         },        
         "Change in 1-in-50 year annual 15 minute and 1-day rain":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
             "var":"Rn15m and Rn1Day",
             "units": "%",
             "description":"describes changes to the likelihood of rare short term and daily rain events.",
@@ -120,29 +114,46 @@
     "direction_statement": "Climate change is expected to cause extreme rain events to become more frequent and severe.",
     "direction_confidence": "There is high confidence that as temperatures increase, the magnitude of extreme rainfall will also increase.",
     "magnitude_confidence":"The exact magnitude of extreme rainfall increases may be somewhat uncertain, especially for high intensity, short duration rainfall events.",
-    "impact_statement":{
-        "building":"Extreme rain can directly damage building components through leaks and infiltration, and also inundate building interiors, erode foundations and surrounding property, and decrease user accessibility from rain-caused overland or flooding.",
-        "contaminated_sites":"Extreme rain can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
-    },
+    "impact_statement":"Extreme rain can directly damage building components through leaks and infiltration, and also inundate building interiors, erode foundations and surrounding property, and decrease user accessibility from rain-caused overland or flooding.",
     "notes":""
 },
 
 "ice jam flooding":{
     "resources":{
-        "Change in ice jam flooding":{
-            "source":"CGU HS Committee on River Ice Processes and the Environment", 
-            "url":"http://www.cripe.ca/docs/proceedings/20/Turcotte-et-al-2019.pdf",
-            "description":"describes the potential mechanisms that ice jam flooding severity and frequency may be impacted by climate change.",
-            "type":"guidance"
+        "Maximum annual 1-day rain":{
+            "source":"ClimateData.ca", 
+            "URL":"https://climatedata.ca/explore/variable/?coords=",
+            "var":"rx1day",
+            "units":"millimeters",
+            "group":"precipitation",
+            "season":"ann",
+            "description":"describes maximum annual daily rainfall.",
+            "type":"data"
+        },
+        "Maximum annual 5-day rain":{
+            "source":"ClimateData.ca", 
+            "URL":"https://climatedata.ca/explore/variable/?coords=",
+            "var":"rx5day",
+            "units":"millimeters",
+            "group":"precipitation",
+            "season":"ann",
+            "description":"describes maximum annual 5-day rainfall.",
+            "type":"data"
+        },        
+        "Change in 1-in-50 year annual 15 minute and 1-day rain":{
+            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
+            "var":"Rn15m and Rn1Day",
+            "units": "%",
+            "description":"describes changes to the likelihood of rare short term and daily rain events.",
+            "type":"data",
+            "tier":"2" 
         }
     },
-    "direction_statement": "Climate change may cause ice jam flooding frequency and severity to change in different ways, for different reaches and rivers.",
-    "direction_confidence": "There is little confidence in the direction of change for broad-scale trends in ice jam flooding, which are driven by very local conditions.",
-    "magnitude_confidence":"The direction of changes for ice jam flooding may not be well known, if at all, at local scales.",
-    "impact_statement":{
-        "building":"Ice jam flooding can cause extensive and dangerous flooding to buildings, along with potential for direct damage due to ice jam debris.",
-        "contaminated_sites":"Ice jam flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
-    },
+    "direction_statement": "Climate change is expected to cause extreme rain events to become more frequent and severe.",
+    "direction_confidence": "There is high confidence that as temperatures increase, the magnitude of extreme rainfall will also increase.",
+    "magnitude_confidence":"The exact magnitude of extreme rainfall increases may be somewhat uncertain, especially for high intensity, short duration rainfall events.",
+    "impact_statement":"Extreme rain can directly damage building components through leaks and infiltration, and also inundate building interiors, erode foundations and surrounding property, and decrease user accessibility from rain-caused overland or flooding.",
     "notes":""
 },
 
@@ -150,7 +161,7 @@
     "resources":{
         "Change in 1-in-50 year snow load":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
             "var":"SLs",
             "units": "%",
             "description":"describes changes in extreme snow loads, based on levels of global warming.",
@@ -161,10 +172,7 @@
     "direction_statement": "Extreme snow accumulations over the winter season are likely to decrease in most areas of Canada, with the exception of the North.",
     "direction_confidence": "High confidence exists that in many locations, overall snowpack - including extremely high seasonal snowpacks - will decrease as temperatures warm and more precipitation falls as rain.",
     "magnitude_confidence":"Because change in snow accumulation depends closely on a combination of temperature and precipitation, the exact magnitude of changes to accumulation over time, and in some places, even uncertainty around the direction of change.",
-    "impact_statement":{
-        "building":"Extreme snow can stress roofs and decrease user accessibility.",
-        "contaminated_sites":"Extreme snow could stress or damage contaminated site infrastructure."
-    },
+    "impact_statement":"Extreme snow can stress roofs and decrease user accessibility.",
     "notes":"Need an assessment of changes to individual snow extreme event frequency/magnitude."
 },
 
@@ -172,7 +180,7 @@
     "resources":{
         "Cooling degree days":{
            "source":"ClimateData.ca",
-           "url":"https://climatedata.ca/explore/variable/?coords=",
+           "URL":"https://climatedata.ca/explore/variable/?coords=",
            "var":"cddcold_18",
            "group":"other",
            "season":"ann",
@@ -182,7 +190,7 @@
         },
         "Change in July 2.5% wet and dry design temperatures":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",        
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
             "var":"TJuly and TwJuly",
             "units":"Degrees Celcius",
             "description":"describes changes in building-relevant changes to mid-summer extreme warm temperatures.",
@@ -193,17 +201,14 @@
     "direction_statement":"Climate change is expected to cause hot summer conditions to increase in frequency and intensity.",
     "direction_confidence":"High confidence exists in the projected trend towards warmer summer conditions, as part of overall climate warming.",
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
-    "impact_statement":{
-        "building":"Extreme heat can stress building air conditioning systems and cause damage by thermal expansion.",
-        "contaminated_sites":"Extreme heat could damage site infrastructure."
-    },
+    "impact_statement":"Extreme heat can stress building air conditioning systems and cause damage by thermal expansion.",
     "notes":""
 },
 "extreme cold":{
     "resources":{
         "Heating degree days":{
            "source":"ClimateData.ca",
-           "url":"https://climatedata.ca/explore/variable/?coords=",
+           "URL":"https://climatedata.ca/explore/variable/?coords=",
            "var":"hddheat_18",
            "group":"other",
            "season":"ann",
@@ -213,7 +218,7 @@
         },
         "Change in January 1% and 2.5% design temperatures":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",        
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
             "var":"TJan10 and TJan25",
             "units":"Degrees Celcius",
             "description":"describes changes in building-relevant changes to mid-winter extreme cold temperatures.",
@@ -224,10 +229,7 @@
     "direction_statement":"Climate change is expected to cause cold summer days to decrease in frequency and intensity.",
     "direction_confidence":"High confidence exists in the projected trend towards less cold winter conditions, as part of overall climate warming.",
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
-    "impact_statement":{
-        "building":"Extreme cold can stress building heating systems and potentially cause damage via thermal contraction.",
-        "contaminated_sites":"Extreme heat could damage site infrastructure."
-    },
+    "impact_statement":"Extreme cold can stress building heating systems and potentially cause damage via thermal contraction.",
     "notes":""
     
 },    
@@ -235,7 +237,7 @@
     "resources":{
         "Change in permafrost extent":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.3-permafrost",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#6.3-permafrost",
             "units":"%",
             "description":"describes changes to Canada's national permafrost extent in terms of percentages and large-scale spatial maps.",
             "type":"data",
@@ -243,7 +245,7 @@
         },
         "Infrastructure in permafrost: a guidelines for climate change adaptation":{
             "source":"CSA Plus",
-            "url":"https://www.csagroup.org/store/product/2703076/",
+            "URL":"https://www.csagroup.org/store/product/2703076/",
             "description":"provides guidance for adapting northern infrastructure including buildings to permafrost loss resulting from climate change.",
             "type":"guidance"
         }
@@ -251,17 +253,14 @@
     "direction_statement":"Permafrost extent and thickness is expected to decrease substantially with climate warming, at the same time that summer active layer depths increase.",
     "direction_confidence":"High confidence exists projections of permafrost loss in response to warming.",
     "magnitude_confidence":"Since local permafrost conditions are closely controlled by local-scale soil, water, and building factors, the precise magnitude of permafrost loss at a particular location may be uncertain, and require a more detailed assessment to constrain.",
-    "impact_statement":{
-        "building":"Permafrost loss can cause building subsidence, weaken foundations, promote moisture infiltration, and decrease user accessibility.",
-        "contaminated_sites":"Permafrost loss can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
-    },
+    "impact_statement":"Permafrost loss can cause building subsidence, weaken foundations, promote moisture infiltration, and decrease user accessibility.",
     "notes":""
 },
 "high winds":{
     "resources":{
             "Change in 1-in-10 and 1-in-50 year wind pressures":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
             "units":"%",
             "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds.",
             "type":"data",
@@ -269,7 +268,7 @@
         },
         "Change in 1-in-5 year driving rain wind pressures":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
+            "URL":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
             "units":"%",
             "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds combined with rain.",
             "type":"data",
@@ -279,17 +278,14 @@
     "direction_statement":"The severity and frequency of high wind speeds and related pressures are currently not projected to change dramatically, although significant uncertainty exists in these projections.",
     "direction_confidence":"There is relatively low confidence in the direction of changes of extreme wind speed severity and frequency, particularly at local scales.",
     "magnitude_confidence":"Low confidence exists for future projections of changes to high winds.",
-    "impact_statement":{
-        "building":"High winds can damage building envelopes and exterior structures and influence building influence heating and cooling systems.",
-        "contaminated_sites":"High winds can damage site infrastructure and increase airborne contaminant mobilization."
-    },
+    "impact_statement":"High winds can damage building envelopes and exterior structures and influence building influence heating and cooling systems.",
     "notes":""    
 },
 "wildfire":{
     "resources":{
         "Fire weather index (FWI)":{
             "source":"ClimateData.ca",
-            "url":"climatedata.ca/wildfire",
+            "URL":"climatedata.ca/wildfire",
             "var":"FWI",
             "units":"FWI",
             "group":"other",
@@ -299,7 +295,7 @@
         },
         "Average maximum summer temperature":{
             "source":"ClimateData.ca",
-            "url":"https://climatedata.ca/explore/variable/?",
+            "URL":"https://climatedata.ca/explore/variable/?",
             "var":"tx_mean",
             "group":"temperature",
             "season":"summer",
@@ -311,11 +307,18 @@
     "direction_statement":"Wildfires are expected to worsen in intensity and severity with climate change.",
     "direction_confidence":"High confidence exists for projections of worsening wildfire intensity and severity.",
     "magnitude_confidence":"The precise magnitude of future wildfire increases may be uncertain at local scales due to details of wildfire fuel loads and local-scale combined projections of temperature, precipitation, wind and humidity.",
-    "impact_statement":{
-        "building":"Wildfire can damage and destroy buildings directly, and also degrade interior air quality through smoke.",
-        "contaminated_sites":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
-    },
+    "impact_statement":"Wildfire can damage and destroy buildings directly, and also degrade interior air quality through smoke.",
     "notes":""    
+},
+
+"other":{
+    "resources":"",
+    "direction_statement":"",
+    "direction_confidence": "",
+    "magnitude_confidence":"",
+    "impact_statement":"",
+    "type":"",
+    "notes":""
 }
 
 }

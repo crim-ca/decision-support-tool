@@ -1,9 +1,0 @@
-# CLIMATE DECISION SUPPORT TOOL DISCLAIMER AND RELEASE OF LIABILITY
-
-This tool supports users in learning how to identify a subset of appropriate climate change information for climate risk and adaptation planning.  However, it is not an offical engineering design or project management tool.  Users of this tool accept full responsibilty for expert judgement and professional standard of care in applying this and other climate change information to detailed risk management and adaptation planning and.  The authors of this tool accept no responsibilty for damage resulting from misuse of the datasets provided by this tool during project planning or execution.
-
-This tool endeavours to summarize a selection of important climate hazards and direct users to best-in-class climate information.  However, some hazards do not have reliable future information available, to the best knowledge of the authors of this tool, at this time.  The authors take no responsibility for negligent omission of consideration of such hazards in project planning or execution.
-
-This tool is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the tool.
-
-In short, please combine the use of this tool with personal judgement, and full acceptance of liability and professional standard of care.
