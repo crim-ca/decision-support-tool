@@ -1,0 +1,17 @@
+Cython
+xlrd
+param
+bokeh
+holoviews
+hvplot
+geoviews
+panel
+xarray
+cartopy
+pyproj
+pandas
+numpy
+matplotlib
+datetime
+sklearn
+jupyterlab
