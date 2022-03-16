@@ -1,6 +1,13 @@
-Unreleased (latest)
+Unreleased
 
-*
+* 
+
+0.1.9 - Released 16-03-2022
+
+* Notebook improvements
+* added jupytext to pre-commit
+
+0.1.8 - skip
 
 0.1.7 - Released 03-02-2022
 
