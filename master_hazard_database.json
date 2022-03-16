@@ -30,7 +30,7 @@
     "magnitude_confidence":"There is less confidence in the exact magnitude of changes to sea level at specific locations.",
     "impact_statement":{
         "building":"Via coastal flood events, sea level rise can indundate building interiors, erode foundations and surrounding property, and decrease user accessibility.",
-        "contaminated_sites":"Via coastal flood events, sea level rise can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Via coastal flood events, sea level rise can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":"Remember, sea level rise will most likely impact your building through it's role in increasing the severity and frequency of storm and tide-driven extreme coastal flooding events."
 },
@@ -74,7 +74,7 @@
     "magnitude_confidence":"Because of local factors, estimating the magnitude of changes to river and lake flooding due to climate change is difficult without undertaking a detailed local assessment.",
     "impact_statement":{
         "building":"River/lake flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
-        "contaminated_sites":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "type":"continuous",
     "notes":"Add in CanFlood and PAVICS Raven resources"
@@ -122,7 +122,7 @@
     "magnitude_confidence":"The exact magnitude of extreme rainfall increases may be somewhat uncertain, especially for high intensity, short duration rainfall events.",
     "impact_statement":{
         "building":"Extreme rain can directly damage building components through leaks and infiltration, and also inundate building interiors, erode foundations and surrounding property, and decrease user accessibility from rain-caused overland or flooding.",
-        "contaminated_sites":"Extreme rain can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Extreme rain can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":""
 },
@@ -141,7 +141,7 @@
     "magnitude_confidence":"The direction of changes for ice jam flooding may not be well known, if at all, at local scales.",
     "impact_statement":{
         "building":"Ice jam flooding can cause extensive and dangerous flooding to buildings, along with potential for direct damage due to ice jam debris.",
-        "contaminated_sites":"Ice jam flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Ice jam flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":""
 },
@@ -163,7 +163,7 @@
     "magnitude_confidence":"Because change in snow accumulation depends closely on a combination of temperature and precipitation, the exact magnitude of changes to accumulation over time, and in some places, even uncertainty around the direction of change.",
     "impact_statement":{
         "building":"Extreme snow can stress roofs and decrease user accessibility.",
-        "contaminated_sites":"Extreme snow could stress or damage contaminated site infrastructure."
+        "contaminated_site":"Extreme snow could stress or damage contaminated site infrastructure."
     },
     "notes":"Need an assessment of changes to individual snow extreme event frequency/magnitude."
 },
@@ -195,7 +195,7 @@
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
     "impact_statement":{
         "building":"Extreme heat can stress building air conditioning systems and cause damage by thermal expansion.",
-        "contaminated_sites":"Extreme heat could damage site infrastructure."
+        "contaminated_site":"Extreme heat could damage site infrastructure."
     },
     "notes":""
 },
@@ -226,7 +226,7 @@
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
     "impact_statement":{
         "building":"Extreme cold can stress building heating systems and potentially cause damage via thermal contraction.",
-        "contaminated_sites":"Extreme heat could damage site infrastructure."
+        "contaminated_site":"Extreme heat could damage site infrastructure."
     },
     "notes":""
     
@@ -253,7 +253,7 @@
     "magnitude_confidence":"Since local permafrost conditions are closely controlled by local-scale soil, water, and building factors, the precise magnitude of permafrost loss at a particular location may be uncertain, and require a more detailed assessment to constrain.",
     "impact_statement":{
         "building":"Permafrost loss can cause building subsidence, weaken foundations, promote moisture infiltration, and decrease user accessibility.",
-        "contaminated_sites":"Permafrost loss can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Permafrost loss can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":""
 },
@@ -281,7 +281,7 @@
     "magnitude_confidence":"Low confidence exists for future projections of changes to high winds.",
     "impact_statement":{
         "building":"High winds can damage building envelopes and exterior structures and influence building influence heating and cooling systems.",
-        "contaminated_sites":"High winds can damage site infrastructure and increase airborne contaminant mobilization."
+        "contaminated_site":"High winds can damage site infrastructure and increase airborne contaminant mobilization."
     },
     "notes":""    
 },
@@ -313,7 +313,7 @@
     "magnitude_confidence":"The precise magnitude of future wildfire increases may be uncertain at local scales due to details of wildfire fuel loads and local-scale combined projections of temperature, precipitation, wind and humidity.",
     "impact_statement":{
         "building":"Wildfire can damage and destroy buildings directly, and also degrade interior air quality through smoke.",
-        "contaminated_sites":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
+        "contaminated_site":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
     },
     "notes":""    
 }
