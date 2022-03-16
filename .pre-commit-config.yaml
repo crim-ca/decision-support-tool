@@ -13,8 +13,10 @@ repos:
     - id: black-jupyter
       name: "Lint Jupyter notebooks using Black"
       files: decision-support-tool.ipynb
-# - repo: https://github.com/mwouts/jupytext
-#   rev: v1.11.0
-#   hooks:
-#     - id: jupytext
-#       args: [--from, ipynb, --to, "py"]
+- repo: https://github.com/mwouts/jupytext
+  rev: v1.11.0
+  hooks:
+    - id: jupytext
+      name: "Generate a .py file from the notebook"
+      entry: jupytext --to py decision-support-tool.ipynb
+      pass_filenames: false
