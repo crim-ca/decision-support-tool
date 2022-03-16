@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
@@ -99,21 +100,57 @@ from matplotlib.colors import to_hex as th
 import datetime as dt  # not available on Conda - access via PIP
 import json
 from sklearn.neighbors import BallTree
-import panel as pn
 from IPython import get_ipython
+import panel as pn
+
+# very strangly, this only works if done after importing panel... if done later, other imports overwrite this
+css = """
+
+
+h1 {
+    font-family: Arial;
+    color: #e50e40;
+    font-size: 2em;
+    font-weight: lighter;
+}
+
+h2 {
+    font-family: Arial;
+    color: #212529;
+    font-size: 1.5em;
+    font-weight: lighter;
+
+p {
+    font-family: Arial;
+    font-size: 1em;
+    font-weight: normal;
+    color: #212529;
+}
+
+.custom-box {
+     background: white;
+}
+
+"""
+
+pn.config.raw_css.append(css)
 
 # other dependencies
 # !pip install xlrd
 # !pip install pre-commit
 # !pre-commit install
+# !pip install geopy
+
+from geopy.geocoders import Nominatim
 
 hv.extension("bokeh")
 gv.extension("bokeh")
 pn.extension()
 
 # + tags=[]
-plot_width = 1000
-plot_height = 1000
+# TODO: dynamically scale based on screen size
+plot_width = 1050
+plot_height = 1500
 
 
 class CRBCPI_class:
@@ -371,6 +408,21 @@ class Project_Definition(param.Parameterized):
         )
 
         self.t4 = pn.pane.Markdown(
+            "Please enter the location of your "
+            + self.system_category.replace("_", " ")
+            + ", or use the map below to select a location manually."
+        )
+        # note: I want to chanve 'value' to 'placeholder' below, but doing so messes everything up...
+        self.system_address_widget = pn.widgets.TextInput(
+            value="Type full or partial address here..."
+        )
+        self.geocode_button = pn.widgets.Button(name="🔍", width=100)
+
+        latitude = 0.0
+        longitude = 0.0
+        location = "empty"
+
+        self.t5 = pn.pane.Markdown(
             "### Click on this zoomable map to provide the location of your "
             + self.system_category
             + ".  Be patient, it may take a moment for your point to appear on the map."
@@ -380,24 +432,55 @@ class Project_Definition(param.Parameterized):
         self.y = 0.0
         self.stream = hv.streams.Tap(x=None, y=None)
 
-    def map_constructor(self, x=0, y=0):
-        map_background = gv.tile_sources.Wikipedia
+        self.debug_x = pn.widgets.TextInput(value=" ")
+        self.debug_y = pn.widgets.TextInput(value=" ")
+
+        def b(event):
+            geolocator = Nominatim(user_agent="example")
+            address = self.system_address_widget.value
+            location = geolocator.geocode(address)
+            latitude = location.latitude
+            longitude = location.longitude
+            self.x = longitude
+            self.y = latitude
+            print(address, latitude, longitude)
+            proj1 = Proj("epsg:4326", preserve_units=False)
+            proj2 = Proj("epsg:3785", preserve_units=False)
+            outProj = Proj(init="epsg:3857")
+            inProj = Proj(init="epsg:4326")
+            x1 = longitude
+            y1 = latitude
+            x2, y2 = transform(inProj, outProj, x1, y1)
+            self.debug_x.value = str(x2)
+            self.debug_y.value = str(y2)
+            self.x = x2
+            self.y = y2
+
+        self.geocode_button.on_click(b)
+
+        self.x = longitude
+        self.y = latitude
+        self.stream = hv.streams.Tap(x=self.x, y=self.y)
+
+    # TO DO: inherit location information from geocode function, plot dot automatically
+    def map_constructor(self, x, y):
+        map_background = gv.tile_sources.CartoLight
         self.x = x
         self.y = y
         Canada_x_bounds = (-15807400, -5677300)
         Canada_y_bounds = (8012300, 11402300)
-        self.x = -8677300
-        self.y = 9012300
         location_point = gv.Points(
             (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
         )
+        self.debug_x.value = str(self.x)
+        self.debug_y.value = str(self.y)
         return (map_background * location_point).opts(
             opts.Points(
                 global_extent=False,
                 xlim=Canada_x_bounds,
                 ylim=Canada_y_bounds,
-                width=500,
-                height=475,
+                width=700,
+                height=550,
                 size=12,
                 color="black",
             )
@@ -428,7 +511,10 @@ class Project_Definition(param.Parameterized):
             self.t11,
             pn.WidgetBox(self.t2, self.system_type_widget),
             pn.WidgetBox(self.t3, self.system_lifespan_widget),
-            pn.WidgetBox(self.t4, self.map_view),
+            pn.WidgetBox(
+                self.t4, pn.Row(self.system_address_widget, self.geocode_button)
+            ),
+            pn.WidgetBox(self.t5, self.map_view),
             width=plot_width,
             height=plot_height,
         )
@@ -1070,7 +1156,7 @@ class Next_Steps(param.Parameterized):
 
 
 # + tags=[]
-debug_flag = False
+debug_flag = True
 
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 
@@ -1096,6 +1182,7 @@ else:
         width=plot_width,
         height=plot_height,
         name="Decision Support Tool",
+        css_classes=["custom-box"],
     )
 
 # + tags=[]
