@@ -24,4 +24,4 @@ WORKDIR /app
 
 EXPOSE 5006
 
-ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "dst", "panel", "serve", "decision-support-tool.ipynb", "--session-token-expiration", "86400", "--prefix", "building-dst", "--use-xheaders", "--log-level=debug"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "dst", "panel", "serve", "decision-support-tool.py", "--session-token-expiration", "86400", "--prefix", "building-dst", "--use-xheaders", "--log-level=debug"]
