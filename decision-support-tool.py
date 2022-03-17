@@ -935,28 +935,46 @@ class Summary_Report(param.Parameterized):
             + self.system_category
             + " components to each hazard, provides some excellent insights that will help you find good climate data."
         )
-
-        self.t2 = pn.pane.Markdown(
-            "# Linking components, hazards, and vulnerabilities: a visual breakdown\n"
-            "This infographic summarizes the main climate hazards to your "
-            + self.system_type
-            + ".  "
-            "On the left are the hazards you identified.  On the right are the components of your "
-            + self.system_type
-            + ".  "
-            "Grey bars reflect the hazard/component vulnerabilities you identified.  "
-            "Larger hazards are those which your "
-            + self.system_type
-            + " components are particularly vulnerable to - these are represented by thicker bars.  "
-            "Components with thicker bars are the more vulnerable components of your "
-            + self.system_type
-            + ".  "
-            "This visualization helps you decide which hazards you may want spend more time investigating.  "
-            "It also highlights which parts of your "
-            + self.system_type
-            + " may be most vulnerable to climate change - these are perhaps components where adaptation should be prioritized.  "
-            "Feel free to try refining your components, hazards, and vulnerability screening heatmap a few times - thinking about climate change vulnerabilities is an iterative process.  "
+        self.t2 = []
+        self.t2.append(
+            pn.pane.Markdown(
+                "# Linking components, hazards, and vulnerabilities: a visual breakdown\n"
+                "This infographic summarizes the main climate hazards to your "
+                + self.system_type
+                + ".  "
+                "On the left are the hazards you identified.  On the right are the components of your "
+                + self.system_type
+                + ".  "
+                "Grey bars reflect the hazard/component vulnerabilities you identified.  "
+                "Larger hazards are those which your "
+                + self.system_type
+                + " components are particularly vulnerable to - these are represented by thicker bars.  "
+                "Components with thicker bars are the more vulnerable components of your "
+                + self.system_type
+                + ".  "
+                "This visualization helps you decide which hazards you may want spend more time investigating.  "
+                "It also highlights which parts of your "
+                + self.system_type
+                + " may be most vulnerable to climate change - these are perhaps components where adaptation should be prioritized.  "
+                "Feel free to try refining your components, hazards, and vulnerability screening heatmap a few times - thinking about climate change vulnerabilities is an iterative process.  "
+            )
         )
+
+        self.dT = dt.date.today().year - self.system_lifespan[0].year
+        if self.dT > 20.0:
+            self.t2.append(
+                pn.pane.Markdown(
+                    "It looks like your "
+                    + self.system_type
+                    + " is already "
+                    + str(int(self.dT))
+                    + " years old.  "
+                    "Climate has already changed quite a bit in this time!  "
+                    "In your climate change planning, be sure to consider that your "
+                    + self.system_type
+                    + " has already experienced a significant amount of change!"
+                )
+            )
 
         self.t3 = pn.pane.Markdown(
             "# Prioritizing key hazards and components: a ranked list\n"
@@ -1123,7 +1141,7 @@ class Summary_Report(param.Parameterized):
     def panel(self):
         return pn.Column(
             self.t1,
-            pn.WidgetBox(self.t2, self.sankey, width=plot_width),
+            pn.WidgetBox(*self.t2, self.sankey, width=plot_width),
             pn.WidgetBox(self.t3, pn.Accordion(*self.hazard_panels, width=plot_width)),
             width=plot_width,
             height=plot_height,
@@ -1156,7 +1174,7 @@ class Next_Steps(param.Parameterized):
 
 
 # + tags=[]
-debug_flag = True
+debug_flag = False
 
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 
@@ -1190,5 +1208,9 @@ DST_core.servable()
 # -
 
 
+
+today = dt.date.today().year
+yesterday = dt.datetime(1950, 1, 1)
+yesterday.year
 
 
