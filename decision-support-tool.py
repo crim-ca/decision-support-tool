@@ -238,7 +238,10 @@ class Sector_Definition(param.Parameterized):
         return sector_type
 
     def panel(self):
-        return pn.Column(self.t1, pn.WidgetBox(self.system_category_widget))
+        return pn.Column(
+            self.t1,
+            pn.WidgetBox(self.system_category_widget, css_classes=["custom-box"]),
+        )
 
 
 # -
@@ -350,6 +353,7 @@ class Core_Knowledge_Checklist(param.Parameterized):
 
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             self.t1,
             *self.markdown_resource_links,  # splatted list of markdown statements
             width=plot_width,
@@ -374,6 +378,11 @@ class Project_Definition(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
 
+        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(self.system_input_directory, "site_info.jpg"),
+            width=plot_width,
+        )
         self.t1 = pn.pane.Markdown(
             "# The first stage in understanding which climate data you need, is providing some basic information about your "
             + self.system_category
@@ -507,14 +516,20 @@ class Project_Definition(param.Parameterized):
     # Define Panel tab
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             self.t1,
             self.t11,
-            pn.WidgetBox(self.t2, self.system_type_widget),
-            pn.WidgetBox(self.t3, self.system_lifespan_widget),
+            pn.WidgetBox(self.t2, self.system_type_widget, css_classes=["custom-box"]),
             pn.WidgetBox(
-                self.t4, pn.Row(self.system_address_widget, self.geocode_button)
+                self.t3, self.system_lifespan_widget, css_classes=["custom-box"]
             ),
-            pn.WidgetBox(self.t5, self.map_view),
+            pn.WidgetBox(
+                self.t4,
+                pn.Row(self.system_address_widget, self.geocode_button),
+                css_classes=["custom-box"],
+            ),
+            pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
+            pn.WidgetBox(self.debug_x, self.debug_y, css_classes=["custom-box"]),
             width=plot_width,
             height=plot_height,
         )
@@ -609,8 +624,16 @@ class Component_Inventory(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             self.t1,
-            pn.WidgetBox(self.t2, self.system_components_CrossSelector_widget),
-            pn.WidgetBox(self.t3, self.system_components_TextAreaInput_widget),
+            pn.WidgetBox(
+                self.t2,
+                self.system_components_CrossSelector_widget,
+                css_classes=["custom-box"],
+            ),
+            pn.WidgetBox(
+                self.t3,
+                self.system_components_TextAreaInput_widget,
+                css_classes=["custom-box"],
+            ),
             width=plot_width,
             height=plot_height,
         )
@@ -696,8 +719,16 @@ class Hazard_Inventory(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             self.t1,
-            pn.WidgetBox(self.t2, self.climate_hazards_CrossSelector_widget),
-            pn.WidgetBox(self.t3, self.climate_hazards_TextAreaInput_widget),
+            pn.WidgetBox(
+                self.t2,
+                self.climate_hazards_CrossSelector_widget,
+                css_classes=["custom-box"],
+            ),
+            pn.WidgetBox(
+                self.t3,
+                self.climate_hazards_TextAreaInput_widget,
+                css_classes=["custom-box"],
+            ),
             width=plot_width,
             height=plot_height,
         )
@@ -725,6 +756,11 @@ class Vulnerability_HeatMap(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
 
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(general_input_directory, "images/vulnerability.jpg"),
+            width=plot_width,
+        )
+
         self.t1 = []
         self.t1.append(
             pn.pane.Markdown(
@@ -735,24 +771,24 @@ class Vulnerability_HeatMap(param.Parameterized):
         )
         self.t1.append(
             pn.pane.Markdown(
-                "## This matrix contains a box, for each combination of hazards (columns) and "
+                "This matrix contains a box, for each combination of hazards (columns) and "
                 + self.system_type.lower()
                 + " components (rows) that you identified."
             )
         )
         self.t1.append(
             pn.pane.Markdown(
-                '## For each combination, think carefully about how vulnerable that component might be - today or in the future - to that climate hazard, across the scale from "no vulnerability" to "extreme vulnerability".'
+                'For each combination, think carefully about how vulnerable that component might be - today or in the future - to that climate hazard, across the scale from "no vulnerability" to "extreme vulnerability".'
             )
         )
         self.t1.append(
             pn.pane.Markdown(
-                "## Click on the box one or more times to set that vulnerability level, for that hazard/component combination.  Then move on to the next box!"
+                "Click on the box one or more times to set that vulnerability level, for that hazard/component combination.  Then move on to the next box!"
             )
         )
         self.t1.append(
             pn.pane.Markdown(
-                '## When you are done, step back and take a broad look at your completed "vulnerability heat map".  Does it match with your intuition about what your '
+                'When you are done, step back and take a broad look at your completed "vulnerability heat map".  Does it match with your intuition about what your '
                 + self.system_type.lower()
                 + " is sensitive to?  If so: on to the final step!"
             )
@@ -772,7 +808,7 @@ class Vulnerability_HeatMap(param.Parameterized):
         # Define a tap (mouse click) stream
         self.stream = hv.streams.Tap(x=None, y=None)
 
-    colormap = "magma"
+    colormap = "PuRd"
 
     # Define function that increments value of heatmap element by 1, each time it is clicked.  Loop back to initial value (zero) if maximum # of clicks exceeded
     def increment_map(self, hazards=None, components=None):
@@ -812,7 +848,7 @@ class Vulnerability_HeatMap(param.Parameterized):
             tools=[],
             xlabel="Climate Hazard",
             ylabel=self.system_type.title() + " Component",
-            fontsize={"ticks": "15pt", "ylabel": "20px", "xlabel": "20px"},
+            fontsize={"ticks": "10pt", "ylabel": "20px", "xlabel": "20px"},
             gridstyle={"grid_line_color": "white"},
             show_grid=True,
             colorbar=False,
@@ -828,14 +864,14 @@ class Vulnerability_HeatMap(param.Parameterized):
         )
         return hv.DynamicMap(mp)
 
-    c = plt.cm.get_cmap("magma_r")
+    c = plt.cm.get_cmap("PuRd")
     ticks = (
-        ("extreme vulnerability", "black", th(c(0.0))),
-        ("high vulnerability", "black", th(c(0.2))),
-        ("substantial vulnerability", "black", th(c(0.4))),
-        ("medium vulnerability", "white", th(c(0.6))),
-        ("low vulnerability", "white", th(c(0.8))),
-        ("no vulnerability", "white", th(c(1.0))),
+        ("extreme vulnerability", "white", th(c(1.0))),
+        ("high vulnerability", "white", th(c(0.8))),
+        ("substantial vulnerability", "white", th(c(0.6))),
+        ("medium vulnerability", "black", th(c(0.4))),
+        ("low vulnerability", "black", th(c(0.2))),
+        ("no vulnerability", "black", th(c(0.0))),
     )
     legend_title = pn.pane.HTML("<h1>This is an HTML pane</h1>")
     legend_box = pn.GridBox(
@@ -869,6 +905,7 @@ class Vulnerability_HeatMap(param.Parameterized):
     # Define Panel tab
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             *self.t1,
             pn.Row(self.matrix_view, self.legend_box),
             width=plot_width,
@@ -910,6 +947,11 @@ class Summary_Report(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
 
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(general_input_directory, "images/report.jpg"),
+            width=plot_width,
+        )
+
         self.lat = self.system_location[0][0]
         self.lon = self.system_location[0][1]
 
@@ -938,7 +980,7 @@ class Summary_Report(param.Parameterized):
         self.t2 = []
         self.t2.append(
             pn.pane.Markdown(
-                "# Linking components, hazards, and vulnerabilities: a visual breakdown\n"
+                "## Linking components, hazards, and vulnerabilities: a visual breakdown\n"
                 "This infographic summarizes the main climate hazards to your "
                 + self.system_type
                 + ".  "
@@ -1140,9 +1182,16 @@ class Summary_Report(param.Parameterized):
 
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             self.t1,
-            pn.WidgetBox(*self.t2, self.sankey, width=plot_width),
-            pn.WidgetBox(self.t3, pn.Accordion(*self.hazard_panels, width=plot_width)),
+            pn.WidgetBox(
+                self.t2, self.sankey, width=plot_width, css_classes=["custom-box"]
+            ),
+            pn.WidgetBox(
+                self.t3,
+                pn.Accordion(*self.hazard_panels, width=plot_width),
+                css_classes=["custom-box"],
+            ),
             width=plot_width,
             height=plot_height,
         )
@@ -1191,26 +1240,20 @@ pipeline.add_stage(name="Next Steps", stage=Next_Steps)
 
 if debug_flag:
     DST_core = pn.Column(
-        pipeline, width=plot_width, height=plot_height, name="Decision Support Tool"
+        pipeline,
+        width=plot_width,
+        height=plot_height,
+        name="Decision Support Tool",
     )
 else:
     DST_core = pn.Column(
         pipeline.buttons,
         pipeline.stage,
+        pipeline.buttons,
         width=plot_width,
         height=plot_height,
         name="Decision Support Tool",
-        css_classes=["custom-box"],
     )
 
 # + tags=[]
 DST_core.servable()
-# -
-
-
-
-today = dt.date.today().year
-yesterday = dt.datetime(1950, 1, 1)
-yesterday.year
-
-
