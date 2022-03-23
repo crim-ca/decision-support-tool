@@ -9,7 +9,7 @@
       {
          "id" : "substructure",
          "name" : {
-             "en" : "substructure",
+             "eng" : "substructure",
              "fr" : ""
          },
          "sentence_start":"an",
@@ -23,7 +23,7 @@
      {
          "id" : "shell",
          "name" : {
-            "en" : "shell",
+            "eng" : "shell",
             "fr" : ""
          },
          "sentence_start":"a",

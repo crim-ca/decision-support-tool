@@ -9,11 +9,15 @@
         {
             "id" : "future_climate_change_scenarios",
             "name" : {
-                "en" : "Future climate change scenarios",
+                "eng" : "Future climate change scenarios",
                 "fr" : "Futurs scénarios de changement climatique"
             },
             "source" : "ClimateData.ca",
-            "url":"https://climatedata.ca/resource/introduction-to-decision-making-using-climate-scenarios/",
+            "url": {
+                "eng" : "https://climatedata.ca/resource/introduction-to-decision-making-using-climate-scenarios/",
+                "fr" : ""
+            },
+
             "description" : {
                 "eng":"A learning zone on what future climate change scenarios are, and how to use them during decision making.",
                 "fr" : "Une zone d'apprentissage sur ce que sont les futurs scénarios de changement climatique et comment les utiliser lors de la prise de décision."
