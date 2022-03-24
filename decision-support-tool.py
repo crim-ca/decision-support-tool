@@ -1,4 +1,18 @@
-# %% [markdown]
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.11.0
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
+# + [markdown] tags=[]
 # # Climate information and data decision support tool
 #
 # ![Toronto panorama](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Sunset_Toronto_Skyline_Panorama_from_Snake_Island_Banner.jpg/1024px-Sunset_Toronto_Skyline_Panorama_from_Snake_Island_Banner.jpg)
@@ -17,7 +31,7 @@
 #
 # #### Climate Change Impact, Risk, and Vulnerability Assessment Methods
 #
-# <img align="left" width="400" height="400" style="padding-right: 20px;" src="images/adaptation-cycle.png">
+# <img align="left" width="400" height="400" style="padding-right: 20px;" src="data/images/adaptation-cycle.png">
 #
 # Climate change information is most often used for impact, vulnerability and risk analyses in support of climate adaptation planning.  For this reason, the decision rules encapsulated in this decision support tool reflect fundamental elements of general vulnerability and risk assessment.  In particular, the first steps of general vulnerability and risk assessment (e.g. [ISO 31000:2018](https://www.iso.org/obp/ui/#iso:std:iso:31000:en)) are used to develop an understanding of the major components of a system in question, and the major impacts that may present risk to these components.  These principles form much of the basis of key climate change risk assessment frameworks in use today in Canada across multiple sectors, including engineering ([PIEVC](https://pievc.ca/)), community planning ([ICLEI BARC](https://icleicanada.org/barc-program/)), and this vulnerability and risk-relevant information and data sources is a second key outcome.
 #
@@ -62,12 +76,12 @@
 #
 # #TODO statements are used throughout code to identify future work opportunities.
 
-# %%
+# + tags=[]
 #### Module loads and general setup
+import logging
 
 import os
-# import pathlib  # to do, convert all os-based path work to pathlib
-from pathlib import Path
+import pathlib  # to do, convert all os-based path work to pathlib
 import param
 from bokeh.palettes import YlOrRd9
 from bokeh.events import Tap
@@ -87,14 +101,21 @@ import datetime as dt  # not available on Conda - access via PIP
 import json
 from sklearn.neighbors import BallTree
 import panel as pn
+from IPython import get_ipython
+
+# other dependencies
+# !pip install xlrd
+# !pip install pre-commit
+# !pre-commit install
 
 hv.extension("bokeh")
 gv.extension("bokeh")
 pn.extension()
 
-# %%
+# + tags=[]
 plot_width = 1000
 plot_height = 1000
+
 
 class CRBCPI_class:
     def __init__(self):
@@ -150,41 +171,53 @@ class CRBCPI_class:
 
 CRBCPI = CRBCPI_class()
 
-general_input_directory = "."
+root_directory = "."
+data_directory = "data"
+general_directory = data_directory + "/general"
+sectors_directory = data_directory + "/sectors"
+images_directory =  data_directory + "/images"
 
-# %% [markdown]
+
+# -
+
 # # Decision support tool core pipeline
 #
 # Each of the following Notebook sections encapsulate code for one step in a [Panels Pipeline](https://panel.holoviz.org/user_guide/Pipelines.html) flow, which defines the interactive user-driven decision support tool process.  As per Panels Pipeline architecture, each step is defined as a Python Parameterized class.
 
-# %% [markdown]
 # ## Sector choice stage
 #
 # This stage allows user to define the sector they are interested in.
 
-# %%
+# + tags=[]
 class Sector_Definition(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
 
-        self.t1 = pn.pane.Markdown("# This tool is designed to apply to a number of sectors (with more being added all the time!).  What sector are you interested in?")
-        self.system_category_widget = pn.widgets.Select(name='Select your sector!', options=['Building','Contaminated Site'])
+        self.t1 = pn.pane.Markdown(
+            "# This tool is designed to apply to a number of sectors (with more being added all the time!).  What sector are you interested in?"
+        )
+        self.system_category_widget = pn.widgets.Select(
+            name="Select your sector!", options=["Building", "Contaminated Site"]
+        )
 
     @param.output(system_category=param.String())
-
     def output(self):
         sector_type = self.system_category_widget.value.lower()
+        logging.warning('Watch out!')  # will print a message to the console
+        logging.info('I told you so')  # will not print anything
         return sector_type
 
     def panel(self):
-        return pn.Column(self.t1,pn.WidgetBox(self.system_category_widget))
+        return pn.Column(self.t1, pn.WidgetBox(self.system_category_widget))
 
-# %% [markdown]
+
+# -
+
 # ## Introduction stage
 #
 # This stage provides a general introduction to the process that users will undergo, as they step through the tool.
 
-# %%
+# + tags=[]
 class Introduction(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -192,26 +225,34 @@ class Introduction(param.Parameterized):
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends("sector_type")
-
     def __init__(self, **params):
         super().__init__(**params)
-        self.system_input_directory = self.system_category.replace(" ","_") + "_inputs"
+        # self.system_input_directory = "./sectors/" + self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = os.path.join(sectors_directory, self.system_category.replace(" ", "_") + "_inputs")
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(self.system_input_directory, "intro_header.jpg"),
+            width=plot_width,
+        )
         with open(os.path.join(self.system_input_directory, "intro.txt")) as f:
             self.lines = f.readlines()
         self.lines = "\n".join(self.lines)
 
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             pn.pane.Markdown(self.lines),
             width=plot_width,
-            height=plot_height)
+            height=plot_height,
+        )
 
-# %% [markdown]
+
+# -
+
 # ## Disclaimer stage
 #
 # This stage provides any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
 
-# %%
+# + tags=[]
 class Disclaimer(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -219,25 +260,31 @@ class Disclaimer(param.Parameterized):
 
     def __init__(self, **params):
         super().__init__(**params)
-        with open(os.path.join(general_input_directory, "disclaimer.txt")) as f:
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(root_directory, images_directory, "disclaimer.jpg"), height=200
+        )
+        with open(os.path.join(root_directory, data_directory, "disclaimer.txt")) as f:
             self.lines = f.readlines()
         self.lines = "\n".join(self.lines)
 
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             pn.pane.Markdown(self.lines),
             width=plot_width,
             height=plot_height,
-            name="Disclaimer")
+            name="Disclaimer",
+        )
+
 
 # TODO: add a 'Do you accept these conditions of use?' button that opens access to remainder of app.
+# -
 
-# %% [markdown]
 # ## Core knowledge checklist stage
 #
-# This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
+# This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to data/general/resources.json file, they will automatically be displayed here.
 
-# %%
+# + tags=[]
 class Core_Knowledge_Checklist(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -245,26 +292,49 @@ class Core_Knowledge_Checklist(param.Parameterized):
 
     def __init__(self, **params):
         super().__init__(**params)
-        self.t1 = pn.pane.Markdown('# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!')
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(root_directory, images_directory, "core_knowledge.jpg"),
+            width=plot_width,
+        )
+        self.t1 = pn.pane.Markdown(
+            "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
+        )
         # Open general resources database and read each resource to dictionary
-        with open(os.path.join(general_input_directory, "master_general_resources_database.json"), "r") as j:
+        with open(
+            os.path.join(
+                root_directory, general_directory, "resources.json"
+            ),
+            "r",
+        ) as j:
             self.general_resources = json.loads(j.read())
         # compile a list of markdown statements by iterating over dictionary
-        self.markdown_resource_links = ["**" + self.general_resources[s]["background"] + "**<br/>[" + s  + "](" + self.general_resources[s]["url"] + '){:target="_blank"}' for s in self.general_resources]
+        self.markdown_resource_links = [
+            "**"
+            + self.general_resources[s]["background"]
+            + "**<br/>["
+            + s
+            + "]("
+            + self.general_resources[s]["url"]
+            + '){:target="_blank"}'
+            for s in self.general_resources
+        ]
 
     def panel(self):
         return pn.Column(
             self.t1,
             *self.markdown_resource_links,  # splatted list of markdown statements
             width=plot_width,
-            height=plot_height)
+            height=plot_height
+        )
 
-# %% [markdown]
+
+# -
+
 # ## Project definition stage
 #
 # A key first step in any climate change impact/vulnerability assessment, is a clear-eyed and objective statement of the system ('project') in question.  Project definition information is gathered here and is used to focus summary information and data extractions for the user on (for example) relevant time frames and locations.
 
-# %%
+# + tags=[]
 class Project_Definition(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -272,7 +342,6 @@ class Project_Definition(param.Parameterized):
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends("sector_type")
-
     def __init__(self, **params):
         super().__init__(**params)
 
@@ -286,9 +355,7 @@ class Project_Definition(param.Parameterized):
         )
 
         self.t2 = pn.pane.Markdown(
-            "### What type of "
-            + self.system_category
-            + " are you assessing?"
+            "### What type of " + self.system_category + " are you assessing?"
         )
 
         # User provides an open-ended (typed) definition of system type.
@@ -374,7 +441,9 @@ class Project_Definition(param.Parameterized):
             height=plot_height,
         )
 
-# %% [markdown]
+
+# -
+
 # ## 2) Component inventory stage
 #
 # To robustly understand climate impacts to and climate vulnerabilities of complex systems, they need to be broken down into major functional components and each component assessed separately.  For example:
@@ -382,7 +451,7 @@ class Project_Definition(param.Parameterized):
 # - an ecosystem could be vulnerable to climate impacts either to a particular animal species, or a particular plant species
 # High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
 
-# %%
+# + tags=[]
 class Component_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -392,7 +461,7 @@ class Component_Inventory(param.Parameterized):
     system_location = param.List()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends("system_category","system_type")
+    @param.depends("system_category", "system_type")
 
     # Develop database
     def __init__(self, **params):
@@ -409,9 +478,16 @@ class Component_Inventory(param.Parameterized):
         )
 
         # Open hazards database and read each hazard item to dictionary
-        self.system_input_directory = self.system_category.replace(" ","_") + "_inputs"
+        # self.system_input_directory =  "./sectors/" + self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = os.path.join(sectors_directory, self.system_category.replace(" ", "_") + "_inputs")
+
+
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(self.system_input_directory, "components.jpg"), height=200
+        )
+
         with open(
-            os.path.join(self.system_input_directory, "component_database.json"), "r"
+            os.path.join(self.system_input_directory, "components.json"), "r"
         ) as j:
             self.components = json.loads(j.read())
         # Get basic list of system components.  Some fancy Python to get this into a list from nested dictionary entries.
@@ -455,6 +531,7 @@ class Component_Inventory(param.Parameterized):
     # Define Panel tab
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             self.t1,
             pn.WidgetBox(self.t2, self.system_components_CrossSelector_widget),
             pn.WidgetBox(self.t3, self.system_components_TextAreaInput_widget),
@@ -462,13 +539,15 @@ class Component_Inventory(param.Parameterized):
             height=plot_height,
         )
 
-# %% [markdown]
+
+# -
+
 # ## 3) Hazard inventory stage
 #
 # Once components of a system are defined, users need to think carefully about which hazards these components may be vulnerable to, today and in the future.
 # High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
 
-# %%
+# + tags=[]
 class Hazard_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -483,6 +562,14 @@ class Hazard_Inventory(param.Parameterized):
 
     # Open hazards database and read each hazard item to dictionary
     def __init__(self, **params):
+        super().__init__(**params)
+
+        # self.system_input_directory =  "./sectors/" + self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = os.path.join(sectors_directory, self.system_category.replace(" ", "_") + "_inputs")
+
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(self.system_input_directory, "hazard.jpg"), height=200
+        )
 
         self.t1 = pn.pane.Markdown(
             "# Next, you need to think about the important weather and climate hazards in your region."
@@ -495,7 +582,7 @@ class Hazard_Inventory(param.Parameterized):
         )
         super().__init__(**params)
         with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
+            os.path.join(root_directory, general_directory, "hazards.json"), "r"
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
         self.climate_hazards = [s for s in self.full_hazards_dict]
@@ -533,6 +620,7 @@ class Hazard_Inventory(param.Parameterized):
     # Define Panel tab
     def panel(self):
         return pn.Column(
+            self.jpg_pane,
             self.t1,
             pn.WidgetBox(self.t2, self.climate_hazards_CrossSelector_widget),
             pn.WidgetBox(self.t3, self.climate_hazards_TextAreaInput_widget),
@@ -540,12 +628,13 @@ class Hazard_Inventory(param.Parameterized):
             height=plot_height,
         )
 
-# %% [markdown]
+
+# + [markdown] tags=[]
 # ## 4) Vulnerability screening stage
 #
 # User-defined input regarding 1) project components and 2) potential climate hazards are combined in the following Pipeline tab into a 2-D heat map that represents a high level vulnerability screen.   This heat map is dynamically user-defined (the number of vertical and horizontal elements is based on the number of project components and climate hazards, respectively).  It is also interactive: users are prompted to set per-component/hazard vulnerabilities by clicking on individual heat map elements, to develop a heat map-based perspective on where greatest system vulnerabilities lie.  This information is recorded and is a key input to the final tool summary.
 
-# %%
+# + tags=[]
 class Vulnerability_HeatMap(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -712,7 +801,9 @@ class Vulnerability_HeatMap(param.Parameterized):
             height=plot_height,
         )
 
-# %% [markdown]
+
+# -
+
 # ## 5) Summary reporting stage
 #
 # Provided with project definition, project component and climate hazard information, and after user-led vulnerability screening, the tool returns a graphical summary of user inputs and text-based summaries that:
@@ -722,7 +813,7 @@ class Vulnerability_HeatMap(param.Parameterized):
 # Following this summary, the tool uses the provided resource links for each climate hazard relevant to system components, to develop a curated list of climate resources that are specific to the needs identified by the user.
 #
 
-# %%
+# + tags=[]
 class Summary_Report(param.Parameterized):
 
     # Access information provided by user earlier in pipeline to provide a summary
@@ -735,7 +826,13 @@ class Summary_Report(param.Parameterized):
     vulnerability_matrix = param.DataFrame()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends("system_category","system_type", "system_lifespan", "system_location", "vulnerability_matrix")
+    @param.depends(
+        "system_category",
+        "system_type",
+        "system_lifespan",
+        "system_location",
+        "vulnerability_matrix",
+    )
     def __init__(self, **params):
         super().__init__(**params)
 
@@ -808,7 +905,7 @@ class Summary_Report(param.Parameterized):
         self.statement_list = []
 
         with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
+            os.path.join(root_directory, general_directory, general_directory, "hazards.json"), "r"
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
 
@@ -828,7 +925,9 @@ class Summary_Report(param.Parameterized):
             if h in self.full_hazards_dict:
                 self.hazard_details.append(
                     "## "
-                    + self.full_hazards_dict[h]["impact_statement"][self.system_category.replace(" ","_")]
+                    + self.full_hazards_dict[h]["impact_statement"][
+                        self.system_category.replace(" ", "_")
+                    ]
                     + "  "
                     + self.full_hazards_dict[h]["direction_statement"]
                 )
@@ -956,32 +1055,36 @@ class Summary_Report(param.Parameterized):
             height=plot_height,
         )
 
-# %% [markdown]
+
+# -
+
 # ## Next steps stage
 # This stage serves a jumping off point for users to understand what their next steps are. This text is intended to align users to basics of risk assessment, followed by adaptation (if their risk assessment thinking indicates that an 'unacceptable' risk threshold will be crossed.
 
-# %%
+# + tags=[]
 class Next_Steps(param.Parameterized):
 
     system_category = param.String()
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends("system_category")
-
     def __init__(self, **params):
         super().__init__(**params)
-        self.system_input_directory = self.system_category.replace(" ","_") + "_inputs"
+        # self.system_input_directory "./sectors/" + self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = os.path.join(sectors_directory, self.system_category.replace(" ", "_") + "_inputs")
+
         # Open general resources database and read each resource to dictionary
         with open(os.path.join(self.system_input_directory, "next_steps.txt")) as f:
             self.lines = f.readlines()
         self.lines = "\n".join(self.lines)
 
     def panel(self):
-        return pn.Column(pn.pane.Markdown(self.lines),
-                         width=plot_width,
-                         height=plot_height)
+        return pn.Column(
+            pn.pane.Markdown(self.lines), width=plot_width, height=plot_height
+        )
 
-# %%
-debug_flag=False
+
+# + tags=[]
+debug_flag = False
 
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 
@@ -1009,13 +1112,10 @@ else:
         name="Decision Support Tool",
     )
 
-# %%
+# + tags=[]
 DST_core.servable()
+# -
 
-# %%
-
-
-# %%
 
 
 

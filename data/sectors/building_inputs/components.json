@@ -4,7 +4,7 @@
       "description":"Includes foundations and basements",
       "group":["foundations","basements"],
       "possible_hazards":[]
-   },  
+   },
    "shell":{
       "sentence_start":"a",
       "description":"Includes superstructure, exterior closures, and roofing",

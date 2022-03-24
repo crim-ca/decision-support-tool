@@ -1,7 +1,7 @@
 {
    "sources":{
       "group":["acid rock drainage source","leachate source","tailings ponds source","contaminated soil source"]
-   },
+   },  
    "receptor pathways":{
       "group":["surface water receptor pathways","airborne receptor pathways","soil-based receptor pathways"]
       },

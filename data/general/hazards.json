@@ -13,7 +13,7 @@
             "url":"https://www.bio.gc.ca/science/data-donnees/can-ewlat/index-en.php",
             "description":"provides estimates future extreme water levels for a range of Canadian coastal locations.",
             "type":"tool"
-        },        
+        },
         "Relative sea level change":{
             "source":"ClimateData.ca",
             "url":"https://climatedata.ca/explore/variable/?coords=",
@@ -30,7 +30,7 @@
     "magnitude_confidence":"There is less confidence in the exact magnitude of changes to sea level at specific locations.",
     "impact_statement":{
         "building":"Via coastal flood events, sea level rise can indundate building interiors, erode foundations and surrounding property, and decrease user accessibility.",
-        "contaminated_sites":"Via coastal flood events, sea level rise can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Via coastal flood events, sea level rise can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":"Remember, sea level rise will most likely impact your building through it's role in increasing the severity and frequency of storm and tide-driven extreme coastal flooding events."
 },
@@ -48,9 +48,9 @@
             "url":"https://pavics.ouranos.ca/hydrology.html",
             "description":"provides an advanced tool for estimating changes to streamflow due to climate change.",
             "type":"tool"
-        },        
+        },
         "Maximum annual 1-day rain":{
-            "source":"ClimateData.ca", 
+            "source":"ClimateData.ca",
             "url":"https://climatedata.ca/explore/variable/?coords=",
             "var":"rx1day",
             "units":"millimeters",
@@ -74,7 +74,7 @@
     "magnitude_confidence":"Because of local factors, estimating the magnitude of changes to river and lake flooding due to climate change is difficult without undertaking a detailed local assessment.",
     "impact_statement":{
         "building":"River/lake flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
-        "contaminated_sites":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "type":"continuous",
     "notes":"Add in CanFlood and PAVICS Raven resources"
@@ -88,7 +88,7 @@
             "type":"guidance"
         },
         "Maximum annual 1-day rain":{
-            "source":"ClimateData.ca", 
+            "source":"ClimateData.ca",
             "url":"https://climatedata.ca/explore/variable/?coords=",
             "var":"rx1day",
             "units":"millimeters",
@@ -98,7 +98,7 @@
             "type":"data"
         },
         "Maximum annual 5-day rain":{
-            "source":"ClimateData.ca", 
+            "source":"ClimateData.ca",
             "url":"https://climatedata.ca/explore/variable/?coords=",
             "var":"rx5day",
             "units":"millimeters",
@@ -106,7 +106,7 @@
             "season":"ann",
             "description":"describes maximum annual 5-day rainfall.",
             "type":"data"
-        },        
+        },
         "Change in 1-in-50 year annual 15 minute and 1-day rain":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
@@ -114,7 +114,7 @@
             "units": "%",
             "description":"describes changes to the likelihood of rare short term and daily rain events.",
             "type":"data",
-            "tier":"2" 
+            "tier":"2"
         }
     },
     "direction_statement": "Climate change is expected to cause extreme rain events to become more frequent and severe.",
@@ -122,7 +122,7 @@
     "magnitude_confidence":"The exact magnitude of extreme rainfall increases may be somewhat uncertain, especially for high intensity, short duration rainfall events.",
     "impact_statement":{
         "building":"Extreme rain can directly damage building components through leaks and infiltration, and also inundate building interiors, erode foundations and surrounding property, and decrease user accessibility from rain-caused overland or flooding.",
-        "contaminated_sites":"Extreme rain can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Extreme rain can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":""
 },
@@ -130,7 +130,7 @@
 "ice jam flooding":{
     "resources":{
         "Change in ice jam flooding":{
-            "source":"CGU HS Committee on River Ice Processes and the Environment", 
+            "source":"CGU HS Committee on River Ice Processes and the Environment",
             "url":"http://www.cripe.ca/docs/proceedings/20/Turcotte-et-al-2019.pdf",
             "description":"describes the potential mechanisms that ice jam flooding severity and frequency may be impacted by climate change.",
             "type":"guidance"
@@ -141,7 +141,7 @@
     "magnitude_confidence":"The direction of changes for ice jam flooding may not be well known, if at all, at local scales.",
     "impact_statement":{
         "building":"Ice jam flooding can cause extensive and dangerous flooding to buildings, along with potential for direct damage due to ice jam debris.",
-        "contaminated_sites":"Ice jam flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Ice jam flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":""
 },
@@ -163,7 +163,7 @@
     "magnitude_confidence":"Because change in snow accumulation depends closely on a combination of temperature and precipitation, the exact magnitude of changes to accumulation over time, and in some places, even uncertainty around the direction of change.",
     "impact_statement":{
         "building":"Extreme snow can stress roofs and decrease user accessibility.",
-        "contaminated_sites":"Extreme snow could stress or damage contaminated site infrastructure."
+        "contaminated_site":"Extreme snow could stress or damage contaminated site infrastructure."
     },
     "notes":"Need an assessment of changes to individual snow extreme event frequency/magnitude."
 },
@@ -181,8 +181,8 @@
            "type":"data"
         },
         "Change in July 2.5% wet and dry design temperatures":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",        
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
+            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
+            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",
             "var":"TJuly and TwJuly",
             "units":"Degrees Celcius",
             "description":"describes changes in building-relevant changes to mid-summer extreme warm temperatures.",
@@ -195,7 +195,7 @@
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
     "impact_statement":{
         "building":"Extreme heat can stress building air conditioning systems and cause damage by thermal expansion.",
-        "contaminated_sites":"Extreme heat could damage site infrastructure."
+        "contaminated_site":"Extreme heat could damage site infrastructure."
     },
     "notes":""
 },
@@ -212,8 +212,8 @@
            "type":"data"
         },
         "Change in January 1% and 2.5% design temperatures":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",        
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
+            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
+            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",
             "var":"TJan10 and TJan25",
             "units":"Degrees Celcius",
             "description":"describes changes in building-relevant changes to mid-winter extreme cold temperatures.",
@@ -226,11 +226,11 @@
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
     "impact_statement":{
         "building":"Extreme cold can stress building heating systems and potentially cause damage via thermal contraction.",
-        "contaminated_sites":"Extreme heat could damage site infrastructure."
+        "contaminated_site":"Extreme heat could damage site infrastructure."
     },
     "notes":""
-    
-},    
+
+},
 "permafrost loss":{
     "resources":{
         "Change in permafrost extent":{
@@ -247,13 +247,13 @@
             "description":"provides guidance for adapting northern infrastructure including buildings to permafrost loss resulting from climate change.",
             "type":"guidance"
         }
-    },  
+    },
     "direction_statement":"Permafrost extent and thickness is expected to decrease substantially with climate warming, at the same time that summer active layer depths increase.",
     "direction_confidence":"High confidence exists projections of permafrost loss in response to warming.",
     "magnitude_confidence":"Since local permafrost conditions are closely controlled by local-scale soil, water, and building factors, the precise magnitude of permafrost loss at a particular location may be uncertain, and require a more detailed assessment to constrain.",
     "impact_statement":{
         "building":"Permafrost loss can cause building subsidence, weaken foundations, promote moisture infiltration, and decrease user accessibility.",
-        "contaminated_sites":"Permafrost loss can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "contaminated_site":"Permafrost loss can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "notes":""
 },
@@ -265,7 +265,7 @@
             "units":"%",
             "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds.",
             "type":"data",
-            "tier":"3"   
+            "tier":"3"
         },
         "Change in 1-in-5 year driving rain wind pressures":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
@@ -273,7 +273,7 @@
             "units":"%",
             "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds combined with rain.",
             "type":"data",
-            "tier":"3"         
+            "tier":"3"
         }
     },
     "direction_statement":"The severity and frequency of high wind speeds and related pressures are currently not projected to change dramatically, although significant uncertainty exists in these projections.",
@@ -281,9 +281,9 @@
     "magnitude_confidence":"Low confidence exists for future projections of changes to high winds.",
     "impact_statement":{
         "building":"High winds can damage building envelopes and exterior structures and influence building influence heating and cooling systems.",
-        "contaminated_sites":"High winds can damage site infrastructure and increase airborne contaminant mobilization."
+        "contaminated_site":"High winds can damage site infrastructure and increase airborne contaminant mobilization."
     },
-    "notes":""    
+    "notes":""
 },
 "wildfire":{
     "resources":{
@@ -295,7 +295,7 @@
             "group":"other",
             "season":"ann",
             "description":"describes changes to the upper percentiles of FWI, an index used to determine the potential for wildfire in forests and grasslands.",
-            "type":"data"            
+            "type":"data"
         },
         "Average maximum summer temperature":{
             "source":"ClimateData.ca",
@@ -305,7 +305,7 @@
             "season":"summer",
             "units":"Degrees Celcius",
             "description":"describes changes daily maximum summer temperatures",
-            "type":"data"            
+            "type":"data"
         }
     },
     "direction_statement":"Wildfires are expected to worsen in intensity and severity with climate change.",
@@ -313,9 +313,9 @@
     "magnitude_confidence":"The precise magnitude of future wildfire increases may be uncertain at local scales due to details of wildfire fuel loads and local-scale combined projections of temperature, precipitation, wind and humidity.",
     "impact_statement":{
         "building":"Wildfire can damage and destroy buildings directly, and also degrade interior air quality through smoke.",
-        "contaminated_sites":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
+        "contaminated_site":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
     },
-    "notes":""    
+    "notes":""
 }
 
 }
