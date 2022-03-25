@@ -1,7 +1,23 @@
 h1 {
-  background-color: green;
-  color: white;
-  border: 2px solid black;
-  margin: 20px;
-  padding: 20px;
+    font-family: Arial;
+    color: #e50e40;
+    font-size: 2em;
+    font-weight: lighter;
+}
+
+h2 {
+    font-family: Arial;
+    color: #212529;
+    font-size: 1.5em;
+    font-weight: lighter;
+
+p {
+    font-family: Arial;
+    font-size: 1em;
+    font-weight: normal;
+    color: #212529;
+}
+
+.custom-box {
+     background: white;
 }
