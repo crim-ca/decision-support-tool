@@ -8,9 +8,10 @@
     "general_resources" : [
         {
             "id" : "future_climate_change_scenarios",
-            "name" : {
-                "eng" : "Future climate change scenarios",
-                "fr" : "Futurs scénarios de changement climatique"
+            "name" : "Future climate change scenarios",
+            "background" : {
+                "eng" : "The amount of climate change we experience in the future depends on many factors, most notably future global emissions of greenhouse gases. Here is a very short video that will quickly bring you up to speed on climate scenarios, including RCP2.6, RCP4.5, and RCP8.5.",
+                "fr" : ""
             },
             "source" : "ClimateData.ca",
             "url": {
@@ -19,8 +20,8 @@
             },
 
             "description" : {
-                "eng":"A learning zone on what future climate change scenarios are, and how to use them during decision making.",
-                "fr" : "Une zone d'apprentissage sur ce que sont les futurs scénarios de changement climatique et comment les utiliser lors de la prise de décision."
+                "eng": "A learning zone on what future climate change scenarios are, and how to use them during decision making.",
+                "fr" : ""
              },
             "type":"web page"
         }

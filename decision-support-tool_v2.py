@@ -120,22 +120,6 @@ plot_height = 1000
 hazards_json_filename = "hazards_v2.json"
 dst_lang = "eng"
 
-class Dst_Json_Properties:
-    HAZARDS = "hazards"
-    RESOURCES = "resources"
-
-    ID = "id"
-    NAME = "name"
-    SOURCE = "source"
-    URL = "url"
-    DESCRIPTION = "description"
-    VAR = "var"
-    TYPE = "type"
-    GROUP = "group"
-    SEASON = "season"
-    UNITS = "units"
-    TIER = "tier"
-
 
 class CRBCPI_class:
     def __init__(self):
@@ -321,55 +305,34 @@ class Core_Knowledge_Checklist(param.Parameterized):
         self.t1 = pn.pane.Markdown(
             "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
         )
-
         # Open general resources database and read each resource to dictionary
         with open(
             os.path.join(
-                root_directory, general_directory, "resources.json"
+                root_directory, general_directory, "resources_v2.json"
             ),
             "r",
         ) as j:
             self.general_resources = json.loads(j.read())
+
         # compile a list of markdown statements by iterating over dictionary
-        self.markdown_resource_links = [
-            "**"
-            + self.general_resources[s]["background"]
-            + "**<br/>["
-            + s
-            + "]("
-            + self.general_resources[s]["url"]
-            + '){:target="_blank"}'
-            for s in self.general_resources
-        ]
+        self.wert = {}
+        self.index = 0
 
-        # # Open general resources database and read each resource to dictionary
-        # with open(
-        #     os.path.join(
-        #         root_directory, general_directory, "resources_v2.json"
-        #     ),
-        #     "r",
-        # ) as j:
-        #     self.general_resources = json.loads(j.read())
+        for data in  self.general_resources:
+            counter = -1
+            if(data == "general_resources"):
+                self.wert[self.index] = [
+                    "**"
+                    + self.general_resources[data][self.index]["background"][dst_lang]
+                    + "**<br/>["
+                    + self.general_resources[data][self.index]["name"]
+                    + "]("
+                    + self.general_resources[data][self.index]["url"][dst_lang]
+                    + '){:target="_blank"}'
+                ]
+                self.index = self.index + 1
 
-        # # compile a list of markdown statements by iterating over dictionary
-        # self.wert = {}
-        # self.index = 0
-
-        # for data in  self.general_resources:
-        #     counter = -1
-        #     if(data == "general_resources"):
-        #         self.wert[self.index] = [
-        #             "**"
-        #             + self.general_resources[data][self.index]["background"][dst_lang]
-        #             + "**<br/>["
-        #             + self.general_resources[data][self.index]["name"]
-        #             + "]("
-        #             + self.general_resources[data][self.index]["url"][dst_lang]
-        #             + '){:target="_blank"}'
-        #         ]
-        #         self.index = self.index + 1
-
-        # self.markdown_resource_links = [s[0] for s in self.wert.values()]
+        self.markdown_resource_links = [s[0] for s in self.wert.values()]
 
     def panel(self):
         return pn.Column(
@@ -609,9 +572,6 @@ class Hazard_Inventory(param.Parameterized):
     system_location = param.List()
     system_components = param.List()
 
-    full_hazards_dict = {}
-    sources_hazards_by_key = {}
-
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends("system_type")
 
@@ -636,28 +596,17 @@ class Hazard_Inventory(param.Parameterized):
             + " is, or may become, vulnerable to.  Add any additional hazards that are not listed."
         )
         super().__init__(**params)
-
-        # hazards_json_filename
         with open(
-            os.path.join(root_directory, general_directory, "hazards_v3.json"), "r"
+            os.path.join(root_directory, general_directory, hazards_json_filename), "r"
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
 
-        self.hazardsNames = {}
+        self.wert = {}
         self.index = 0
 
-        for s in self.full_hazards_dict[Dst_Json_Properties.HAZARDS]:
-            self.hazardsNames[self.index] = [
-                self.full_hazards_dict[Dst_Json_Properties.HAZARDS][self.index][Dst_Json_Properties.NAME][dst_lang]
-                ]
-            self.index = self.index + 1
-
-        self.climate_hazards = [rr[0] for rr in self.hazardsNames.values()]
-
-        # TODO: delete
-        print(f" >>> class Hazard_Inventory >> self.climate_hazards: {self.climate_hazards}")
-
-
+        for data in  self.full_hazards_dict:
+            if(data == "hazards"):
+                self.climate_hazards = [s for s in self.full_hazards_dict[data][self.index]]
         # Provide selector that lets user select hazards that pertain to their system.
         self.climate_hazards_CrossSelector_widget = pn.widgets.CrossSelector(
             name="Which climate hazards is your "
@@ -675,8 +624,6 @@ class Hazard_Inventory(param.Parameterized):
         self.climate_hazards_TextAreaInput_widget = pn.widgets.TextAreaInput(
             placeholder="Enter any other hazards you would like to include in this evaluation, separated by commas..."
         )
-
-
 
     # Gather output of this Pipeline stage for next stages of Pipeline
     @param.output(climate_hazards=param.List())
@@ -978,9 +925,8 @@ class Summary_Report(param.Parameterized):
         self.fontcolor = [(r, 0, 0) for r in np.linspace(255, 0, num=len(self.hazards))]
         self.statement_list = []
 
-        # hazards_json_filename
         with open(
-            os.path.join(root_directory, general_directory, "hazards.json"), "r"
+            os.path.join(root_directory, general_directory, general_directory, hazards_json_filename), "r"
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
 
@@ -993,126 +939,128 @@ class Summary_Report(param.Parameterized):
         )
         self.CRBCPI_i = self.CRBCPI_i[0][0]
 
-        for n, h in enumerate(self.hazards):
-            h = h.lower()
+        self.wert = {}
+        self.index = 0
 
-            # TODO: delete print
-            print(f" >>>>  h in enumerate(self.hazards): {h}")
-            print(f" >>>>  self.full_hazards_dict: {self.full_hazards_dict}")
+        for hazards_list in  self.full_hazards_dict:
+            counter = -1
+            if(hazards_list == "hazards"):
+                for hazard_type in self.full_hazards_dict[hazards_list][0]:
+                # for n, hazard_type in enumerate(self.hazards):
+                    self.hazard_details = []  # list of items for each WidgetPane
+                    # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+hazard_type.capitalize()+'</h2>')
 
-            self.hazard_details = []  # list of items for each WidgetPane
-            # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+h.capitalize()+'</h2>')
-
-            if h in self.full_hazards_dict:
-                self.hazard_details.append(
-                    "## "
-                    + self.full_hazards_dict[h]["impact_statement"][
-                        self.system_category.replace(" ", "_")
-                    ]
-                    + "  "
-                    + self.full_hazards_dict[h]["direction_statement"]
-                )
-                self.hazard_details.append(
-                    "## "
-                    + self.full_hazards_dict[h]["direction_confidence"]
-                    + "  "
-                    + self.full_hazards_dict[h]["magnitude_confidence"]
-                )
-                self.hazard_details.append(
-                    "## Here are some "
-                    + h
-                    + " resources you should consider exploring:"
-                )
-
-                for resource, resource_details in self.full_hazards_dict[h][
-                    "resources"
-                ].items():
-
-                    self.resource_items = []
-
-                    self.resource_items.append(
-                        "### Information and/or data on "
-                        + h
-                        + " is available from "
-                        + resource_details["source"]
-                        + ".  This "
-                        + resource_details["type"]
-                        + " "
-                        + resource_details["description"]
-                    )
-                    if resource_details["source"] == "ClimateData.ca":
-                        self.url = (
-                            resource_details["url"]
-                            + str(self.lat)
-                            + ","
-                            + str(self.lon)
-                            + ",8&geo-select=&var="
-                            + resource_details["var"]
-                            + "&var-group="
-                            + resource_details["group"]
-                            + "&mora="
-                            + resource_details["season"]
-                            + "&rcp=rcp85&decade="
-                            + str(2070)
-                            + "s&sector="
+                    print(f" >>>>> hazard_type: {hazard_type}")
+                    if hazard_type in self.full_hazards_dict[hazards_list][self.index]:
+                        self.hazard_details.append(
+                            "## "
+                            + self.full_hazards_dict[hazards_list][self.index][hazard_type]["impact_statement"][
+                                self.system_category.replace(" ", "_")
+                            ]
+                            + "  "
+                            + self.full_hazards_dict[hazards_list][self.index][hazard_type]["direction_statement"]
                         )
-                        self.resource_items.append(
-                            "###  Click here to explore this data in more detail for your location: ["
-                            + resource
-                            + "]("
-                            + self.url
-                            + '){:target="_blank"}'
+                        self.hazard_details.append(
+                            "## "
+                            + self.full_hazards_dict[hazards_list][self.index][hazard_type]["direction_confidence"]
+                            + "  "
+                            + self.full_hazards_dict[hazards_list][self.index][hazard_type]["magnitude_confidence"]
                         )
-                    elif (
-                        resource_details["source"]
-                        == "The Climate Resilient Buildings and Core Public Infrastructure Project"
-                    ):
-                        self.location = CRBCPI.CRBCPI_data["+0.5C"]["Location"][
-                            np.squeeze(self.CRBCPI_i)
-                        ]
-                        self.proximity = "{x:.0f}".format(
-                            x=np.squeeze(self.CRBCPI_distance) * 6378.0
-                        )  # convert distance from radians to kilometers, format for rounded-value printing
-                        self.resource_items.append(
-                            "### In addition to regional information, it appears there is data available for "
-                            + self.location
-                            + ", around "
-                            + self.proximity
-                            + " km away from your site."
+                        self.hazard_details.append(
+                            "## Here are some "
+                            + hazard_type
+                            + " resources you should consider exploring:"
                         )
-                        self.url = resource_details["url"]
-                        self.resource_items.append(
-                            "###  Click here to explore this data in more detail: ["
-                            + resource
-                            + "]("
-                            + self.url
-                            + ")"
-                        )
+
+                        # for resource, resource_details in self.full_hazards_dict[hazards_list][self.index][hazard_type][
+                        #     "resources"
+                        # ].items():
+
+                        #     self.resource_items = []
+
+                        #     self.resource_items.append(
+                        #         "### Information and/or data on "
+                        #         + hazard_type
+                        #         + " is available from "
+                        #         + resource_details["source"]
+                        #         + ".  This "
+                        #         + resource_details["type"]
+                        #         + " "
+                        #         + resource_details["description"]
+                        #     )
+                        #     if resource_details["source"] == "ClimateData.ca":
+                        #         self.url = (
+                        #             resource_details["url"]
+                        #             + str(self.lat)
+                        #             + ","
+                        #             + str(self.lon)
+                        #             + ",8&geo-select=&var="
+                        #             + resource_details["var"]
+                        #             + "&var-group="
+                        #             + resource_details["group"]
+                        #             + "&mora="
+                        #             + resource_details["season"]
+                        #             + "&rcp=rcp85&decade="
+                        #             + str(2070)
+                        #             + "s&sector="
+                        #         )
+                        #         self.resource_items.append(
+                        #             "###  Click here to explore this data in more detail for your location: ["
+                        #             + resource
+                        #             + "]("
+                        #             + self.url
+                        #             + '){:target="_blank"}'
+                        #         )
+                        #     elif (
+                        #         resource_details["source"]
+                        #         == "The Climate Resilient Buildings and Core Public Infrastructure Project"
+                        #     ):
+                        #         self.location = CRBCPI.CRBCPI_data["+0.5C"]["Location"][
+                        #             np.squeeze(self.CRBCPI_i)
+                        #         ]
+                        #         self.proximity = "{x:.0f}".format(
+                        #             x=np.squeeze(self.CRBCPI_distance) * 6378.0
+                        #         )  # convert distance from radians to kilometers, format for rounded-value printing
+                        #         self.resource_items.append(
+                        #             "### In addition to regional information, it appears there is data available for "
+                        #             + self.location
+                        #             + ", around "
+                        #             + self.proximity
+                        #             + " km away from your site."
+                        #         )
+                        #         self.url = resource_details["url"]
+                        #         self.resource_items.append(
+                        #             "###  Click here to explore this data in more detail: ["
+                        #             + resource
+                        #             + "]("
+                        #             + self.url
+                        #             + ")"
+                        #         )
+                        #     else:
+                        #         self.url = resource_details["url"]
+                        #         self.resource_items.append(
+                        #             "###  Click here to explore this information in more detail: ["
+                        #             + resource
+                        #             + "]("
+                        #             + self.url
+                        #             + ")"
+                        #         )
+
+                        #     self.hazard_details.append(
+                        #         pn.WidgetBox(*self.resource_items, width=int(plot_width * 0.9))
+                        #     )
                     else:
-                        self.url = resource_details["url"]
-                        self.resource_items.append(
-                            "###  Click here to explore this information in more detail: ["
-                            + resource
-                            + "]("
-                            + self.url
-                            + ")"
+                        self.hazard_details.append(
+                            "### Please contact the [Canadian Centre for Climate Services Support Desk](https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services.html) to help find information on how "
+                            + hazard_type
+                            + " may change in the future with climate change!"
                         )
 
-                    self.hazard_details.append(
-                        pn.WidgetBox(*self.resource_items, width=int(plot_width * 0.9))
+                    self.hazard_panels.append(
+                        pn.Column(*self.hazard_details, name=hazard_type.capitalize(), width=plot_width)
                     )
-            else:
-                self.hazard_details.append(
-                    "### Please contact the [Canadian Centre for Climate Services Support Desk](https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services.html) to help find information on how "
-                    + h
-                    + " may change in the future with climate change!"
-                )
 
-            self.hazard_panels.append(
-                pn.Column(*self.hazard_details, name=h.capitalize(), width=plot_width)
-            )
-
-                    # self.index = self.index + 1
+                    self.index = self.index + 1
                 # END:  for n, hazard_type in enumerate(self.hazards):
 
         self.vulnerability_matrix = self.vulnerability_matrix[
