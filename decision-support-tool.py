@@ -118,6 +118,13 @@ pn.extension()
 plot_width = 1000
 plot_height = 1000
 
+root_directory = "."
+data_directory = "data"
+general_directory = data_directory + "/general"
+sectors_directory = data_directory + "/sectors"
+images_directory =  data_directory + "/images"
+
+resources_json_file = "resources_v2.json"
 hazards_json_file = "hazards_v2.json"
 components_json_file =  "components_v2.json"
 dst_language = "eng"
@@ -199,11 +206,6 @@ class CRBCPI_class:
 
 CRBCPI = CRBCPI_class()
 
-root_directory = "."
-data_directory = "data"
-general_directory = data_directory + "/general"
-sectors_directory = data_directory + "/sectors"
-images_directory =  data_directory + "/images"
 
 
 # -
@@ -330,42 +332,19 @@ class Core_Knowledge_Checklist(param.Parameterized):
             "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
         )
 
-        # # Open general resources database and read each resource to dictionary
-        # with open(
-        #     os.path.join(
-        #         root_directory, general_directory, "resources.json"
-        #     ),
-        #     "r",
-        # ) as j:
-        #     self.general_resources = json.loads(j.read())
-        # # compile a list of markdown statements by iterating over dictionary
-        # self.markdown_resource_links = [
-        #     "**"
-        #     + self.general_resources[s]["background"]
-        #     + "**<br/>["
-        #     + s
-        #     + "]("
-        #     + self.general_resources[s]["url"]
-        #     + '){:target="_blank"}'
-        #     for s in self.general_resources
-        # ]
-
         # Open general resources database and read each resource to dictionary
         with open(
             os.path.join(
-                root_directory, general_directory, "resources_v2.json"
-            ),
-            "r",
+                root_directory, general_directory, resources_json_file),"r",
         ) as j:
             self.general_resources = json.loads(j.read())
 
         # compile a list of markdown statements by iterating over dictionary
         self.links = {}
-        self.index = 0
-
         general_resources = self.general_resources[DstEnum.GENERAL_RESOURCES]
+
         for gen_res_index in  range(len(general_resources)):
-            self.links[self.index] = [
+            self.links[gen_res_index] = [
                 "**"
                 + general_resources[gen_res_index][DstEnum.BACKGROUND][dst_language]
                 + "**<br/>["

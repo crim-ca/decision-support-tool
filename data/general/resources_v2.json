@@ -8,7 +8,10 @@
     "general_resources" : [
         {
             "id" : "future_climate_change_scenarios",
-            "name" : "Future climate change scenarios",
+            "name" : {
+                "eng" : "Future climate change scenarios",
+                "fr" : ""
+            },
             "background" : {
                 "eng" : "The amount of climate change we experience in the future depends on many factors, most notably future global emissions of greenhouse gases. Here is a very short video that will quickly bring you up to speed on climate scenarios, including RCP2.6, RCP4.5, and RCP8.5.",
                 "fr" : ""
