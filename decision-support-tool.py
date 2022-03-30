@@ -985,7 +985,7 @@ class Summary_Report(param.Parameterized):
 
         for _ , biggest_hazard in enumerate(self.hazards):
 
-            # TODO: hazard["name"] start with uppercase char ?
+            # TODO: hazard[DstEnum.NAME] start with uppercase char ?
             biggest_hazard = biggest_hazard.lower()
 
             self.hazard_details = []  # list of items for each WidgetPane
@@ -1020,49 +1020,49 @@ class Summary_Report(param.Parameterized):
                 )
                 self.hazard_details.append(
                     "## Here are some "
-                    + hazard_found["name"][dst_language] # hazard_type
+                    + hazard_found[DstEnum.NAME][dst_language] # hazard_type
                     + " resources you should consider exploring:"
                 )
 
 
                 # Get hazard resources information by language
                 full_hazards = self.full_hazards_dict
-                resources_hazard_found = hazard_found["resources"]
+                resources_hazard_found = hazard_found[DstEnum.RESOURCES]
 
                 resources_by_hazards_index = {}
                 resources_keys_by_index = 0
                 for resource_key in resources_hazard_found:
                     sources_hazards_by_key = {}
 
-                    if "name" in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['name'] = full_hazards["resources"][resource_key]['name'][dst_language]
+                    if DstEnum.NAME in full_hazards[DstEnum.RESOURCES][resource_key]: # eng/fr
+                        sources_hazards_by_key[DstEnum.NAME] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.NAME][dst_language]
 
-                    if 'source' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['source'] = full_hazards["resources"][resource_key]['source'][dst_language]
+                    if DstEnum.SOURCE in full_hazards[DstEnum.RESOURCES][resource_key]: # eng/fr
+                        sources_hazards_by_key[DstEnum.SOURCE] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.SOURCE][dst_language]
 
-                    if 'url' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['url'] = full_hazards["resources"][resource_key]['url'][dst_language]
+                    if DstEnum.URL in full_hazards[DstEnum.RESOURCES][resource_key]: # eng/fr
+                        sources_hazards_by_key[DstEnum.URL] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.URL][dst_language]
 
-                    if 'description' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['description'] = full_hazards["resources"][resource_key]['description'][dst_language]
+                    if DstEnum.DESCRIPTION in full_hazards[DstEnum.RESOURCES][resource_key]: # eng/fr
+                        sources_hazards_by_key[DstEnum.DESCRIPTION] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.DESCRIPTION][dst_language]
 
-                    if 'type' in full_hazards["resources"][resource_key]:
-                        sources_hazards_by_key['type'] = full_hazards["resources"][resource_key]['type']
+                    if DstEnum.TYPE in full_hazards[DstEnum.RESOURCES][resource_key]:
+                        sources_hazards_by_key[DstEnum.TYPE] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.TYPE]
 
-                    if 'var' in full_hazards["resources"][resource_key]:
-                        sources_hazards_by_key['var'] = full_hazards["resources"][resource_key]['var']
+                    if DstEnum.VAR in full_hazards[DstEnum.RESOURCES][resource_key]:
+                        sources_hazards_by_key[DstEnum.VAR] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.VAR]
 
-                    if 'group' in full_hazards["resources"][resource_key]:
-                        sources_hazards_by_key['group'] = full_hazards["resources"][resource_key]['group']
+                    if DstEnum.GROUP in full_hazards[DstEnum.RESOURCES][resource_key]:
+                        sources_hazards_by_key[DstEnum.GROUP] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.GROUP]
 
-                    if 'season' in full_hazards["resources"][resource_key]:
-                        sources_hazards_by_key['season'] = full_hazards["resources"][resource_key]['season']
+                    if DstEnum.SEASON in full_hazards[DstEnum.RESOURCES][resource_key]:
+                        sources_hazards_by_key[DstEnum.SEASON] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.SEASON]
 
-                    if 'units' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['units'] = full_hazards["resources"][resource_key]['units'][dst_language]
+                    if DstEnum.UNITS in full_hazards[DstEnum.RESOURCES][resource_key]: # eng/fr
+                        sources_hazards_by_key[DstEnum.UNITS] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.UNITS][dst_language]
 
-                    if 'tier' in full_hazards["resources"][resource_key]:
-                        sources_hazards_by_key['tier'] = full_hazards["resources"][resource_key]['tier']
+                    if DstEnum.TIER in full_hazards[DstEnum.RESOURCES][resource_key]:
+                        sources_hazards_by_key[DstEnum.TIER] = full_hazards[DstEnum.RESOURCES][resource_key][DstEnum.TIER]
 
                     resources_by_hazards_index[resources_keys_by_index] = sources_hazards_by_key
                     resources_keys_by_index = resources_keys_by_index + 1
@@ -1076,37 +1076,37 @@ class Summary_Report(param.Parameterized):
                         "### Information and/or data on "
                         + biggest_hazard
                         + " is available from "
-                        + real_source_data["source"]
+                        + real_source_data[DstEnum.SOURCE]
                         + ".  This "
-                        + real_source_data["type"]
+                        + real_source_data[DstEnum.TYPE]
                         + " "
-                        + real_source_data["description"]
+                        + real_source_data[DstEnum.DESCRIPTION]
                     )
 
-                    if real_source_data["source"] == "ClimateData.ca":
+                    if real_source_data[DstEnum.SOURCE] == "ClimateData.ca":
                         self.url = (
-                            real_source_data["url"]
+                            real_source_data[DstEnum.URL]
                             + str(self.lat)
                             + ","
                             + str(self.lon)
                             + ",8&geo-select=&var="
-                            + real_source_data["var"]
+                            + real_source_data[DstEnum.VAR]
                             + "&var-group="
-                            + real_source_data["group"]
+                            + real_source_data[DstEnum.GROUP]
                             + "&mora="
-                            + real_source_data["season"]
+                            + real_source_data[DstEnum.SEASON]
                             + "&rcp=rcp85&decade="
                             + str(2070)
                             + "s&sector="
                         )
                         self.resource_items.append(
                             "###  Click here to explore this data in more detail for your location: ["
-                            + real_source_data["name"]
+                            + real_source_data[DstEnum.NAME]
                             + "]("
                             + self.url
                             + '){:target="_blank"}'
                         )
-                    elif (real_source_data["source"] ==
+                    elif (real_source_data[DstEnum.SOURCE] ==
                           "The Climate Resilient Buildings and Core Public Infrastructure Project"):
 
                         self.location = CRBCPI.CRBCPI_data["+0.5C"]["Location"][
@@ -1122,19 +1122,19 @@ class Summary_Report(param.Parameterized):
                             + self.proximity
                             + " km away from your site."
                         )
-                        self.url = real_source_data["url"]
+                        self.url = real_source_data[DstEnum.URL]
                         self.resource_items.append(
                             "###  Click here to explore this data in more detail: ["
-                            + real_source_data["name"]
+                            + real_source_data[DstEnum.NAME]
                             + "]("
                             + self.url
                             + ")"
                         )
                     else:
-                        self.url = real_source_data["url"]
+                        self.url = real_source_data[DstEnum.URL]
                         self.resource_items.append(
                             "###  Click here to explore this information in more detail: ["
-                            + real_source_data["name"]
+                            + real_source_data[DstEnum.NAME]
                             + "]("
                             + self.url
                             + ")"
