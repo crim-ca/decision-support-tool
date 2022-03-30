@@ -117,12 +117,14 @@ pn.extension()
 # + tags=[]
 plot_width = 1000
 plot_height = 1000
-hazards_json_filename = "hazards_v2.json"
-dst_lang = "eng"
+
+hazards_json_file = "hazards_v2.json"
+dst_language = "eng"
 
 class Dst_Json_Properties:
     HAZARDS = "hazards"
     RESOURCES = "resources"
+    COMPONENTS = "components"
 
     ID = "id"
     NAME = "name"
@@ -135,6 +137,9 @@ class Dst_Json_Properties:
     SEASON = "season"
     UNITS = "units"
     TIER = "tier"
+    SENTENCE_START = "sentence_start"
+    POSSIBLE_HAZARDS = "possible_hazards"
+
 
 
 class CRBCPI_class:
@@ -212,7 +217,7 @@ images_directory =  data_directory + "/images"
 class Sector_Definition(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
-        dst_lang = "eng"
+        dst_language = "eng"
 
         self.t1 = pn.pane.Markdown(
             "# This tool is designed to apply to a number of sectors (with more being added all the time!).  What sector are you interested in?"
@@ -360,11 +365,11 @@ class Core_Knowledge_Checklist(param.Parameterized):
         #     if(data == "general_resources"):
         #         self.wert[self.index] = [
         #             "**"
-        #             + self.general_resources[data][self.index]["background"][dst_lang]
+        #             + self.general_resources[data][self.index]["background"][dst_language]
         #             + "**<br/>["
         #             + self.general_resources[data][self.index]["name"]
         #             + "]("
-        #             + self.general_resources[data][self.index]["url"][dst_lang]
+        #             + self.general_resources[data][self.index]["url"][dst_language]
         #             + '){:target="_blank"}'
         #         ]
         #         self.index = self.index + 1
@@ -539,13 +544,24 @@ class Component_Inventory(param.Parameterized):
         )
 
         with open(
-            os.path.join(self.system_input_directory, "components.json"), "r"
+            os.path.join(self.system_input_directory, "components_v2.json"), "r"
         ) as j:
             self.components = json.loads(j.read())
         # Get basic list of system components.  Some fancy Python to get this into a list from nested dictionary entries.
-        self.system_components = sum(
-            [self.components[c]["group"] for c in self.components], []
-        )
+
+        components_key_component = self.components[Dst_Json_Properties.COMPONENTS]
+        components_key_group= self.components[Dst_Json_Properties.GROUP]
+
+        # List groups from components key
+        group_keys = []
+        for component_index in range(len(components_key_component)):
+            group_keys = group_keys + components_key_component[component_index][Dst_Json_Properties.GROUP]
+
+        # List group values by language from group key
+        self.system_components = []
+        for group_index in range(len(group_keys)):
+            self.system_components = self.system_components + [components_key_group[group_keys[group_index]][dst_language]]
+
         # Provide selector that lets user 'construct' their system.
         # TODO: generalize this to allow for arbitrary input component files, for arbitrary systems
         self.system_components_CrossSelector_widget = pn.widgets.CrossSelector(
@@ -638,7 +654,7 @@ class Hazard_Inventory(param.Parameterized):
         super().__init__(**params)
 
         with open(
-            os.path.join(root_directory, general_directory, hazards_json_filename), "r"
+            os.path.join(root_directory, general_directory, hazards_json_file), "r"
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
 
@@ -647,7 +663,7 @@ class Hazard_Inventory(param.Parameterized):
 
         for s in self.full_hazards_dict[Dst_Json_Properties.HAZARDS]:
             self.hazardsNames[self.index] = [
-                self.full_hazards_dict[Dst_Json_Properties.HAZARDS][self.index][Dst_Json_Properties.NAME][dst_lang]
+                self.full_hazards_dict[Dst_Json_Properties.HAZARDS][self.index][Dst_Json_Properties.NAME][dst_language]
                 ]
             self.index = self.index + 1
 
@@ -974,9 +990,9 @@ class Summary_Report(param.Parameterized):
         self.statement_list = []
 
         with open(
-            os.path.join(root_directory, general_directory, hazards_json_filename), "r"
+            os.path.join(root_directory, general_directory, hazards_json_file), "r"
         ) as j:
-            self.full_hazards_dict______v3 = json.loads(j.read())
+            self.full_hazards_dict = json.loads(j.read())
 
         self.hazard_panels = []  # list of per hazard WidgetPanes
 
@@ -996,41 +1012,41 @@ class Summary_Report(param.Parameterized):
             # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+biggest_hazard.capitalize()+'</h2>')
 
             self.biggest_hazard_to_id  = biggest_hazard.replace(" ", "_")
-            self._hazards_len = len(self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS])
+            hazards_len = len(self.full_hazards_dict[Dst_Json_Properties.HAZARDS])
 
             # Find index of the biggest hazard
             self._index_hazard_found = -1
-            for i_hazard in range(self._hazards_len): # Dst_Json_Properties.HAZARDS
-                if self.biggest_hazard_to_id in self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS][i_hazard][Dst_Json_Properties.ID]:
+            for i_hazard in range(hazards_len): # Dst_Json_Properties.HAZARDS
+                if self.biggest_hazard_to_id in self.full_hazards_dict[Dst_Json_Properties.HAZARDS][i_hazard][Dst_Json_Properties.ID]:
                      self._index_hazard_found = i_hazard
 
 
             # Get hazard information (except resources)
             if self._index_hazard_found > -1:
-                hazard_found = self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS][self._index_hazard_found]
+                hazard_found = self.full_hazards_dict[Dst_Json_Properties.HAZARDS][self._index_hazard_found]
                 impact_statement_sector = self.system_category.replace(" ", "_")
 
                 self.hazard_details.append(
                     "## "
-                    + hazard_found["impact_statement"][impact_statement_sector][dst_lang]
+                    + hazard_found["impact_statement"][impact_statement_sector][dst_language]
                     + "  "
-                    + hazard_found["direction_statement"][dst_lang]
+                    + hazard_found["direction_statement"][dst_language]
                 )
                 self.hazard_details.append(
                     "## "
-                    + hazard_found["direction_confidence"][dst_lang]
+                    + hazard_found["direction_confidence"][dst_language]
                     + "  "
-                    + hazard_found["magnitude_confidence"][dst_lang]
+                    + hazard_found["magnitude_confidence"][dst_language]
                 )
                 self.hazard_details.append(
                     "## Here are some "
-                    + hazard_found["name"][dst_lang] # hazard_type
+                    + hazard_found["name"][dst_language] # hazard_type
                     + " resources you should consider exploring:"
                 )
 
 
                 # Get hazard resources information by language
-                full_hazards = self.full_hazards_dict______v3
+                full_hazards = self.full_hazards_dict
                 resources_hazard_found = hazard_found["resources"]
 
                 resources_by_hazards_index = {}
@@ -1039,16 +1055,16 @@ class Summary_Report(param.Parameterized):
                     sources_hazards_by_key = {}
 
                     if "name" in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['name'] = full_hazards["resources"][resource_key]['name'][dst_lang]
+                        sources_hazards_by_key['name'] = full_hazards["resources"][resource_key]['name'][dst_language]
 
                     if 'source' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['source'] = full_hazards["resources"][resource_key]['source'][dst_lang]
+                        sources_hazards_by_key['source'] = full_hazards["resources"][resource_key]['source'][dst_language]
 
                     if 'url' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['url'] = full_hazards["resources"][resource_key]['url'][dst_lang]
+                        sources_hazards_by_key['url'] = full_hazards["resources"][resource_key]['url'][dst_language]
 
                     if 'description' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['description'] = full_hazards["resources"][resource_key]['description'][dst_lang]
+                        sources_hazards_by_key['description'] = full_hazards["resources"][resource_key]['description'][dst_language]
 
                     if 'type' in full_hazards["resources"][resource_key]:
                         sources_hazards_by_key['type'] = full_hazards["resources"][resource_key]['type']
@@ -1063,7 +1079,7 @@ class Summary_Report(param.Parameterized):
                         sources_hazards_by_key['season'] = full_hazards["resources"][resource_key]['season']
 
                     if 'units' in full_hazards["resources"][resource_key]: # eng/fr
-                        sources_hazards_by_key['units'] = full_hazards["resources"][resource_key]['units'][dst_lang]
+                        sources_hazards_by_key['units'] = full_hazards["resources"][resource_key]['units'][dst_language]
 
                     if 'tier' in full_hazards["resources"][resource_key]:
                         sources_hazards_by_key['tier'] = full_hazards["resources"][resource_key]['tier']
