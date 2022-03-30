@@ -984,6 +984,12 @@ class Summary_Report(param.Parameterized):
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
 
+        # hazards_json_filename
+        with open(
+            os.path.join(root_directory, general_directory, "hazards_v3.json"), "r"
+        ) as j:
+            self.full_hazards_dict______v3 = json.loads(j.read())
+
         self.hazard_panels = []  # list of per hazard WidgetPanes
 
         # find nearest CPI point (use CRBCPI_i to index climate data for this point, from CRBCPI data dictionary)
@@ -992,81 +998,156 @@ class Summary_Report(param.Parameterized):
             np.deg2rad([[self.lat, self.lon]]), k=1
         )
         self.CRBCPI_i = self.CRBCPI_i[0][0]
+#  ===================================================
+        for _ , biggest_hazard in enumerate(self.hazards):
 
-        for n, h in enumerate(self.hazards):
-            h = h.lower()
-
-            # TODO: delete print
-            print(f" >>>>  h in enumerate(self.hazards): {h}")
-            print(f" >>>>  self.full_hazards_dict: {self.full_hazards_dict}")
+            # TODO: hazard["name"] start with uppercase char ?
+            biggest_hazard = biggest_hazard.lower()
+            print(f" >>>>  biggest_hazard in enumerate(self.hazards): {biggest_hazard}")
 
             self.hazard_details = []  # list of items for each WidgetPane
-            # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+h.capitalize()+'</h2>')
+            # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+biggest_hazard.capitalize()+'</h2>')
 
-            if h in self.full_hazards_dict:
+            self.biggest_hazard_to_id  = biggest_hazard.replace(" ", "_")
+            self._hazards_len = len(self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS])
+
+            # TODO: delete print
+            print(f" >>>>  len v3: {self._hazards_len}")
+            print(f" >>>>  biggest_hazard_to_id: {self.biggest_hazard_to_id}")
+
+            # print(f" >>>>  self.full_hazards_dict: {self.full_hazards_dict}")
+#  ===================================================
+            self._index_hazard_found = -1
+            for i_hazard in range(self._hazards_len): # Dst_Json_Properties.HAZARDS
+                if self.biggest_hazard_to_id in self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS][i_hazard][Dst_Json_Properties.ID]:
+                     self._index_hazard_found = i_hazard
+
+
+
+            print(f" >>>>> self._index_hazard_found: {self._index_hazard_found}")
+#  ===================================================
+
+            if self._index_hazard_found > -1:
+                hazard_found = self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS][self._index_hazard_found]
+                impact_statement_sector = self.system_category.replace(" ", "_")
+
                 self.hazard_details.append(
                     "## "
-                    + self.full_hazards_dict[h]["impact_statement"][
-                        self.system_category.replace(" ", "_")
-                    ]
+                    + hazard_found["impact_statement"][impact_statement_sector][dst_lang]
                     + "  "
-                    + self.full_hazards_dict[h]["direction_statement"]
+                    + hazard_found["direction_statement"][dst_lang]
                 )
                 self.hazard_details.append(
                     "## "
-                    + self.full_hazards_dict[h]["direction_confidence"]
+                    + hazard_found["direction_confidence"][dst_lang]
                     + "  "
-                    + self.full_hazards_dict[h]["magnitude_confidence"]
+                    + hazard_found["magnitude_confidence"][dst_lang]
                 )
                 self.hazard_details.append(
                     "## Here are some "
-                    + h
+                    + hazard_found["name"][dst_lang] # hazard_type
                     + " resources you should consider exploring:"
                 )
 
-                for resource, resource_details in self.full_hazards_dict[h][
-                    "resources"
-                ].items():
+
+
+#  ===================================================
+                fullHazards = self.full_hazards_dict______v3
+
+
+                resources_by_hazards_index = {}
+                resources_keys_by_index = 0
+                for resource_key in hazard_found["resources"]:
+                    self.sources_hazards_by_key = {}
+
+                    # print(f" >>>> resource_key: {resource_key}")
+                    resourcesKeyName = resource_key
+                    # resourcesKeyName = resourcesKeyName
+
+                    if "name" in fullHazards["resources"][resource_key]: # eng/fr
+                        self.sources_hazards_by_key['name'] = fullHazards["resources"][resource_key]['name'][dst_lang]
+
+                    if 'source' in fullHazards["resources"][resource_key]: # eng/fr
+                        self.sources_hazards_by_key['source'] = fullHazards["resources"][resource_key]['source'][dst_lang]
+
+                    if 'url' in fullHazards["resources"][resource_key]: # eng/fr
+                        self.sources_hazards_by_key['url'] = fullHazards["resources"][resource_key]['url'][dst_lang]
+
+                    if 'description' in fullHazards["resources"][resource_key]: # eng/fr
+                        self.sources_hazards_by_key['description'] = fullHazards["resources"][resource_key]['description'][dst_lang]
+
+                    if 'type' in fullHazards["resources"][resource_key]:
+                        self.sources_hazards_by_key['type'] = fullHazards["resources"][resource_key]['type']
+
+                    if 'var' in fullHazards["resources"][resource_key]:
+                        self.sources_hazards_by_key['var'] = fullHazards["resources"][resource_key]['var']
+
+                    if 'group' in fullHazards["resources"][resource_key]:
+                        self.sources_hazards_by_key['group'] = fullHazards["resources"][resource_key]['group']
+
+                    if 'season' in fullHazards["resources"][resource_key]:
+                        self.sources_hazards_by_key['season'] = fullHazards["resources"][resource_key]['season']
+
+                    if 'units' in fullHazards["resources"][resource_key]: # eng/fr
+                        self.sources_hazards_by_key['units'] = fullHazards["resources"][resource_key]['units'][dst_lang]
+
+                    if 'tier' in fullHazards["resources"][resource_key]:
+                        self.sources_hazards_by_key['tier'] = fullHazards["resources"][resource_key]['tier']
+
+                    resources_by_hazards_index[resources_keys_by_index] = self.sources_hazards_by_key
+                    resources_keys_by_index = resources_keys_by_index + 1
+
+
+                # for res___index, real_source_data in resources_by_hazards_index.items():
+                #     print(f" >>>>>>>>>> real_source_data: {real_source_data}")
+
+
+
+#  ==================
+                # biggest_hazard
+                for _, real_source_data in resources_by_hazards_index.items():
+                    print(f" >>>>>>>>>> real_source_data: {real_source_data}")
 
                     self.resource_items = []
 
                     self.resource_items.append(
                         "### Information and/or data on "
-                        + h
+                        + biggest_hazard
                         + " is available from "
-                        + resource_details["source"]
+                        + real_source_data["source"]
                         + ".  This "
-                        + resource_details["type"]
+                        + real_source_data["type"]
                         + " "
-                        + resource_details["description"]
+                        + real_source_data["description"]
                     )
-                    if resource_details["source"] == "ClimateData.ca":
+
+                # for resource, resource_details in self.full_hazards_dict[biggest_hazard]["resources"].items():
+                    if real_source_data["source"] == "ClimateData.ca":
                         self.url = (
-                            resource_details["url"]
+                            real_source_data["url"]
                             + str(self.lat)
                             + ","
                             + str(self.lon)
                             + ",8&geo-select=&var="
-                            + resource_details["var"]
+                            + real_source_data["var"]
                             + "&var-group="
-                            + resource_details["group"]
+                            + real_source_data["group"]
                             + "&mora="
-                            + resource_details["season"]
+                            + real_source_data["season"]
                             + "&rcp=rcp85&decade="
                             + str(2070)
                             + "s&sector="
                         )
                         self.resource_items.append(
                             "###  Click here to explore this data in more detail for your location: ["
-                            + resource
+                            + real_source_data["name"]
                             + "]("
                             + self.url
                             + '){:target="_blank"}'
                         )
-                    elif (
-                        resource_details["source"]
-                        == "The Climate Resilient Buildings and Core Public Infrastructure Project"
-                    ):
+                    elif (real_source_data["source"] ==
+                          "The Climate Resilient Buildings and Core Public Infrastructure Project"):
+
                         self.location = CRBCPI.CRBCPI_data["+0.5C"]["Location"][
                             np.squeeze(self.CRBCPI_i)
                         ]
@@ -1080,19 +1161,19 @@ class Summary_Report(param.Parameterized):
                             + self.proximity
                             + " km away from your site."
                         )
-                        self.url = resource_details["url"]
+                        self.url = real_source_data["url"]
                         self.resource_items.append(
                             "###  Click here to explore this data in more detail: ["
-                            + resource
+                            + real_source_data["name"]
                             + "]("
                             + self.url
                             + ")"
                         )
                     else:
-                        self.url = resource_details["url"]
+                        self.url = real_source_data["url"]
                         self.resource_items.append(
                             "###  Click here to explore this information in more detail: ["
-                            + resource
+                            + real_source_data["name"]
                             + "]("
                             + self.url
                             + ")"
@@ -1104,12 +1185,12 @@ class Summary_Report(param.Parameterized):
             else:
                 self.hazard_details.append(
                     "### Please contact the [Canadian Centre for Climate Services Support Desk](https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services.html) to help find information on how "
-                    + h
+                    + biggest_hazard
                     + " may change in the future with climate change!"
                 )
 
             self.hazard_panels.append(
-                pn.Column(*self.hazard_details, name=h.capitalize(), width=plot_width)
+                pn.Column(*self.hazard_details, name=biggest_hazard.capitalize(), width=plot_width)
             )
 
                     # self.index = self.index + 1

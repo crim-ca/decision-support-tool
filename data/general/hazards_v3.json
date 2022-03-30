@@ -9,7 +9,7 @@
       {
          "id" : "coastal_flooding",
          "name" : {
-             "eng" : "Coastal flooding",
+             "eng" : "coastal flooding",
              "fr" : "Inondations côtières"
          },
          "resources" : [
@@ -34,7 +34,7 @@
                 "eng":"Via coastal flood events, sea level rise can indundate building interiors, erode foundations and surrounding property, and decrease user accessibility.",
                 "fr" : ""
              },
-             "contaminated_sites" : {
+             "contaminated_site" : {
                 "eng":"Via coastal flood events, sea level rise can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure.",
                 "fr" : ""
              }
@@ -75,7 +75,7 @@
              "eng":"River/lake flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
              "fr" : ""
            },
-           "contaminated_sites" : {
+           "contaminated_site" : {
              "eng":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure.",
              "fr" : ""
            }
