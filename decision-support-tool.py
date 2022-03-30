@@ -119,12 +119,14 @@ plot_width = 1000
 plot_height = 1000
 
 hazards_json_file = "hazards_v2.json"
+components_json_file =  "components_v2.json"
 dst_language = "eng"
 
-class Dst_Json_Properties:
+class DstEnum:
     HAZARDS = "hazards"
     RESOURCES = "resources"
     COMPONENTS = "components"
+    GENERAL_RESOURCES= "general_resources"
 
     ID = "id"
     NAME = "name"
@@ -137,6 +139,7 @@ class Dst_Json_Properties:
     SEASON = "season"
     UNITS = "units"
     TIER = "tier"
+    BACKGROUND = "background"
     SENTENCE_START = "sentence_start"
     POSSIBLE_HAZARDS = "possible_hazards"
 
@@ -327,54 +330,52 @@ class Core_Knowledge_Checklist(param.Parameterized):
             "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
         )
 
-        # Open general resources database and read each resource to dictionary
-        with open(
-            os.path.join(
-                root_directory, general_directory, "resources.json"
-            ),
-            "r",
-        ) as j:
-            self.general_resources = json.loads(j.read())
-        # compile a list of markdown statements by iterating over dictionary
-        self.markdown_resource_links = [
-            "**"
-            + self.general_resources[s]["background"]
-            + "**<br/>["
-            + s
-            + "]("
-            + self.general_resources[s]["url"]
-            + '){:target="_blank"}'
-            for s in self.general_resources
-        ]
-
         # # Open general resources database and read each resource to dictionary
         # with open(
         #     os.path.join(
-        #         root_directory, general_directory, "resources_v2.json"
+        #         root_directory, general_directory, "resources.json"
         #     ),
         #     "r",
         # ) as j:
         #     self.general_resources = json.loads(j.read())
-
         # # compile a list of markdown statements by iterating over dictionary
-        # self.wert = {}
-        # self.index = 0
+        # self.markdown_resource_links = [
+        #     "**"
+        #     + self.general_resources[s]["background"]
+        #     + "**<br/>["
+        #     + s
+        #     + "]("
+        #     + self.general_resources[s]["url"]
+        #     + '){:target="_blank"}'
+        #     for s in self.general_resources
+        # ]
 
-        # for data in  self.general_resources:
-        #     counter = -1
-        #     if(data == "general_resources"):
-        #         self.wert[self.index] = [
-        #             "**"
-        #             + self.general_resources[data][self.index]["background"][dst_language]
-        #             + "**<br/>["
-        #             + self.general_resources[data][self.index]["name"]
-        #             + "]("
-        #             + self.general_resources[data][self.index]["url"][dst_language]
-        #             + '){:target="_blank"}'
-        #         ]
-        #         self.index = self.index + 1
+        # Open general resources database and read each resource to dictionary
+        with open(
+            os.path.join(
+                root_directory, general_directory, "resources_v2.json"
+            ),
+            "r",
+        ) as j:
+            self.general_resources = json.loads(j.read())
 
-        # self.markdown_resource_links = [s[0] for s in self.wert.values()]
+        # compile a list of markdown statements by iterating over dictionary
+        self.links = {}
+        self.index = 0
+
+        general_resources = self.general_resources[DstEnum.GENERAL_RESOURCES]
+        for gen_res_index in  range(len(general_resources)):
+            self.links[self.index] = [
+                "**"
+                + general_resources[gen_res_index][DstEnum.BACKGROUND][dst_language]
+                + "**<br/>["
+                + general_resources[gen_res_index][DstEnum.NAME][dst_language]
+                + "]("
+                + general_resources[gen_res_index][DstEnum.URL][dst_language]
+                + '){:target="_blank"}'
+            ]
+
+        self.markdown_resource_links = [s[0] for s in self.links.values()]
 
     def panel(self):
         return pn.Column(
@@ -544,18 +545,18 @@ class Component_Inventory(param.Parameterized):
         )
 
         with open(
-            os.path.join(self.system_input_directory, "components_v2.json"), "r"
+            os.path.join(self.system_input_directory, components_json_file), "r"
         ) as j:
             self.components = json.loads(j.read())
         # Get basic list of system components.  Some fancy Python to get this into a list from nested dictionary entries.
 
-        components_key_component = self.components[Dst_Json_Properties.COMPONENTS]
-        components_key_group= self.components[Dst_Json_Properties.GROUP]
+        components_key_component = self.components[DstEnum.COMPONENTS]
+        components_key_group= self.components[DstEnum.GROUP]
 
         # List groups from components key
         group_keys = []
         for component_index in range(len(components_key_component)):
-            group_keys = group_keys + components_key_component[component_index][Dst_Json_Properties.GROUP]
+            group_keys = group_keys + components_key_component[component_index][DstEnum.GROUP]
 
         # List group values by language from group key
         self.system_components = []
@@ -661,9 +662,9 @@ class Hazard_Inventory(param.Parameterized):
         self.hazardsNames = {}
         self.index = 0
 
-        for s in self.full_hazards_dict[Dst_Json_Properties.HAZARDS]:
+        for s in self.full_hazards_dict[DstEnum.HAZARDS]:
             self.hazardsNames[self.index] = [
-                self.full_hazards_dict[Dst_Json_Properties.HAZARDS][self.index][Dst_Json_Properties.NAME][dst_language]
+                self.full_hazards_dict[DstEnum.HAZARDS][self.index][DstEnum.NAME][dst_language]
                 ]
             self.index = self.index + 1
 
@@ -1012,18 +1013,18 @@ class Summary_Report(param.Parameterized):
             # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+biggest_hazard.capitalize()+'</h2>')
 
             self.biggest_hazard_to_id  = biggest_hazard.replace(" ", "_")
-            hazards_len = len(self.full_hazards_dict[Dst_Json_Properties.HAZARDS])
+            hazards_len = len(self.full_hazards_dict[DstEnum.HAZARDS])
 
             # Find index of the biggest hazard
             self._index_hazard_found = -1
-            for i_hazard in range(hazards_len): # Dst_Json_Properties.HAZARDS
-                if self.biggest_hazard_to_id in self.full_hazards_dict[Dst_Json_Properties.HAZARDS][i_hazard][Dst_Json_Properties.ID]:
+            for i_hazard in range(hazards_len): # DstEnum.HAZARDS
+                if self.biggest_hazard_to_id in self.full_hazards_dict[DstEnum.HAZARDS][i_hazard][DstEnum.ID]:
                      self._index_hazard_found = i_hazard
 
 
             # Get hazard information (except resources)
             if self._index_hazard_found > -1:
-                hazard_found = self.full_hazards_dict[Dst_Json_Properties.HAZARDS][self._index_hazard_found]
+                hazard_found = self.full_hazards_dict[DstEnum.HAZARDS][self._index_hazard_found]
                 impact_statement_sector = self.system_category.replace(" ", "_")
 
                 self.hazard_details.append(
