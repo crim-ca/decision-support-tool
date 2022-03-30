@@ -637,9 +637,8 @@ class Hazard_Inventory(param.Parameterized):
         )
         super().__init__(**params)
 
-        # hazards_json_filename
         with open(
-            os.path.join(root_directory, general_directory, "hazards_v3.json"), "r"
+            os.path.join(root_directory, general_directory, hazards_json_filename), "r"
         ) as j:
             self.full_hazards_dict = json.loads(j.read())
 
@@ -653,10 +652,6 @@ class Hazard_Inventory(param.Parameterized):
             self.index = self.index + 1
 
         self.climate_hazards = [rr[0] for rr in self.hazardsNames.values()]
-
-        # TODO: delete
-        print(f" >>> class Hazard_Inventory >> self.climate_hazards: {self.climate_hazards}")
-
 
         # Provide selector that lets user select hazards that pertain to their system.
         self.climate_hazards_CrossSelector_widget = pn.widgets.CrossSelector(
@@ -978,15 +973,8 @@ class Summary_Report(param.Parameterized):
         self.fontcolor = [(r, 0, 0) for r in np.linspace(255, 0, num=len(self.hazards))]
         self.statement_list = []
 
-        # hazards_json_filename
         with open(
-            os.path.join(root_directory, general_directory, "hazards.json"), "r"
-        ) as j:
-            self.full_hazards_dict = json.loads(j.read())
-
-        # hazards_json_filename
-        with open(
-            os.path.join(root_directory, general_directory, "hazards_v3.json"), "r"
+            os.path.join(root_directory, general_directory, hazards_json_filename), "r"
         ) as j:
             self.full_hazards_dict______v3 = json.loads(j.read())
 
@@ -998,12 +986,11 @@ class Summary_Report(param.Parameterized):
             np.deg2rad([[self.lat, self.lon]]), k=1
         )
         self.CRBCPI_i = self.CRBCPI_i[0][0]
-#  ===================================================
+
         for _ , biggest_hazard in enumerate(self.hazards):
 
             # TODO: hazard["name"] start with uppercase char ?
             biggest_hazard = biggest_hazard.lower()
-            print(f" >>>>  biggest_hazard in enumerate(self.hazards): {biggest_hazard}")
 
             self.hazard_details = []  # list of items for each WidgetPane
             # self.widget_details.append('<h2 style="color:rgb'+str(self.fontcolor[n])+';">'+str(n+1)+') '+biggest_hazard.capitalize()+'</h2>')
@@ -1011,22 +998,14 @@ class Summary_Report(param.Parameterized):
             self.biggest_hazard_to_id  = biggest_hazard.replace(" ", "_")
             self._hazards_len = len(self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS])
 
-            # TODO: delete print
-            print(f" >>>>  len v3: {self._hazards_len}")
-            print(f" >>>>  biggest_hazard_to_id: {self.biggest_hazard_to_id}")
-
-            # print(f" >>>>  self.full_hazards_dict: {self.full_hazards_dict}")
-#  ===================================================
+            # Find index of the biggest hazard
             self._index_hazard_found = -1
             for i_hazard in range(self._hazards_len): # Dst_Json_Properties.HAZARDS
                 if self.biggest_hazard_to_id in self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS][i_hazard][Dst_Json_Properties.ID]:
                      self._index_hazard_found = i_hazard
 
 
-
-            print(f" >>>>> self._index_hazard_found: {self._index_hazard_found}")
-#  ===================================================
-
+            # Get hazard information (except resources)
             if self._index_hazard_found > -1:
                 hazard_found = self.full_hazards_dict______v3[Dst_Json_Properties.HAZARDS][self._index_hazard_found]
                 impact_statement_sector = self.system_category.replace(" ", "_")
@@ -1050,64 +1029,51 @@ class Summary_Report(param.Parameterized):
                 )
 
 
-
-#  ===================================================
-                fullHazards = self.full_hazards_dict______v3
-
+                # Get hazard resources information by language
+                full_hazards = self.full_hazards_dict______v3
+                resources_hazard_found = hazard_found["resources"]
 
                 resources_by_hazards_index = {}
                 resources_keys_by_index = 0
-                for resource_key in hazard_found["resources"]:
-                    self.sources_hazards_by_key = {}
+                for resource_key in resources_hazard_found:
+                    sources_hazards_by_key = {}
 
-                    # print(f" >>>> resource_key: {resource_key}")
-                    resourcesKeyName = resource_key
-                    # resourcesKeyName = resourcesKeyName
+                    if "name" in full_hazards["resources"][resource_key]: # eng/fr
+                        sources_hazards_by_key['name'] = full_hazards["resources"][resource_key]['name'][dst_lang]
 
-                    if "name" in fullHazards["resources"][resource_key]: # eng/fr
-                        self.sources_hazards_by_key['name'] = fullHazards["resources"][resource_key]['name'][dst_lang]
+                    if 'source' in full_hazards["resources"][resource_key]: # eng/fr
+                        sources_hazards_by_key['source'] = full_hazards["resources"][resource_key]['source'][dst_lang]
 
-                    if 'source' in fullHazards["resources"][resource_key]: # eng/fr
-                        self.sources_hazards_by_key['source'] = fullHazards["resources"][resource_key]['source'][dst_lang]
+                    if 'url' in full_hazards["resources"][resource_key]: # eng/fr
+                        sources_hazards_by_key['url'] = full_hazards["resources"][resource_key]['url'][dst_lang]
 
-                    if 'url' in fullHazards["resources"][resource_key]: # eng/fr
-                        self.sources_hazards_by_key['url'] = fullHazards["resources"][resource_key]['url'][dst_lang]
+                    if 'description' in full_hazards["resources"][resource_key]: # eng/fr
+                        sources_hazards_by_key['description'] = full_hazards["resources"][resource_key]['description'][dst_lang]
 
-                    if 'description' in fullHazards["resources"][resource_key]: # eng/fr
-                        self.sources_hazards_by_key['description'] = fullHazards["resources"][resource_key]['description'][dst_lang]
+                    if 'type' in full_hazards["resources"][resource_key]:
+                        sources_hazards_by_key['type'] = full_hazards["resources"][resource_key]['type']
 
-                    if 'type' in fullHazards["resources"][resource_key]:
-                        self.sources_hazards_by_key['type'] = fullHazards["resources"][resource_key]['type']
+                    if 'var' in full_hazards["resources"][resource_key]:
+                        sources_hazards_by_key['var'] = full_hazards["resources"][resource_key]['var']
 
-                    if 'var' in fullHazards["resources"][resource_key]:
-                        self.sources_hazards_by_key['var'] = fullHazards["resources"][resource_key]['var']
+                    if 'group' in full_hazards["resources"][resource_key]:
+                        sources_hazards_by_key['group'] = full_hazards["resources"][resource_key]['group']
 
-                    if 'group' in fullHazards["resources"][resource_key]:
-                        self.sources_hazards_by_key['group'] = fullHazards["resources"][resource_key]['group']
+                    if 'season' in full_hazards["resources"][resource_key]:
+                        sources_hazards_by_key['season'] = full_hazards["resources"][resource_key]['season']
 
-                    if 'season' in fullHazards["resources"][resource_key]:
-                        self.sources_hazards_by_key['season'] = fullHazards["resources"][resource_key]['season']
+                    if 'units' in full_hazards["resources"][resource_key]: # eng/fr
+                        sources_hazards_by_key['units'] = full_hazards["resources"][resource_key]['units'][dst_lang]
 
-                    if 'units' in fullHazards["resources"][resource_key]: # eng/fr
-                        self.sources_hazards_by_key['units'] = fullHazards["resources"][resource_key]['units'][dst_lang]
+                    if 'tier' in full_hazards["resources"][resource_key]:
+                        sources_hazards_by_key['tier'] = full_hazards["resources"][resource_key]['tier']
 
-                    if 'tier' in fullHazards["resources"][resource_key]:
-                        self.sources_hazards_by_key['tier'] = fullHazards["resources"][resource_key]['tier']
-
-                    resources_by_hazards_index[resources_keys_by_index] = self.sources_hazards_by_key
+                    resources_by_hazards_index[resources_keys_by_index] = sources_hazards_by_key
                     resources_keys_by_index = resources_keys_by_index + 1
 
 
-                # for res___index, real_source_data in resources_by_hazards_index.items():
-                #     print(f" >>>>>>>>>> real_source_data: {real_source_data}")
-
-
-
-#  ==================
-                # biggest_hazard
+                # Create the WidgetBox with resource information
                 for _, real_source_data in resources_by_hazards_index.items():
-                    print(f" >>>>>>>>>> real_source_data: {real_source_data}")
-
                     self.resource_items = []
 
                     self.resource_items.append(
@@ -1121,7 +1087,6 @@ class Summary_Report(param.Parameterized):
                         + real_source_data["description"]
                     )
 
-                # for resource, resource_details in self.full_hazards_dict[biggest_hazard]["resources"].items():
                     if real_source_data["source"] == "ClimateData.ca":
                         self.url = (
                             real_source_data["url"]
@@ -1193,12 +1158,10 @@ class Summary_Report(param.Parameterized):
                 pn.Column(*self.hazard_details, name=biggest_hazard.capitalize(), width=plot_width)
             )
 
-                    # self.index = self.index + 1
-                # END:  for n, hazard_type in enumerate(self.hazards):
-
         self.vulnerability_matrix = self.vulnerability_matrix[
             self.vulnerability_matrix["vulnerability"] > 0
         ]
+
         # Make a Sankey flow graphic that maps hazards to components
         self.sankey = hv.Sankey(self.vulnerability_matrix, label="")
         self.sankey.opts(  # edge_color='system_components',
