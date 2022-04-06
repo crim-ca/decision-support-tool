@@ -7,3 +7,5 @@ __pycache__/textart.cpython-37.pyc
 .ipynb_checkpoints/*
 .DS_Store
 *.py
+farm_inputs/.ipynb_checkpoints/*
+

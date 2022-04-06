@@ -1,0 +1,26 @@
+{
+   "storages":{
+      "sentence_start":"an",
+      "description":"Storage of on-farm materials",
+      "group":["fuel and petroleum storage","manure storage", "pesticide storage", "fertilizer storage", "storage of silage"],
+      "possible_hazards":[]
+   },  
+   "buildings":{
+      "sentence_start":"a",
+      "description":"Buildings and other key farm infrastructure",
+      "group":["house","barn", "livestock shelter","storage shed", "water well"],
+      "possible_hazards":[]
+      },
+   "cropping systems":{
+      "sentence_start":"a",
+      "description":"Production systems",
+      "group":["horticultural production","field crop production","forage crop production", "livestock health", "livestock watering"],
+      "possible_hazards":[]
+      },
+   "crop health and productivity":{
+      "sentence_start":"a",
+      "description":"Aspects that impact short and long-term farm productivity",
+      "group":["nutrient management", "soil management", "disease and pest management"],
+      "possible_hazards":[]
+      }
+}

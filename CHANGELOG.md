@@ -1,6 +1,11 @@
 Unreleased
 
-* 
+* Add agriculture module
+* Site info photo for contaminated sites
+* Notebook edits: 
+- bug fix: "building" to generic on Projection Definition Stage 
+- on sector definition, add Agriculture and 'if else' statement so 'agriculture' and 'farm' can be swapped
+- typo in master_hazard_database
 
 0.1.9 - Released 16-03-2022
 
