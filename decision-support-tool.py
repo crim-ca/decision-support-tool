@@ -119,6 +119,14 @@ h2 {
     color: #212529;
     font-size: 1.5em;
     font-weight: lighter;
+}
+
+h3 {
+    font-family: Arial;
+    color: #212529;
+    font-size: 1.25em;
+    font-weight: lighter;
+}
 
 p {
     font-family: Arial;
@@ -423,7 +431,7 @@ class Project_Definition(param.Parameterized):
         )
         # note: I want to chanve 'value' to 'placeholder' below, but doing so messes everything up...
         self.system_address_widget = pn.widgets.TextInput(
-            value="Type full or partial address here..."
+            placeholder="Type full or partial address here...", value=""
         )
         self.geocode_button = pn.widgets.Button(name="🔍", width=100)
 
@@ -440,9 +448,7 @@ class Project_Definition(param.Parameterized):
         self.x = 0.0
         self.y = 0.0
         self.stream = hv.streams.Tap(x=None, y=None)
-
-        self.debug_x = pn.widgets.TextInput(value=" ")
-        self.debug_y = pn.widgets.TextInput(value=" ")
+        self.geocodeflag = 0
 
         def b(event):
             geolocator = Nominatim(user_agent="example")
@@ -450,9 +456,6 @@ class Project_Definition(param.Parameterized):
             location = geolocator.geocode(address)
             latitude = location.latitude
             longitude = location.longitude
-            self.x = longitude
-            self.y = latitude
-            print(address, latitude, longitude)
             proj1 = Proj("epsg:4326", preserve_units=False)
             proj2 = Proj("epsg:3785", preserve_units=False)
             outProj = Proj(init="epsg:3857")
@@ -460,29 +463,30 @@ class Project_Definition(param.Parameterized):
             x1 = longitude
             y1 = latitude
             x2, y2 = transform(inProj, outProj, x1, y1)
-            self.debug_x.value = str(x2)
-            self.debug_y.value = str(y2)
             self.x = x2
             self.y = y2
+            self.geocodeflag = 1
+            self.stream.update(x=x2)
 
         self.geocode_button.on_click(b)
-
-        self.x = longitude
-        self.y = latitude
-        self.stream = hv.streams.Tap(x=self.x, y=self.y)
 
     # TO DO: inherit location information from geocode function, plot dot automatically
     def map_constructor(self, x, y):
         map_background = gv.tile_sources.CartoLight
-        self.x = x
-        self.y = y
+
         Canada_x_bounds = (-15807400, -5677300)
         Canada_y_bounds = (8012300, 11402300)
-        location_point = gv.Points(
-            (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
-        )
-        self.debug_x.value = str(self.x)
-        self.debug_y.value = str(self.y)
+        if self.geocodeflag == 0:
+            self.x = x
+            self.y = y
+            location_point = gv.Points(
+                (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
+            )
+        else:
+            location_point = gv.Points(
+                (self.x, self.y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
+            )
+        self.geocodeflag = 0
         return (map_background * location_point).opts(
             opts.Points(
                 global_extent=False,
@@ -529,7 +533,6 @@ class Project_Definition(param.Parameterized):
                 css_classes=["custom-box"],
             ),
             pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
-            pn.WidgetBox(self.debug_x, self.debug_y, css_classes=["custom-box"]),
             width=plot_width,
             height=plot_height,
         )
@@ -977,28 +980,46 @@ class Summary_Report(param.Parameterized):
             + self.system_category
             + " components to each hazard, provides some excellent insights that will help you find good climate data."
         )
-
-        self.t2 = pn.pane.Markdown(
-            "## Linking components, hazards, and vulnerabilities: a visual breakdown\n"
-            "This infographic summarizes the main climate hazards to your "
-            + self.system_type
-            + ".  "
-            "On the left are the hazards you identified.  On the right are the components of your "
-            + self.system_type
-            + ".  "
-            "Grey bars reflect the hazard/component vulnerabilities you identified.  "
-            "Larger hazards are those which your "
-            + self.system_type
-            + " components are particularly vulnerable to - these are represented by thicker bars.  "
-            "Components with thicker bars are the more vulnerable components of your "
-            + self.system_type
-            + ".  "
-            "This visualization helps you decide which hazards you may want spend more time investigating.  "
-            "It also highlights which parts of your "
-            + self.system_type
-            + " may be most vulnerable to climate change - these are perhaps components where adaptation should be prioritized.  "
-            "Feel free to try refining your components, hazards, and vulnerability screening heatmap a few times - thinking about climate change vulnerabilities is an iterative process.  "
+        self.t2 = []
+        self.t2.append(
+            pn.pane.Markdown(
+                "## Linking components, hazards, and vulnerabilities: a visual breakdown\n"
+                "This infographic summarizes the main climate hazards to your "
+                + self.system_type
+                + ".  "
+                "On the left are the hazards you identified.  On the right are the components of your "
+                + self.system_type
+                + ".  "
+                "Grey bars reflect the hazard/component vulnerabilities you identified.  "
+                "Larger hazards are those which your "
+                + self.system_type
+                + " components are particularly vulnerable to - these are represented by thicker bars.  "
+                "Components with thicker bars are the more vulnerable components of your "
+                + self.system_type
+                + ".  "
+                "This visualization helps you decide which hazards you may want spend more time investigating.  "
+                "It also highlights which parts of your "
+                + self.system_type
+                + " may be most vulnerable to climate change - these are perhaps components where adaptation should be prioritized.  "
+                "Feel free to try refining your components, hazards, and vulnerability screening heatmap a few times - thinking about climate change vulnerabilities is an iterative process.  "
+            )
         )
+
+        self.dT = dt.date.today().year - self.system_lifespan[0].year
+        if self.dT > 20.0:
+            self.t2.append(
+                pn.pane.Markdown(
+                    "It looks like your "
+                    + self.system_type
+                    + " is already "
+                    + str(int(self.dT))
+                    + " years old.  "
+                    "Climate has already changed quite a bit in this time!  "
+                    "In your climate change planning, be sure to consider that your "
+                    + self.system_type
+                    + " has already experienced a significant amount of change!"
+                )
+            )
 
         self.t3 = pn.pane.Markdown(
             "# Prioritizing key hazards and components: a ranked list\n"
@@ -1239,8 +1260,3 @@ else:
 
 # + tags=[]
 DST_core.servable()
-# -
-
-
-
-
