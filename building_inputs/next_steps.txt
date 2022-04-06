@@ -1,4 +1,5 @@
-# Let's summarize what you've done here - AND - what you still need to do to ensure your building's climate resiliency!
+# LET'S SUMMARIZE WHAT YOU'VE DONE - AND - WHAT YOU STILL NEED TO DO TO ENSURE YOUR BUILDING'S CLIMATE RESILIENCY!
+
 1. You described your building's basics, including expected lifetime and major components
 2. You identified some important present and future climate hazards for your region
 3. You thought about which climate hazards could impact each of your building's components

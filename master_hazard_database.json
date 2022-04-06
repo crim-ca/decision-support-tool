@@ -35,7 +35,7 @@
     "notes":"Remember, sea level rise will most likely impact your building through it's role in increasing the severity and frequency of storm and tide-driven extreme coastal flooding events."
 },
 
-"river and lake flooding":{
+"riverine flooding":{
     "resources":{
         "An Inventory of Methods for Estimating Climate Change-Informed Design Water Levels for Floodplain Mapping":{
             "source":"The National Research Council",
@@ -69,17 +69,17 @@
             "tier":"3"
         }
     },
-    "direction_statement": "Climate change will cause changes to river and lake flooding severity and frequency that will depend very closely on location, season, and local watershed factors.",
-    "direction_confidence": "It is difficult to make confident statements regarding the direction of climate-driven changes to river and lake flooding severity, without added local information about flood mechanisms and local watershed conditions.",
-    "magnitude_confidence":"Because of local factors, estimating the magnitude of changes to river and lake flooding due to climate change is difficult without undertaking a detailed local assessment.",
+    "direction_statement": "Climate change will cause changes to riverine flooding severity and frequency that will depend very closely on location, season, and local watershed factors.",
+    "direction_confidence": "It is difficult to make confident statements regarding the direction of climate-driven changes to riverine flooding severity, without added local information about flood mechanisms and local watershed conditions.",
+    "magnitude_confidence":"Because of local factors, estimating the magnitude of changes to riverine flooding due to climate change is difficult without undertaking a detailed local assessment.",
     "impact_statement":{
-        "building":"River/lake flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
-        "contaminated_site":"Via river and lake flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
+        "building":"Riverine flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
+        "contaminated_site":"Via riverine flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
     "type":"continuous",
     "notes":"Add in CanFlood and PAVICS Raven resources"
 },
-"extreme rain flooding":{
+"pluvial flooding":{
     "resources":{
         "An Inventory of Methods for Estimating Climate Change-Informed Design Water Levels for Floodplain Mapping":{
             "source":"The National Research Council",
@@ -127,7 +127,7 @@
     "notes":""
 },
 
-"ice jam flooding":{
+"ice-jam flooding":{
     "resources":{
         "Change in ice jam flooding":{
             "source":"CGU HS Committee on River Ice Processes and the Environment", 
@@ -231,7 +231,7 @@
     "notes":""
     
 },    
-"permafrost loss":{
+"permafrost melt":{
     "resources":{
         "Change in permafrost extent":{
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
