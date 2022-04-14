@@ -10,6 +10,14 @@ h2 {
     color: #212529;
     font-size: 1.5em;
     font-weight: lighter;
+}
+
+h3 {
+    font-family: Arial;
+    color: #212529;
+    font-size: 1.25em;
+    font-weight: lighter;
+}
 
 p {
     font-family: Arial;
