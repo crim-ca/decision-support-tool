@@ -1,4 +1,4 @@
-# WELCOME TO CLIMATEDATA.CA's INTERACTIVE BUILDING SECTOR CLIMATE DECISION SUPPORT TOOL
+# Welcome to ClimateData.ca's Interactive Building Sector Climate Decision Support Tool
 
 ## This interactive tool is designed for engineers, architects, planners, and other professionals in the buildings sector.  The tool has two main goals:
 

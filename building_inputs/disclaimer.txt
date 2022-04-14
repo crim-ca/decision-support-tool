@@ -1,4 +1,4 @@
-# CLIMATE DECISION SUPPORT TOOL DISCLAIMER AND RELEASE OF LIABILITY
+# Climate Decision Support Tool Disclaimer and Release of Liability
 
 This tool supports users in learning how to identify a subset of appropriate climate change information for building planning.  However, it is not an offical engineering design tool.  Users of this tool accept full responsibilty for expert judgement and professional standard of care in applying this and other climate change information to detailed project planning and engineering.  The authors of this tool accept no responsibilty for damage resulting from misuse of the datasets provided by this tool during project planning or execution.
  
