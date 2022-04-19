@@ -316,7 +316,28 @@
         "contaminated_site":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
     },
     "notes":""    
-}
+},
+"high humidity":{
+	"resources":{
+		"Annual relative humidity":{
+			"source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
+			"url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.3-annual_relative_humidity",
+			"var":"RH",
+			"units":"%",
+			"description":"describes changes in annual relative humidity, based on levels of global warming.",
+			"type":"data",
+			"tier":"3"
+		}
+	},
+	"direction_statement":"While increases in relative humidity are projected over all regions across Canada, the magnitude of change is small.",
+	"direction_confidence":"Very low confidence exists in the projected changes in relative humidity, as part of overall climate warming.",
+	"magnitude_confidence":"Given the small signal, relatively large uncertainty in multi-model assessments, and conflicting sign of change between Canadian regional model and global climate models, confidence in the magnitude of change over regions of Canada is very low.",
+	"impact_statement":{
+		"building":"High relative humidity can lead to problems with mold, corrosion, decay and other moisture related deterioration. At 100% relative humidity, condensation can occur on surfaces leading to additional problems. Changes in humidity levels can also affect HVAC systems.",
+		"contaminated_site":"High relative humidity could damage site infrastructure."
+	},
+	"notes":""
+},
 
 }
 
