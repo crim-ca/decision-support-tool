@@ -1,5 +1,5 @@
-# WELCOME TO CLIMATEDATA.CA's INTERACTIVE CLIMATE DATA DECISION SUPPORT TOOL 
+# Welcome to ClimateData.ca's Interactive Decision Support Tool
 
-## This tool is designed to apply to a number of sectors (with more being added all the time!).  
+## This tool is designed to apply to a number of sectors (with more being added all the time).  
 
 ## What sector are you interested in getting climate data decision support for?
