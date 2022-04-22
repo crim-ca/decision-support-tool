@@ -331,8 +331,8 @@ class Project_Definition(param.Parameterized):
         )
         self.geocode_button = pn.widgets.Button(name="🔍", width=100)
 
-        latitude = 0.0
-        longitude = 0.0
+        latitude = -8677300
+        longitude = 9012300
         location = "empty"
 
         self.t5 = pn.pane.Markdown(
@@ -341,8 +341,8 @@ class Project_Definition(param.Parameterized):
             + ".  Be patient, it may take a moment for your point to appear on the map."
         )
         # User provides location information via clicking on an interactive map display.
-        self.x = 0.0
-        self.y = 0.0
+        self.x = -8677300
+        self.y = 9012300
         self.stream = hv.streams.Tap(x=None, y=None)
         self.geocodeflag = 0
 
@@ -373,8 +373,8 @@ class Project_Definition(param.Parameterized):
         Canada_x_bounds = (-15807400, -5677300)
         Canada_y_bounds = (8012300, 11402300)
         if self.geocodeflag == 0:
-            self.x = x
-            self.y = y
+            self.x = -8677300
+            self.y = 9012300
             location_point = gv.Points(
                 (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
             )
