@@ -327,7 +327,17 @@
 			"description":"describes changes in annual relative humidity, based on levels of global warming.",
 			"type":"data",
 			"tier":"3"
+		},
+		"Annual mean relative humidity":{
+			"source":"The Pacific Climate Impacts Consortium (PCIC)",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/",
+            "var":"RH",
+            "units":"%",
+            "description":"provides projected future change in climatic design variables across Canada, in either map or table form.",
+            "type":"tool", 
+			"tier":"3"
 		}
+			
 	},
 	"direction_statement":"While increases in relative humidity are projected over all regions across Canada, the magnitude of change is small.",
 	"direction_confidence":"Very low confidence exists in the projected changes in relative humidity, as part of overall climate warming.",
@@ -335,6 +345,57 @@
 	"impact_statement":{
 		"building":"High relative humidity can lead to problems with mold, corrosion, decay and other moisture related deterioration. At 100% relative humidity, condensation can occur on surfaces leading to additional problems. Changes in humidity levels can also affect HVAC systems.",
 		"contaminated_site":"High relative humidity could damage site infrastructure."
+	},
+	"notes":""
+},
+"extreme precipitation":{
+    "resources":{
+        "Maximum 1-Day total precipitation":{
+            "source":"ClimateData.ca",
+            "url":"https://climatedata.ca/explore/variable/?coords=62.5325943454858,-98.525390625,4&delta=&geo-select=&var=rx1day&var-group=precipitation&mora=null&rcp=rcp85&decade=2070s&sector=&62.639102627877215%2C-77.94951214890322%2C8=undefined",
+            "var":"rx1day",
+            "units":"millimeters",
+            "group":"precipitation",
+            "season":"",
+            "description":"describes the largest amount of precipitation (rain and snow combined) that falls within a single 24-hour day for the selected time period.",
+            "type":"data"            
+        },
+        "Maximum 5-Day total precipitation":{
+            "source":"ClimateData.ca",
+            "url":"https://climatedata.ca/explore/variable/?coords=62.5325943454858,-98.525390625,4&delta=&geo-select=&var=rx5day&var-group=precipitation&mora=null&rcp=rcp85&decade=2070s&sector=&62.639102627877215%2C-77.94951214890322%2C8=undefined",
+            "var":"rx5day",
+            "group":"precipitation",
+            "season":"",
+            "units":"millimeters",
+            "description":"describes the largest amount of precipitation (rain and snow combined) to fall over 5 consecutive days.",
+            "type":"data"            
+        },
+        "Intensity Duration Frequency (IDF) curves":{
+            "source":"ClimateData.ca",
+            "url":"https://climatedata.ca/resource/idf-curves-and-climate-change/",
+            "var":"IDF curves",
+            "group":"precipitation",
+            "season":"",
+            "units":"millimeters per hour",
+            "description":"relates short-duration rainfall intensity with its frequency of occurrence.",
+            "type":"data" 
+		},
+		"Annual relative humidity":{
+			"source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
+			"url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
+			"var":"RH",
+			"units":"%",
+			"description":"describes changes in daily and sub-daily short-duration extreme precipitation",
+			"type":"data",
+			"tier":"2"
+		}
+    },
+	"direction_statement":"Annual precipitation and rainfall will increase in Canada with global warming, with likely increases expected in extreme precipitation in the future.",
+	"direction_confidence":"Very high confidence exists in the projected changes in annual precipitation and rainfall, as part of overall climate warming.",
+	"magnitude_confidence":"Given lower signal-to-noise ratio relative to temperature, as well as evidence that model uncertainty contributes more substantially to overall projection uncertainty, there is low to medium confidence in the projected percentage change in regional precipitation (magnitude of the increase at regional scales is uncertain). In addition, there is high degree of uncertainty in regional projections of short-duration precipitation in Canada.",
+	"impact_statement":{
+		"building":"Extreme precipitation can lead to flooding, water infiltration or increased erosion of infrastructure components if the capacity of designed drainage system is exceeded. More intense wind and rain can cause external cladding to deteriorate more rapidly and leak more often.",
+		"contaminated_site":"Extreme precipitation can lead to flooding, water infiltration or increased erosion of infrastructure components if the capacity of designed drainage system is exceeded."
 	},
 	"notes":""
 }
