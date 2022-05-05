@@ -390,15 +390,174 @@
 			"tier":"2"
 		}
     },
-	"direction_statement":"Annual precipitation and rainfall will increase in Canada with global warming, with likely increases expected in extreme precipitation in the future.",
+	"direction_statement":"Annual precipitation and rainfall will increase in Canada with global warming, likely increases expected in extreme precipitation in the future.",
 	"direction_confidence":"Very high confidence exists in the projected changes in annual precipitation and rainfall, as part of overall climate warming.",
-	"magnitude_confidence":"Given lower signal-to-noise ratio relative to temperature, as well as evidence that model uncertainty contributes more substantially to overall projection uncertainty, there is low to medium confidence in the projected percentage change in regional precipitation (magnitude of the increase at regional scales is uncertain). In addition, there is high degree of uncertainty in regional projections of short-duration precipitation in Canada.",
+	"magnitude_confidence":"However, for regional precipitation, there is medium confidence in the projected percentage change (magnitude of the increase at regional scales is uncertain). In addition, there is high degree of uncertainty in regional projections of short-duration precipitation in Canada.",
 	"impact_statement":{
 		"building":"Extreme precipitation can lead to flooding, water infiltration or increased erosion of infrastructure components if the capacity of designed drainage system is exceeded. More intense wind and rain can cause external cladding to deteriorate more rapidly and leak more often.",
 		"contaminated_site":"Extreme precipitation can lead to flooding, water infiltration or increased erosion of infrastructure components if the capacity of designed drainage system is exceeded."
 	},
 	"notes":""
+},
+"high humidity":{
+	"resources":{
+		"Annual relative humidity":{
+			"source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
+			"url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.3-annual_relative_humidity",
+			"var":"RH",
+			"units":"%",
+			"description":"describes changes in annual relative humidity, based on levels of global warming.",
+			"type":"data",
+			"tier":"3"
+		},
+		"Annual mean relative humidity":{
+			"source":"The Pacific Climate Impacts Consortium (PCIC)",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/",
+            "var":"RH",
+            "units":"%",
+            "description":"provides projected future change in climatic design variables across Canada, in either map or table form.",
+            "type":"tool", 
+			"tier":"3"
+		}
+			
+	},
+	"direction_statement":"Increases in relative humidity are projected over all regions across Canada, but the magnitude of change will be small.",
+	"direction_confidence":"Very low confidence exists in the projected changes in relative humidity, as part of overall climate warming.",
+	"magnitude_confidence":"Given the small signal and relatively large uncertainty in multi-model assessments, confidence in the magnitude of change over regions of Canada is very low.",
+	"impact_statement":{
+		"building":"High relative humidity can lead to problems with mold, corrosion, decay and other moisture related deterioration. At 100% relative humidity, condensation can occur on surfaces leading to additional problems. Changes in humidity levels can also affect HVAC systems.",
+		"contaminated_site":"High relative humidity could damage site infrastructure."
+	},
+	"notes":""
+},
+"drought":{
+	"resources":{
+		"Maximum Number of Consecutive Dry Days":{
+            "source":"ClimateData.ca",
+            "url":"https://climatedata.ca/explore/variable/?coords=62.5325943454858,-98.525390625,4&delta=&geo-select=&var=cdd&var-group=precipitation&mora=ann&rcp=rcp85&decade=1970s&sector=",
+            "var":"cdd",
+            "units":"days",
+            "group":"other",
+            "season":"ann",
+            "description":"describes the longest spell of days where less than 1mm of precipitation falls daily.",
+            "type":"data"    
+		},
+		"Standardised Precipitation Evapotranspiration Index":{
+            "source":"ClimateData.ca",
+            "url":"https://climatedata.ca/explore/variable/?coords=47.52465673726599,-69.4118982900972,6&delta=&geo-select=&var=spei_12m&var-group=precipitation&mora=aug&rcp=rcp85&decade=1970s&sector=",
+            "var":"SPEI",
+            "units":"SPEI",
+            "group":"other",
+            "season":"ann",
+            "description":"is a drought index based on the difference between precipitation and potential evapotranspiration. Negative (positive) values indicate water deficit (surplus).",
+            "type":"data"
+		}
+			
+	},
+	"direction_statement":"Drought are expected to worsen in frequency and intensity with climate change.",
+	"direction_confidence":"There is medium confidence in the projected increased frequency and intensity of droughts.",
+	"magnitude_confidence":"The precise magnitude of future increases in drought is uncertain at local scales due to uncertainty in future soil moisture projections, due to the complexity of interactions among precipitation, evapotranspiration, and vegetation.",
+	"impact_statement":{
+		"building":"Building foundation systems may be susceptible to soil shrinkage during dry periods or drought.",
+		"contaminated_site":"Drought could damage site infrastructure and increase airborne and aqueous contaminants."
+	},
+	"notes":""
+
+},
+"tornadoes":{
+    "resources":{
+        "Risk Mitigation Strategies for Tornadoes in the Context of Climate Change and Development":{
+            "source":"Mitigation and Adaptation Strategies for Global Change Journal",
+            "url":"https://link.springer.com/article/10.1007/s11027-005-0051-x",
+            "var":"",
+            "units":"",
+            "group":"",
+            "season":"",
+            "description":"article analyzes tornado risk in Canada in the context of a changing climate.",
+            "type":"Journal article"
+        }
+    },
+    "direction_statement":"Tornadoes can be a devastating hazard and their characteristics could change with a changing climate. However, at this time, the scientific knowledge is weak for projecting potential changes in tornado frequencies. What exactly the impact of a changing climate might be and how quickly such changes might be observed is currently a topic of research.",
+    "direction_confidence":"",
+    "magnitude_confidence":"",
+    "impact_statement":{
+        "building":"Tornadoes can destroy entire buildings. They can also severely damage roofs, doors, windows, as well as cause significant damage to the cladding due to flying debris.",
+        "contaminated_site":"Tornadoes can destroy buildings and infrastructure."
+    },
+    "notes":""
+
+},
+"hurricane":{
+    "resources":{
+
+    },
+    "direction_statement":"Hurricane can be a devastating hazard and their characteristics could change with a changing climate. However, at this time, the scientific knowledge is weak for projecting potential changes in hurricane frequencies and effect of long-term trends. What exactly the impact of a changing climate might be and how quickly such changes might be observed is currently a topic of research.",
+    "direction_confidence":"",
+    "magnitude_confidence":"",
+    "impact_statement":{
+        "building":"Hurricane can destroy buildings. They can also cause significant damage to the building infrastructure as the result of wind, rain, and storm debris.",
+        "contaminated_site":"Hurricane can damage and destroy buildings and infrastructure."
+    },
+    "notes":""
+},
+"hail":{
+    "resources":{
+		"The changing hail threat over North America in response to anthropogenic climate change":{
+			"source":"Nature Climate Change Journal",
+            "url":"https://www.nature.com/articles/nclimate3321",
+            "var":"",
+            "units":"",
+            "group":"",
+            "season":"",
+            "description":"investigates the spatiotemporal changes in hail frequency and size between the present (1971 to 2000) and future (2041 to 2070).",
+            "type":"journal article"
+        }
+	},
+    "direction_statement":"Hailstorms can be a devastating hazard and the number of severe/very large-hail days per season could change with a changing climate. What exactly the impact of a changing climate might be and how quickly such changes might be observed is currently a topic of research.",
+    "direction_confidence":"",
+    "magnitude_confidence":"",
+    "impact_statement":{
+        "building":"Hailstorms are capable of causing significant damage to building roofs and facades. Depending on the size of hail and the speed at which they fall, the magnitude of damages done to siding, shingles, asphalt roofs, gutters or even windows can be different.",
+        "contaminated_site":"Hailstorms can damage buildings and equipments."
+    },
+    "notes":""
+},
+"lightning":{
+    "resources":{
+
+	},
+    "direction_statement":"Lightning can be a devastating hazard and their characteristics could change with a changing climate. However, at this time, the scientific knowledge is weak for projecting potential changes in lightning frequencies in the long-term. What exactly the impact of a changing climate might be and how quickly such changes might be observed is currently a topic of research.",
+    "direction_confidence":"",
+    "magnitude_confidence":"",
+    "impact_statement":{
+        "building":"Lightning can cause physical damage from direct or indirect strikes and fires to buildings.",
+        "contaminated_site":"Lightning can damage buildings and infrastructure."
+    },
+    "notes":""
+},
+"ice-storm":{
+    "resources":{
+		"Ice storm frequencies in a warmer climate":{
+			"source":"Climatic Change Journal",
+            "url":"https://link.springer.com/article/10.1007/s10584-015-1460-9",
+            "var":"",
+            "units":"",
+            "group":"",
+            "season":"",
+            "description":"explores how frequency, intensity and geographical distribution of ice storms might change given plausible future temperature regimes.",
+            "type":"journal article"
+        }
+	},
+    "direction_statement":"Ice storms can be a devastating hazard and their characteristics could change with a changing climate. What exactly the impact of a changing climate might be and how quickly such changes might be observed is currently a topic of research.",
+    "direction_confidence":"",
+    "magnitude_confidence":"",
+    "impact_statement":{
+        "building":"Ice storms are capable of causing damage to buildings. Ice storm damages can be caused by falling trees or branches, ice, or debris from wind.",
+        "contaminated_site":"Ice storms can damage buildings and infrastructure."
+    },
+    "notes":""
 }
 
-}
+} 
+
 
