@@ -556,6 +556,38 @@
         "contaminated_site":"Ice storms can damage buildings and infrastructure."
     },
     "notes":""
+},
+"sea-ice":{
+    "resources":{
+		"Canada's Changing Climate Report":{
+			"source":"Government of Canada",
+            "url":"https://changingclimate.ca/CCCR2019/",
+            "var":"",
+            "units":"",
+            "group":"",
+            "season":"",
+            "description":"discusses how and why Canada's climate has changed and what changes are projected for the future.",
+            "type":"report"
+        },
+		"Canada's Marine Coasts in a Changing Climate;":{
+			"source":"Government of Canada",
+            "url":"https://www.nrcan.gc.ca/sites/www.nrcan.gc.ca/files/earthsciences/pdf/assess/2016/Coastal_Assessment_FullReport.pdf",
+            "var":"",
+            "units":"",
+            "group":"",
+            "season":"",
+            "description":"discusses the impacts of climate change on Canada's marine coasts.",
+            "type":"report"
+        }
+	},
+    "direction_statement":"Sea ice in the Canadian Arctic is decreasing rapidly. It is very likely that we will continue seeing reductions in sea ice across the Canadian Arctic in the future, because of rising temperatures.",
+    "direction_confidence":"High confidence exists for future projections of changes to sea ice.",
+    "magnitude_confidence":"There is high confidence that Arctic marine regions could be sea ice free for at least one month in the summer by 2050.",
+    "impact_statement":{
+        "building":"Decreasing sea ice can damage buildings due to coastlines erosion and flooding, as sea ice no longer absorbs strong waves and storm surges.",
+        "contaminated_site":"Decreasing sea ice can damage buildings and sites near coastlines, making them prone to erosion and flooding."
+    },
+    "notes":""
 }
 
 } 
