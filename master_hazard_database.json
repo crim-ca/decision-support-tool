@@ -380,7 +380,7 @@
             "description":"relates short-duration rainfall intensity with its frequency of occurrence.",
             "type":"data" 
 		},
-		"Annual relative humidity":{
+		"One day rain and 15-min rain":{
 			"source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
 			"url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
 			"var":"RH",
