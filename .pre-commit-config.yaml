@@ -8,9 +8,10 @@ repos:
       types: [json]
       args: ["--schemafile", "json_schemas/master_general_resources_database.json"]
 - repo: https://github.com/psf/black
-  rev: 21.12b0
+  rev: 22.1.0
   hooks:
     - id: black-jupyter
+      additional_dependencies: ['click==8.0.4']
       name: "Lint Jupyter notebooks using Black"
       files: decision-support-tool.ipynb
 - repo: https://github.com/mwouts/jupytext

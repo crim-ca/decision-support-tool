@@ -1199,39 +1199,42 @@ class Next_Steps(param.Parameterized):
 
 
 # + tags=[]
-debug_flag = False
+def run_server():
+    debug_flag = False
 
-pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
+    pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 
-pipeline.add_stage(name="Sector Definition", stage=Sector_Definition)
-pipeline.add_stage(name="Introduction", stage=Introduction)
-pipeline.add_stage(name="Disclaimer", stage=Disclaimer)
-pipeline.add_stage(name="Core Knowledge Checklist", stage=Core_Knowledge_Checklist)
-pipeline.add_stage(name="Project Definition", stage=Project_Definition)
-pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
-pipeline.add_stage(name="Present Hazard Inventory", stage=Present_Hazard_Inventory)
-pipeline.add_stage(name="Future Hazard Inventory", stage=Future_Hazard_Inventory)
-pipeline.add_stage(name="Vulnerability Heat Map", stage=Vulnerability_HeatMap)
-pipeline.add_stage(name="Summary Report", stage=Summary_Report)
-pipeline.add_stage(name="Next Steps", stage=Next_Steps)
+    pipeline.add_stage(name="Sector Definition", stage=Sector_Definition)
+    pipeline.add_stage(name="Introduction", stage=Introduction)
+    pipeline.add_stage(name="Disclaimer", stage=Disclaimer)
+    pipeline.add_stage(name="Core Knowledge Checklist", stage=Core_Knowledge_Checklist)
+    pipeline.add_stage(name="Project Definition", stage=Project_Definition)
+    pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
+    pipeline.add_stage(name="Present Hazard Inventory", stage=Present_Hazard_Inventory)
+    pipeline.add_stage(name="Future Hazard Inventory", stage=Future_Hazard_Inventory)
+    pipeline.add_stage(name="Vulnerability Heat Map", stage=Vulnerability_HeatMap)
+    pipeline.add_stage(name="Summary Report", stage=Summary_Report)
+    pipeline.add_stage(name="Next Steps", stage=Next_Steps)
 
-if debug_flag:
-    DST_core = pn.Column(
-        pipeline,
-        width=plot_width,
-        height=plot_height,
-        name="Decision Support Tool",
-    )
-else:
-    DST_core = pn.Column(
-        pipeline.buttons,
-        pipeline.stage,
-        width=plot_width,
-        height=plot_height,
-        name="Decision Support Tool",
-    )
+    if debug_flag:
+        DST_core = pn.Column(
+            pipeline,
+            width=plot_width,
+            height=plot_height,
+            name="Decision Support Tool",
+        )
+    else:
+        DST_core = pn.Column(
+            pipeline.buttons,
+            pipeline.stage,
+            width=plot_width,
+            height=plot_height,
+            name="Decision Support Tool",
+        )
 
-DST_core.servable()
+    DST_core.servable()
+
+    return DST_core
 # -
 
 
