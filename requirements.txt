@@ -15,3 +15,5 @@ matplotlib
 datetime
 sklearn
 jupyterlab
+pytest
+selenium
