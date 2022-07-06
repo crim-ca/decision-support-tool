@@ -1,21 +1,4 @@
-# -*- coding: utf-8 -*-
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.11.0
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
-# + tags=[]
-#### Module loads and general setup
-
+#%% Imports and setup
 import os
 import pathlib  # to do, convert all os-based path work to pathlib
 import param
@@ -52,11 +35,9 @@ hv.extension("bokeh")
 gv.extension("bokeh")
 pn.extension(raw_css=[custom_css])
 
-# + tags=[]
 # TODO: dynamically scale based on screen size
 plot_width = 900
 plot_height = 1500
-
 
 class CRBCPI_class:
     def __init__(self):
@@ -108,22 +89,11 @@ class CRBCPI_class:
             ).swapaxes(1, 0),
             metric="haversine",
         )
-
-
 CRBCPI = CRBCPI_class()
-
-
-# -
-
-# # Decision support tool core pipeline
-#
-# Each of the following Notebook sections encapsulate code for one step in a [Panels Pipeline](https://panel.holoviz.org/user_guide/Pipelines.html) flow, which defines the interactive user-driven decision support tool process.  As per Panels Pipeline architecture, each step is defined as a Python Parameterized class.
-
-# ## Sector choice stage
-#
-# This stage allows user to define the sector they are interested in.
-
-# + tags=[]
+#%% Sector definition stage
+'''
+This stage allows user to define the sector they are interested in.
+'''
 class Sector_Definition(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
@@ -147,15 +117,11 @@ class Sector_Definition(param.Parameterized):
             self.t1,
             pn.WidgetBox(self.system_category_widget, css_classes=["custom-box"]),
         )
-
-
-# -
-
-# ## Introduction stage
-#
-# This stage provides a general introduction to the process that users will undergo, as they step through the tool.
-
-# + tags=[]
+#%% Introduction stage
+'''
+Introduction stage
+This stage provides a general introduction to the process that users will undergo, as they step through the tool.
+'''    
 class Introduction(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -182,14 +148,11 @@ class Introduction(param.Parameterized):
             height=plot_height,
         )
 
+#%% Disclaimer stage
+'''
 
-# -
-
-# ## Disclaimer stage
-#
-# This stage provides any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
-
-# + tags=[]
+This stage provides any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
+'''
 class Disclaimer(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -215,13 +178,12 @@ class Disclaimer(param.Parameterized):
 
 
 # TODO: add a 'Do you accept these conditions of use?' button that opens access to remainder of app.
-# -
 
-# ## Core knowledge checklist stage
-#
-# This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
-
-# + tags=[]
+#%% Core knowledge checklist stage
+'''
+Core knowledge checklist stage
+This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
+'''
 class Core_Knowledge_Checklist(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -263,15 +225,13 @@ class Core_Knowledge_Checklist(param.Parameterized):
             width=plot_width,
             height=plot_height
         )
+    
+#%% Project definition stage
+'''
+Project definition stage
+A key first step in any climate change impact/vulnerability assessment, is a clear-eyed and objective statement of the system ('project') in question. Project definition information is gathered here and is used to focus summary information and data extractions for the user on (for example) relevant time frames and locations.
+'''
 
-
-# -
-
-# ## Project definition stage
-#
-# A key first step in any climate change impact/vulnerability assessment, is a clear-eyed and objective statement of the system ('project') in question.  Project definition information is gathered here and is used to focus summary information and data extractions for the user on (for example) relevant time frames and locations.
-
-# + tags=[]
 class Project_Definition(param.Parameterized):
 
     # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -432,18 +392,16 @@ class Project_Definition(param.Parameterized):
             width=plot_width,
             height=plot_height,
         )
+    
+#%% Component inventory stage
+'''
+2) Component inventory stage
+To robustly understand climate impacts to and climate vulnerabilities of complex systems, they need to be broken down into major functional components and each component assessed separately. For example:
 
+an airport could be vulnerable to climate impacts either to specific impacts to the runway, or specific impacts to the control tower
+an ecosystem could be vulnerable to climate impacts either to a particular animal species, or a particular plant species High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
+'''
 
-# -
-
-# ## 2) Component inventory stage
-#
-# To robustly understand climate impacts to and climate vulnerabilities of complex systems, they need to be broken down into major functional components and each component assessed separately.  For example:
-# - an airport could be vulnerable to climate impacts either to specific impacts to the runway, or specific impacts to the control tower  
-# - an ecosystem could be vulnerable to climate impacts either to a particular animal species, or a particular plant species
-# High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
-
-# + tags=[]
 class Component_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -536,16 +494,14 @@ class Component_Inventory(param.Parameterized):
             width=plot_width,
             height=plot_height,
         )
+    
+#%% Hazard inventory stages
+'''
+3) Hazard inventory stage
+Once components of a system are defined, users need to think carefully about which hazards these components may be vulnerable to, today and in the future.  
+High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
+'''
 
-
-# -
-
-# ## 3) Hazard inventory stage
-#
-# Once components of a system are defined, users need to think carefully about which hazards these components may be vulnerable to, today and in the future.  
-# High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
-
-# + tags=[]
 class Present_Hazard_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -625,8 +581,6 @@ class Present_Hazard_Inventory(param.Parameterized):
             height=plot_height,
         )
 
-
-# + tags=[]
 class Future_Hazard_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -714,14 +668,13 @@ class Future_Hazard_Inventory(param.Parameterized):
             width=plot_width,
             height=plot_height,
         )
+    
+#%% Vulnerability screening stage
+'''
+4) Vulnerability screening stage
+User-defined input regarding 1) project components and 2) potential climate hazards are combined in the following Pipeline tab into a 2-D heat map that represents a high level vulnerability screen. This heat map is dynamically user-defined (the number of vertical and horizontal elements is based on the number of project components and climate hazards, respectively). It is also interactive: users are prompted to set per-component/hazard vulnerabilities by clicking on individual heat map elements, to develop a heat map-based perspective on where greatest system vulnerabilities lie. This information is recorded and is a key input to the final tool summary.
+'''
 
-
-# + [markdown] tags=[]
-# ## 4) Vulnerability screening stage
-#
-# User-defined input regarding 1) project components and 2) potential climate hazards are combined in the following Pipeline tab into a 2-D heat map that represents a high level vulnerability screen.   This heat map is dynamically user-defined (the number of vertical and horizontal elements is based on the number of project components and climate hazards, respectively).  It is also interactive: users are prompted to set per-component/hazard vulnerabilities by clicking on individual heat map elements, to develop a heat map-based perspective on where greatest system vulnerabilities lie.  This information is recorded and is a key input to the final tool summary.
-
-# + tags=[]
 class Vulnerability_HeatMap(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
@@ -891,20 +844,16 @@ class Vulnerability_HeatMap(param.Parameterized):
             width=plot_width,
             height=plot_height,
         )
+    
+#%% Summary reporting stage
+'''
+5) Summary reporting stage
+Provided with project definition, project component and climate hazard information, and after user-led vulnerability screening, the tool returns a graphical summary of user inputs and text-based summaries that:
 
+Identifies the climate hazards that users rank as most consequential to system component vulnerabilities (based on axis-wise sums of the heatmap matrix)
+Identifies the components that users indicate are most vulnerable (based on axis-wise sums of the heatmap matrix)
+'''
 
-# -
-
-# ## 5) Summary reporting stage
-#
-# Provided with project definition, project component and climate hazard information, and after user-led vulnerability screening, the tool returns a graphical summary of user inputs and text-based summaries that:
-# - Identifies the climate hazards that users rank as most consequential to system component vulnerabilities (based on axis-wise sums of the heatmap matrix)
-# - Identifies the components that users indicate are most vulnerable (based on axis-wise sums of the heatmap matrix)
-#
-# Following this summary, the tool uses the provided resource links for each climate hazard relevant to system components, to develop a curated list of climate resources that are specific to the needs identified by the user.
-#
-
-# + tags=[]
 class Summary_Report_Hazard_Linkages(param.Parameterized):
 
     # Access information provided by user earlier in pipeline to provide a summary
@@ -978,6 +927,10 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
         )
     
     
+#%% Summary_Report_Curated_Data
+'''
+Provide resource links for each climate hazard relevant to system components, to develop a curated list of climate resources that are specific to the needs identified by the user.
+'''
 class Summary_Report_Curated_Data(param.Parameterized):
 
     # Access information provided by user earlier in pipeline to provide a summary
@@ -1202,14 +1155,13 @@ class Summary_Report_Curated_Data(param.Parameterized):
             width=plot_width,
             height=plot_height,
         )
+    
+#%% Next_Steps
+'''
+Next steps stage
+This stage serves a jumping off point for users to understand what their next steps are. This text is intended to align users to basics of risk assessment, followed by adaptation (if their risk assessment thinking indicates that an 'unacceptable' risk threshold will be crossed.
+'''
 
-
-# -
-
-# ## Next steps stage
-# This stage serves a jumping off point for users to understand what their next steps are. This text is intended to align users to basics of risk assessment, followed by adaptation (if their risk assessment thinking indicates that an 'unacceptable' risk threshold will be crossed.
-
-# + tags=[]
 class Next_Steps(param.Parameterized):
 
     system_category = param.String()
@@ -1234,11 +1186,10 @@ class Next_Steps(param.Parameterized):
             self.jpg_pane,
             pn.pane.Markdown(self.lines),
             width=plot_width, 
-            height=plot_height
-        )
+            height=plot_height)
+    
+#%% Build and deploy
 
-
-# + tags=[]
 debug_flag = False
 
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
@@ -1273,6 +1224,4 @@ else:
     )
 
 DST_core.servable()
-# -
-
-
+DST_core.show()
