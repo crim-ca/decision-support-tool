@@ -24,7 +24,7 @@ def simultaneous_connections(connections_number=50):
         driver.get(DST_URL)
 
         # Waits for the page to load
-        WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH,"//button[text()='Next']")))
+        WebDriverWait(driver,30).until(EC.element_to_be_clickable((By.XPATH,"//button[text()='Next']")))
 
         # Will not be homepage if the connection is shared
         if not is_homepage(driver.page_source):
@@ -32,7 +32,7 @@ def simultaneous_connections(connections_number=50):
 
         # Loads the 2nd DST page
         driver.find_element(By.XPATH, "//button[text()='Next']").click()
-        WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH,"//button[text()='Previous']")))
+        WebDriverWait(driver,30).until(EC.element_to_be_clickable((By.XPATH,"//button[text()='Previous']")))
 
         drivers.append(driver)
 
