@@ -11,11 +11,15 @@ def is_homepage(page_source):
     return "WELCOME TO CLIMATEDATA.CA’s INTERACTIVE CLIMATE DATA DECISION SUPPORT TOOL" in page_source
 
 def simultaneous_connections(connections_number=50):
+    print(f"Testing {connections_number} simultaneous connections.")
     options = Options()
     options.headless = True
     drivers = []
 
     for i in range(connections_number):
+        if i % 10 == 0:
+            print(f"Opening connection number {i+1}...")
+
         driver = webdriver.Chrome(executable_path=CHROME_EXECUTABLE_PATH, options=options)
         driver.get(DST_URL)
 
