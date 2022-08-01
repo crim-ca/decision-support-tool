@@ -17,6 +17,7 @@ from matplotlib.colors import to_hex as th
 import datetime as dt  # not available on Conda - access via PIP
 import json
 from sklearn.neighbors import BallTree
+import utilities
 
 general_input_directory = "."
 
@@ -29,9 +30,9 @@ hv.extension("bokeh")
 gv.extension("bokeh")
 pn.extension(raw_css=[custom_css],sizing_mode='stretch_width')
 
-# TODO: dynamically scale based on screen size
-plot_width = 900
+plot_width = 1200
 plot_height = 1500
+panel_options=dict(width=plot_width, width_policy='max', sizing_mode='stretch_both')
 
 class CRBCPI_class:
     def __init__(self):
@@ -85,15 +86,11 @@ class CRBCPI_class:
         )
 CRBCPI = CRBCPI_class()
 
-
 system_category="building"
 template=pn.template.BootstrapTemplate(title='Canadian Centre for Climate Services '+system_category+' Decision Support Tool',
                                        favicon='images/logo.ico',
                                        logo='images/logo.ico',
                                        )
-
-
-
 #%% Welcome stage
 '''
 This code provides a welcome and any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
@@ -114,7 +111,8 @@ with open(os.path.join(general_input_directory, "disclaimer.txt")) as f:
 disclaimer = pn.pane.Markdown(lines)
 
 welcome = pn.Column(introduction,
-                    disclaimer)
+                    disclaimer,
+                    **panel_options)
 
 #%% Core knowledge checklist stage
 '''
@@ -151,8 +149,9 @@ markdown_resource_links = [
 knowledge_checklist=pn.Column(
             jpg_pane,
             t1,
-            *markdown_resource_links)
-    
+            *markdown_resource_links,
+            **panel_options)
+
 #%% Project definition stage
 '''
 Project definition stage
@@ -180,18 +179,26 @@ class Project_Definition(param.Parameterized):
         self.t2 = pn.pane.Markdown(
             "### What type of " + system_category + " are you assessing?"
         )
-
+        
+        #####REPLACE THIS BLOCK WITH CALL TO UTILITY FUNCITON
         # User provides an open-ended (typed) definition of system type.
         self.system_type_widget = pn.widgets.TextInput(
             placeholder="Enter " + system_category + " type here..."
         )
 
+        self.system_type_selector,self.system_type_manual_input=utilities.selector_plus_custom_text(multi_select=False,
+                                                                                                    grouped_lists=True,
+                                                                                                    input_directory=system_category.replace(" ", "_") + "_inputs",
+                                                                                                    input_file='system_types.json',
+                                                                                                    selector_text='Select your '+system_category+' type if it exists in this list...',
+                                                                                                    custom_text='...or define it here yourself.')
+        
         # User provides a definition of system lifespan via manipulation of a slider
 
         self.t3 = pn.pane.Markdown(
-            "### What timeframe (past and future) do you need to make decisions on, with respect to your "
+            "### What timeframe are you considering (past and future)? Make your selection based on the realistic planned end of life of your "
             + system_category
-            + "?"
+            + "."
         )
 
         self.system_lifespan_widget = pn.widgets.DateRangeSlider(
@@ -219,8 +226,7 @@ class Project_Definition(param.Parameterized):
         Canada_y_bounds=(8012300,  11402300)
         location_point= gv.Points((x,y,'point'),vdims='Point',crs=crs.GOOGLE_MERCATOR)
         return (map_background*location_point).opts(opts.Points(global_extent=False,
-                                          xlim=Canada_x_bounds,ylim=Canada_y_bounds, 
-                                          width=500, height=475, size=12, color='black'))
+                                          xlim=Canada_x_bounds,ylim=Canada_y_bounds, size=12, color='black'))
     def map_view (self):
         mp=pn.bind(self.map_constructor,x=self.stream.param.x,y=self.stream.param.y)
         return hv.DynamicMap(mp)
@@ -231,7 +237,10 @@ class Project_Definition(param.Parameterized):
                   system_location=param.List())
     
     def output(self):
-        system_type = self.system_type_widget.value.lower()
+        if self.system_type_manual_input.value != "":
+            system_type = self.system_type_manual_input.value.lower()
+        else:
+            system_type = self.system_type_selector.value.lower()
         system_lifespan = self.system_lifespan_widget.value
         proj1 = Proj("epsg:4326", preserve_units=False)
         proj2 = Proj("epsg:3785", preserve_units=False)
@@ -243,13 +252,10 @@ class Project_Definition(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             self.t1,
-            pn.WidgetBox(self.t2, self.system_type_widget, css_classes=["custom-box"]),
-            pn.WidgetBox(
-                self.t3, self.system_lifespan_widget, css_classes=["custom-box"]
-            ),
+            pn.WidgetBox(self.t2, self.system_type_selector,self.system_type_manual_input, css_classes=["custom-box"]),
+            pn.WidgetBox(self.t3, self.system_lifespan_widget, css_classes=["custom-box"]),
             pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
 #%% Component inventory stage
@@ -292,46 +298,19 @@ class Component_Inventory(param.Parameterized):
             os.path.join(self.system_input_directory, "components.jpg"), height=200
         )
 
-        with open(
-            os.path.join(self.system_input_directory, "component_database.json"), "r"
-        ) as j:
-            self.components = json.loads(j.read())
-        # Get basic list of system components.  Some fancy Python to get this into a list from nested dictionary entries.
-        self.system_components = sum(
-            [self.components[c]["group"] for c in self.components], []
-        )
-        # Provide selector that lets user 'construct' their system.
-        # TODO: generalize this to allow for arbitrary input component files, for arbitrary systems
-        self.system_components_CrossSelector_widget = pn.widgets.CrossSelector(
-            name="Which "
-            + system_category
-            + " components would you like to include in this assessment?",
-            value=[],
-            options=self.system_components,
-        )
-        # Allow users to add arbitrary other components via text entry
-        self.t3 = pn.pane.Markdown(
-            "### Feel free to include other components of your "
-            + self.system_type
-            + ", that are not in the list above."
-        )
-        self.system_components_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter any number of "
-            + system_category
-            + " components, separated by commas..."
-        )
+        self.component_selector,self.component_manual_input=utilities.selector_plus_custom_text(multi_select=True,
+                                                                                                grouped_lists=True,
+                                                                                                input_directory=system_category.replace(" ", "_") + "_inputs",
+                                                                                                input_file='component_database.json',
+                                                                                                selector_text="Which " + self.system_type + " components would you like to include in this assessment?",
+                                                                                                custom_text="Enter any number of additional " + self.system_type + " components, separated by commas, here.")
 
     # Gather output of this Pipeline stage for next stages of Pipeline
     @param.output(system_components=param.List())
     def output(self):
-        system_components = self.system_components_CrossSelector_widget.value
-        if self.system_components_TextAreaInput_widget.value:
-            system_components = (
-                system_components
-                + self.system_components_TextAreaInput_widget.value.replace(
-                    " ", ""
-                ).split(",")
-            )
+        system_components = self.component_selector.value
+        if self.component_manual_input.value:
+            system_components = (system_components + self.component_manual_input.value.replace(" ", "").split(","))
         return system_components
 
     # Define Panel tab
@@ -341,16 +320,11 @@ class Component_Inventory(param.Parameterized):
             self.t1,
             pn.WidgetBox(
                 self.t2,
-                self.system_components_CrossSelector_widget,
+                self.component_selector,
+                self.component_manual_input,
                 css_classes=["custom-box"],
             ),
-            pn.WidgetBox(
-                self.t3,
-                self.system_components_TextAreaInput_widget,
-                css_classes=["custom-box"],
-            ),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
 #%% Hazard inventory stages
@@ -387,43 +361,21 @@ class Present_Hazard_Inventory(param.Parameterized):
             + self.system_type
             + " is vulnerable to, today.  Add any additional hazards that are not listed."
         )
-
-        # Open hazards database and read each hazard item to dictionary
-        with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
-        ) as j:
-            self.full_hazards_dict = json.loads(j.read())
-        self.all_climate_hazards = [s for s in self.full_hazards_dict]
-        # Provide selector that lets user select hazards that pertain to their system.
-        self.climate_hazards_CrossSelector_widget = pn.widgets.CrossSelector(
-            name="Which climate hazards is your "
-            + self.system_type
-            + " is vulnerable to?",
-            value=[],
-            options=self.all_climate_hazards,
-        )
-        # Allow users to add arbitrary other component hazards via text entry
-        self.t3 = pn.pane.Markdown(
-            "### Include other hazards that your "
-            + self.system_type
-            + " is vulnerable to that are not in the list above."
-        )
-        self.climate_hazards_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter other hazards, separated by commas."
-        )
+        self.hazard_selector,self.hazard_manual_input=utilities.selector_plus_custom_text(multi_select=True,
+                                                                                          grouped_lists=False,
+                                                                                          input_directory=general_input_directory,
+                                                                                          input_file='master_hazard_database.json',
+                                                                                          selector_text="Which climate hazards is your " + self.system_type + " vulnerable to?",
+                                                                                          custom_text="Enter any number of additional hazards, separated by commas, here.")
 
     # Gather output of this Pipeline stage for next stages of Pipeline
-    @param.output(present_climate_hazards=param.List())
+    @param.output(all_climate_hazards=param.List(),present_climate_hazards=param.List())
     def output(self):
-        present_climate_hazards = self.climate_hazards_CrossSelector_widget.value
-        if self.climate_hazards_TextAreaInput_widget.value:
-            present_climate_hazards = (
-                present_climate_hazards
-                + self.climate_hazards_TextAreaInput_widget.value.replace(
-                    " ", ""
-                ).split(",")
-            )
-        return present_climate_hazards
+        all_climate_hazards = self.hazard_selector.options
+        present_climate_hazards = self.hazard_selector.value
+        if self.hazard_manual_input.value:
+            present_climate_hazards = (present_climate_hazards + self.hazard_manual_input.value.replace(" ", "").split(","))
+        return all_climate_hazards,present_climate_hazards
 
     # Define Panel tab
     def panel(self):
@@ -431,11 +383,9 @@ class Present_Hazard_Inventory(param.Parameterized):
             self.jpg_pane,
             self.t1,
             self.t2,
-            self.climate_hazards_CrossSelector_widget,
-            self.t3,
-            self.climate_hazards_TextAreaInput_widget,
-            width=plot_width,
-            height=plot_height,
+            self.hazard_selector,
+            self.hazard_manual_input,
+            **panel_options
         )
 
 class Future_Hazard_Inventory(param.Parameterized):
@@ -445,10 +395,11 @@ class Future_Hazard_Inventory(param.Parameterized):
     system_lifespan = param.Tuple()
     system_location = param.List()
     system_components = param.List()
+    all_climate_hazards = param.List()
     present_climate_hazards = param.List()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends("system_type", "present_climate_hazards")
+    @param.depends("system_type", "all_climate_hazards", "present_climate_hazards")
     def __init__(self, **params):
         super().__init__(**params)
 
@@ -466,17 +417,8 @@ class Future_Hazard_Inventory(param.Parameterized):
             + " If so, let's add them to the list."
         )
 
-        # Re-open hazards database and read each hazard item to dictionary
-        with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
-        ) as j:
-            self.full_hazards_dict = json.loads(j.read())
-        self.all_climate_hazards = [s for s in self.full_hazards_dict]
-
-        # Trim list by previously selected hazards list
-        self.potential_future_climate_hazards = [
-            h for h in self.all_climate_hazards if h not in self.present_climate_hazards
-        ]
+        # Trim hazards list by previously selected hazards list
+        self.potential_future_climate_hazards = [h for h in self.all_climate_hazards if h not in self.present_climate_hazards]
 
         # Provide selector that lets user select hazards that pertain to their system.
         self.climate_hazards_CrossSelector_widget = pn.widgets.CrossSelector(
@@ -493,7 +435,7 @@ class Future_Hazard_Inventory(param.Parameterized):
             + " may be vulnerable to that are not in the list above."
         )
         self.climate_hazards_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter other hazards, separated by commas."
+            placeholder="Enter any number of additional hazards, separated by commas."
         )
 
     # Gather output of this Pipeline stage for next stages of Pipeline
@@ -521,8 +463,7 @@ class Future_Hazard_Inventory(param.Parameterized):
             self.climate_hazards_CrossSelector_widget,
             self.t3,
             self.climate_hazards_TextAreaInput_widget,
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
 #%% Vulnerability screening stage
@@ -695,8 +636,7 @@ class Vulnerability_HeatMap(param.Parameterized):
             self.jpg_pane,
             *self.t1,
             pn.Row(self.matrix_view, self.legend_box),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
 #%% Summary reporting stage
@@ -775,8 +715,7 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             pn.WidgetBox(
                 self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]
             ),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
     
@@ -1005,8 +944,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
                 pn.Accordion(*self.hazard_panels, width=plot_width),
                 css_classes=["custom-box"],
             ),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
 #%% Next_Steps
@@ -1038,16 +976,12 @@ class Next_Steps(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             pn.pane.Markdown(self.lines),
-            width=plot_width, 
-            height=plot_height)
+            **panel_options)
     
 #%% Build pipeline
 
 debug_flag = True
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
-#pipeline.add_stage(name="Sector Definition", stage=Sector_Definition)
-#pipeline.add_stage(name="Introduction", stage=Introduction)
-#pipeline.add_stage(name="Core Knowledge Checklist", stage=Core_Knowledge_Checklist)
 pipeline.add_stage(name="Project Definition", stage=Project_Definition)
 pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
 pipeline.add_stage(name="Present Hazard Inventory", stage=Present_Hazard_Inventory)
@@ -1089,5 +1023,5 @@ def main_panel(main_panel_widget_value):
 template.sidebar.append(pn.Column(main_panel_widget))
 template.main.append(pn.Column(main_panel))
 template.open_modal()
-template.servable()
+#template.servable()
 template.show()

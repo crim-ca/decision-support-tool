@@ -1,0 +1,7 @@
+{
+   "residential":{ "group":["single family house","duplex","condominium"] },  
+   "industrial":{ "group":["factory","warehouse","office"] },
+   "commercial":{ "group":["store","mall","hotel"] },
+   "public":{ "group":["recreation centre","town hall","courthouse"] },
+   "infrastructure":{ "group":["water treatment plant","electrical substation","data centre"] }
+}

@@ -64,7 +64,7 @@
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
             "var":"SLs",
             "units": "%",
-            "description":"describes changes in extreme snow loads, based on levels of global warming.",
+            "description":"describes changes in extreme snow loads, based on levels of global warming.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"3"
         }
@@ -112,7 +112,7 @@
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
             "var":"Rn15m and Rn1Day",
             "units": "%",
-            "description":"describes changes to the likelihood of rare short term and daily rain events.",
+            "description":"describes changes to the likelihood of rare short term and daily rain events.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"2" 
         }
@@ -153,7 +153,7 @@
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
             "var":"SLs",
             "units": "%",
-            "description":"describes changes in extreme snow loads, based on levels of global warming.",
+            "description":"describes changes in extreme snow loads, based on levels of global warming.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"3"
         }
@@ -185,7 +185,7 @@
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
             "var":"TJuly and TwJuly",
             "units":"Degrees Celcius",
-            "description":"describes changes in building-relevant changes to mid-summer extreme warm temperatures.",
+            "description":"describes changes in building-relevant changes to mid-summer extreme warm temperatures.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"1"
         }
@@ -216,7 +216,7 @@
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
             "var":"TJan10 and TJan25",
             "units":"Degrees Celcius",
-            "description":"describes changes in building-relevant changes to mid-winter extreme cold temperatures.",
+            "description":"describes changes in building-relevant changes to mid-winter extreme cold temperatures.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"1"
         }
@@ -263,7 +263,7 @@
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
             "units":"%",
-            "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds.",
+            "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"3"   
         },
@@ -271,7 +271,7 @@
             "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
             "url":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
             "units":"%",
-            "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds combined with rain.",
+            "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds combined with rain.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
             "type":"data",
             "tier":"3"         
         }
