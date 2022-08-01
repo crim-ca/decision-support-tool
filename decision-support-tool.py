@@ -38,52 +38,28 @@ class CRBCPI_class:
     def __init__(self):
         self.dT_levels = ["+0.5C", "+1.0C", "+1.5C", "+2.0C", "+2.5C", "+3.0C", "+3.5C"]
         self.CRBCPI_data = {
-            self.dT_levels[0]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+0.5C_NBCC.xls"
-            ),
-            self.dT_levels[1]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+1.0C_NBCC.xls"
-            ),
-            self.dT_levels[2]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+1.5C_NBCC.xls"
-            ),
-            self.dT_levels[3]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+2.0C_NBCC.xls"
-            ),
-            self.dT_levels[4]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+2.5C_NBCC.xls"
-            ),
-            self.dT_levels[5]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+3.0C_NBCC.xls"
-            ),
-            self.dT_levels[6]: pd.read_excel(
-                "https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+3.5C_NBCC.xls"
-            ),
-        }
+            self.dT_levels[0]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+0.5C_NBCC.xls"),
+            self.dT_levels[1]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+1.0C_NBCC.xls"),
+            self.dT_levels[2]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+1.5C_NBCC.xls"),
+            self.dT_levels[3]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+2.0C_NBCC.xls"),
+            self.dT_levels[4]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+2.5C_NBCC.xls"),
+            self.dT_levels[5]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+3.0C_NBCC.xls"),
+            self.dT_levels[6]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+3.5C_NBCC.xls")}
 
         self.CRBCPI_dT_to_time = pd.DataFrame(
-            [
-                [2023, 2023, 2023, 2023],
-                [2035, 2046, 2046, np.nan],
-                [2047, 2070, 2070, np.nan],
-                [2059, 2087, np.nan, np.nan],
-                [2069, np.nan, np.nan, np.nan],
-                [2080, np.nan, np.nan, np.nan],
-                [2090, np.nan, np.nan, np.nan],
-            ],
+            [[2023, 2023, 2023, 2023],
+             [2035, 2046, 2046, np.nan],
+             [2047, 2070, 2070, np.nan],
+             [2059, 2087, np.nan, np.nan],
+             [2069, np.nan, np.nan, np.nan],
+             [2080, np.nan, np.nan, np.nan],
+             [2090, np.nan, np.nan, np.nan]],
             index=self.dT_levels,
-            columns=["RCP8.5", "RCP6.0", "RCP4.5", "RCP2.6"],
-        )
+            columns=["RCP8.5", "RCP6.0", "RCP4.5", "RCP2.6"] )
 
-        self.nn_finder = BallTree(
-            np.vstack(
-                (
-                    np.deg2rad(self.CRBCPI_data["+0.5C"]["Latitude"].values),
-                    np.deg2rad(self.CRBCPI_data["+0.5C"]["Longitude"].values),
-                )
-            ).swapaxes(1, 0),
-            metric="haversine",
-        )
+        self.nn_finder = BallTree( np.vstack((np.deg2rad(self.CRBCPI_data["+0.5C"]["Latitude"].values),
+                                   np.deg2rad(self.CRBCPI_data["+0.5C"]["Longitude"].values))).swapaxes(1, 0),
+            metric="haversine")
 CRBCPI = CRBCPI_class()
 
 system_category="building"
@@ -120,19 +96,12 @@ Core knowledge checklist stage
 This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
 '''
 
-jpg_pane = pn.pane.JPG(
-            os.path.join(general_input_directory, "images/core_knowledge.jpg"),
-            width=plot_width)
-t1 = pn.pane.Markdown(
-            "### Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
-        )
+jpg_pane = pn.pane.JPG(os.path.join(general_input_directory, "images/core_knowledge.jpg"),width=plot_width)
+
+t1 = pn.pane.Markdown( "### Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!")
 # Open general resources database and read each resource to dictionary
-with open(
-            os.path.join(
-                general_input_directory, "master_general_resources_database.json"
-            ),
-            "r",
-        ) as j:
+with open(os.path.join(general_input_directory, "master_general_resources_database.json"),
+            "r") as j:
             general_resources = json.loads(j.read())
         # compile a list of markdown statements by iterating over dictionary
 markdown_resource_links = [
@@ -142,8 +111,7 @@ markdown_resource_links = [
             + "]("
             + general_resources[s]["url"]
             + '){:target="_blank"}'
-            for s in general_resources
-        ]
+            for s in general_resources]
 
 
 knowledge_checklist=pn.Column(
@@ -168,23 +136,20 @@ class Project_Definition(param.Parameterized):
         self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
             os.path.join(self.system_input_directory, "site_info.jpg"),
-            width=plot_width,
-        )
+            width=plot_width)
+        
         self.t1 = pn.pane.Markdown(
             "## The first stage in understanding which climate data you need, is providing some basic information about your "
             + system_category
-            + ".  Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool."
-        )
+            + ".  Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool.")
 
         self.t2 = pn.pane.Markdown(
-            "### What type of " + system_category + " are you assessing?"
-        )
+            "### What type of " + system_category + " are you assessing?")
         
         #####REPLACE THIS BLOCK WITH CALL TO UTILITY FUNCITON
         # User provides an open-ended (typed) definition of system type.
         self.system_type_widget = pn.widgets.TextInput(
-            placeholder="Enter " + system_category + " type here..."
-        )
+            placeholder="Enter " + system_category + " type here...")
 
         self.system_type_selector,self.system_type_manual_input=utilities.selector_plus_custom_text(multi_select=False,
                                                                                                     grouped_lists=True,
@@ -198,20 +163,17 @@ class Project_Definition(param.Parameterized):
         self.t3 = pn.pane.Markdown(
             "### What timeframe are you considering (past and future)? Make your selection based on the realistic planned end of life of your "
             + system_category
-            + "."
-        )
+            + ".")
 
         self.system_lifespan_widget = pn.widgets.DateRangeSlider(
             start=dt.datetime(1950, 1, 1),
             end=dt.datetime(2100, 1, 1),
             value=(dt.datetime(2021, 1, 1), dt.datetime(2061, 1, 1)),
-            bar_color="#FF0000",
-        )
+            bar_color="#FF0000")
 
         self.t5 = pn.pane.Markdown(
             "### Click on the zoomable map to provide the location of your "
-            +system_category+"."
-        )
+            +system_category+".")
 
         #User provides location information via clicking on an interactive map display.
         self.x=0.
@@ -255,8 +217,7 @@ class Project_Definition(param.Parameterized):
             pn.WidgetBox(self.t2, self.system_type_selector,self.system_type_manual_input, css_classes=["custom-box"]),
             pn.WidgetBox(self.t3, self.system_lifespan_widget, css_classes=["custom-box"]),
             pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
-            **panel_options
-        )
+            **panel_options)
     
 #%% Component inventory stage
 '''
@@ -280,23 +241,13 @@ class Component_Inventory(param.Parameterized):
     # Develop database
     def __init__(self, **params):
         super().__init__(**params)
-        self.t1 = pn.pane.Markdown(
-            "# Next, think carefully about the basic elements of your "
-            + str(self.system_type)
-            + "."
-        )
-        self.t2 = pn.pane.Markdown(
-            "### Please select the components from this list that are important aspects of your "
-            + str(self.system_type)
-            + "."
-        )
+        self.t1 = pn.pane.Markdown( "# Next, think carefully about the basic elements of your " + str(self.system_type) + ".")
+        self.t2 = pn.pane.Markdown("### Please select the components from this list that are important aspects of your " + str(self.system_type) + ".")
 
         # Open hazards database and read each hazard item to dictionary
         self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
 
-        self.jpg_pane = pn.pane.JPG(
-            os.path.join(self.system_input_directory, "components.jpg"), height=200
-        )
+        self.jpg_pane = pn.pane.JPG( os.path.join(self.system_input_directory, "components.jpg"), height=200)
 
         self.component_selector,self.component_manual_input=utilities.selector_plus_custom_text(multi_select=True,
                                                                                                 grouped_lists=True,
@@ -322,10 +273,8 @@ class Component_Inventory(param.Parameterized):
                 self.t2,
                 self.component_selector,
                 self.component_manual_input,
-                css_classes=["custom-box"],
-            ),
-            **panel_options
-        )
+                css_classes=["custom-box"]),
+            **panel_options)
     
 #%% Hazard inventory stages
 '''
@@ -349,18 +298,15 @@ class Present_Hazard_Inventory(param.Parameterized):
 
         self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
-            os.path.join(self.system_input_directory, "present_hazard.jpg"), height=200
-        )
+            os.path.join(self.system_input_directory, "present_hazard.jpg"), height=200)
 
         self.t1 = pn.pane.Markdown(
-            "# Next, you need to think about *present-day* weather and climate hazards in your region."
-        )
+            "# Next, you need to think about *present-day* weather and climate hazards in your region.")
 
         self.t2 = pn.pane.Markdown(
             "## Select any hazards that your "
             + self.system_type
-            + " is vulnerable to, today.  Add any additional hazards that are not listed."
-        )
+            + " is vulnerable to, today.  Add any additional hazards that are not listed.")
         self.hazard_selector,self.hazard_manual_input=utilities.selector_plus_custom_text(multi_select=True,
                                                                                           grouped_lists=False,
                                                                                           input_directory=general_input_directory,
@@ -385,8 +331,7 @@ class Present_Hazard_Inventory(param.Parameterized):
             self.t2,
             self.hazard_selector,
             self.hazard_manual_input,
-            **panel_options
-        )
+            **panel_options)
 
 class Future_Hazard_Inventory(param.Parameterized):
 
@@ -405,8 +350,7 @@ class Future_Hazard_Inventory(param.Parameterized):
 
         self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
-            os.path.join(self.system_input_directory, "future_hazard.jpg"), height=200
-        )
+            os.path.join(self.system_input_directory, "future_hazard.jpg"), height=200)
 
         self.t1 = pn.pane.Markdown(
             "# Now let's think about hazards that might emerge in the future because of climate change.")
@@ -414,8 +358,7 @@ class Future_Hazard_Inventory(param.Parameterized):
             "## Consider the remaining hazards in the list.  Is there ANY chance that any of these hazards could impact your "
             + self.system_type
             + " in the future?"
-            + " If so, let's add them to the list."
-        )
+            + " If so, let's add them to the list.")
 
         # Trim hazards list by previously selected hazards list
         self.potential_future_climate_hazards = [h for h in self.all_climate_hazards if h not in self.present_climate_hazards]
@@ -426,32 +369,24 @@ class Future_Hazard_Inventory(param.Parameterized):
             + self.system_type
             + " be vulnerable to in the future?",
             value=[],
-            options=self.potential_future_climate_hazards,
-        )
+            options=self.potential_future_climate_hazards)
         # Allow users to add arbitrary other compone hazards via text entry
         self.t3 = pn.pane.Markdown(
             "### Include other hazards that your "
             + self.system_type
-            + " may be vulnerable to that are not in the list above."
-        )
+            + " may be vulnerable to that are not in the list above.")
         self.climate_hazards_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter any number of additional hazards, separated by commas."
-        )
+            placeholder="Enter any number of additional hazards, separated by commas.")
 
     # Gather output of this Pipeline stage for next stages of Pipeline
     @param.output(net_climate_hazards=param.List())
     def output(self):
-        net_climate_hazards = (
-            self.present_climate_hazards
-            + self.climate_hazards_CrossSelector_widget.value
-        )
+        net_climate_hazards = (self.present_climate_hazards
+            + self.climate_hazards_CrossSelector_widget.value)
         if self.climate_hazards_TextAreaInput_widget.value:
             net_climate_hazards = (
                 net_climate_hazards
-                + self.climate_hazards_TextAreaInput_widget.value.replace(
-                    " ", ""
-                ).split(",")
-            )
+                + self.climate_hazards_TextAreaInput_widget.value.replace(" ", "").split(","))
         return net_climate_hazards
 
     # Define Panel tab
@@ -463,8 +398,7 @@ class Future_Hazard_Inventory(param.Parameterized):
             self.climate_hazards_CrossSelector_widget,
             self.t3,
             self.climate_hazards_TextAreaInput_widget,
-            **panel_options
-        )
+            **panel_options)
     
 #%% Vulnerability screening stage
 '''
@@ -488,56 +422,38 @@ class Vulnerability_HeatMap(param.Parameterized):
 
         self.jpg_pane = pn.pane.JPG(
             os.path.join(general_input_directory, "images/vulnerability.jpg"),
-            width=plot_width,
-        )
+            width=plot_width)
 
         self.t1 = []
         self.t1.append(
             pn.pane.Markdown(
                 "# Now the fun part: screening the impact of each hazard you identified, against each major component of your "
                 + self.system_type.lower()
-                + ".  This is crucial for prioritizing your climate data and information needs."
-            )
-        )
+                + ".  This is crucial for prioritizing your climate data and information needs." ))
         self.t1.append(
             pn.pane.Markdown(
                 "This matrix contains a box, for each combination of hazards (columns) and "
                 + self.system_type.lower()
-                + " components (rows) that you identified."
-            )
-        )
+                + " components (rows) that you identified."))
         self.t1.append(
             pn.pane.Markdown(
-                'For each combination, think carefully about how vulnerable that component might be - today or in the future - to that climate hazard, across the scale from "no vulnerability" to "extreme vulnerability".'
-            )
-        )
+                'For each combination, think carefully about how vulnerable that component might be - today or in the future - to that climate hazard, across the scale from "no vulnerability" to "extreme vulnerability".'))
         self.t1.append(
             pn.pane.Markdown(
-                "Click on the box one or more times to set that vulnerability level, for that hazard/component combination.  Then move on to the next box!"
-            )
-        )
+                "Click on the box one or more times to set that vulnerability level, for that hazard/component combination.  Then move on to the next box!"))
         self.t1.append(
             pn.pane.Markdown(
                 'When you are done, step back and take a broad look at your completed "vulnerability heat map".  Does it match with your intuition about what your '
                 + self.system_type.lower()
-                + " is sensitive to?  If so: on to the final step!"
-            )
-        )
+                + " is sensitive to?  If so: on to the final step!"))
 
         # Define an xarray data array dimensioned by the # of hazards and # of components
         self.vulnerability_matrix = xr.DataArray(
             np.zeros((len(self.net_climate_hazards), len(self.system_components))),
             dims=["climate_hazards", "system_components"],
-            coords=dict(
-                climate_hazards=[
-                    s.replace(" ", "\n") for s in self.net_climate_hazards
-                ],
-                system_components=[
-                    s.replace(" ", "\n") for s in self.system_components
-                ],
-            ),
-            name="vulnerability",
-        )
+            coords=dict(climate_hazards=[ s.replace(" ", "\n") for s in self.net_climate_hazards],
+                   system_components=[s.replace(" ", "\n") for s in self.system_components]),
+            name="vulnerability")
 
         # Define a tap (mouse click) stream
         self.stream = hv.streams.Tap(x=None, y=None)
@@ -547,18 +463,9 @@ class Vulnerability_HeatMap(param.Parameterized):
     # Define function that increments value of heatmap element by 1, each time it is clicked.  Loop back to initial value (zero) if maximum # of clicks exceeded
     def increment_map(self, hazards=None, components=None):
         if hazards and components:
-            self.vulnerability_matrix.loc[
-                {"climate_hazards": hazards, "system_components": components}
-            ] += 1
-            if (
-                self.vulnerability_matrix.loc[
-                    {"climate_hazards": hazards, "system_components": components}
-                ]
-                > 5
-            ):
-                self.vulnerability_matrix.loc[
-                    {"climate_hazards": hazards, "system_components": components}
-                ] = 0
+            self.vulnerability_matrix.loc[{"climate_hazards": hazards, "system_components": components}] += 1
+            if (self.vulnerability_matrix.loc[{"climate_hazards": hazards, "system_components": components}] > 5):
+                self.vulnerability_matrix.loc[{"climate_hazards": hazards, "system_components": components}] = 0
             self.stream.reset()
 
         # Update heatmap matrix with vulnerability matrix values provided by user
@@ -581,31 +488,23 @@ class Vulnerability_HeatMap(param.Parameterized):
             ylabel=self.system_type.title() + " Component",
             fontsize={"ticks": "10pt", "ylabel": "20px", "xlabel": "20px"},
             gridstyle={"grid_line_color": "black"},
-            colorbar=False,
-        )
+            colorbar=False)
         return hm
 
     # Bind the increment map function to the output of the tap stream x and y values, wrap in a Holoviews DynamicMap object.
     def matrix_view(self):
-        mp = pn.bind(
-            self.increment_map,
-            hazards=self.stream.param.x,
-            components=self.stream.param.y,
-        )
+        mp = pn.bind( self.increment_map,hazards=self.stream.param.x,components=self.stream.param.y)
         return hv.DynamicMap(mp)
 
     c = plt.cm.get_cmap("PuRd")
-    ticks = (
-        ("extreme vulnerability", "white", th(c(1.0))),
+    ticks = (("extreme vulnerability", "white", th(c(1.0))),
         ("high vulnerability", "white", th(c(0.8))),
         ("substantial vulnerability", "white", th(c(0.6))),
         ("medium vulnerability", "black", th(c(0.4))),
         ("low vulnerability", "black", th(c(0.2))),
-        ("no vulnerability", "black", th(c(0.0))),
-    )
+        ("no vulnerability", "black", th(c(0.0))))
     legend_box = pn.GridBox(
-        *[
-            pn.pane.HTML(
+        *[pn.pane.HTML(
                 entry[0],
                 style={
                     "color": entry[1],
@@ -614,14 +513,8 @@ class Vulnerability_HeatMap(param.Parameterized):
                     "border": "2px solid black",
                     "border-radius": "5px",
                     "padding": "10px",
-                },
-                width=100,
-                height=50,
-            )
-            for entry in ticks
-        ],
-        ncols=1,
-    )
+                }, width=100,height=50)
+            for entry in ticks], ncols=1)
 
     # Gather output of this Pipeline stage for next stages of Pipeline
     @param.output(vulnerability_matrix=param.DataFrame())
@@ -636,8 +529,7 @@ class Vulnerability_HeatMap(param.Parameterized):
             self.jpg_pane,
             *self.t1,
             pn.Row(self.matrix_view, self.legend_box),
-            **panel_options
-        )
+            **panel_options)
     
 #%% Summary reporting stage
 '''
@@ -658,12 +550,7 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
     vulnerability_matrix = param.DataFrame()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends(
-        "system_type",
-        "system_lifespan",
-        "system_location",
-        "vulnerability_matrix",
-    )
+    @param.depends("system_type", "system_lifespan", "system_location", "vulnerability_matrix")
     def __init__(self, **params):
         super().__init__(**params)
 
@@ -676,8 +563,7 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             + system_category
             + " components, identified climate hazards and screened the vulnerability of your "
             + system_category
-            + " components.  These are important steps towards finding good climate data."
-        )
+            + " components.  These are important steps towards finding good climate data.")
 
         self.t2=pn.pane.Markdown("# Here's how climate hazards relate to the components of your "+self.system_type+".\n")
 
@@ -713,11 +599,8 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             self.jpg_pane,
             self.t1,
             pn.WidgetBox(
-                self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]
-            ),
-            **panel_options
-        )
-    
+                self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]),
+            **panel_options)
     
 #%% Summary_Report_Curated_Data
 '''
@@ -733,13 +616,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
     vulnerability_matrix = param.DataFrame()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends(
-        "system_category",
-        "system_type",
-        "system_lifespan",
-        "system_location",
-        "vulnerability_matrix",
-    )
+    @param.depends("system_category", "system_type", "system_lifespan", "system_location", "vulnerability_matrix")
     
     def __init__(self, **params):
         super().__init__(**params)
@@ -756,15 +633,13 @@ class Summary_Report_Curated_Data(param.Parameterized):
             self.vulnerability_matrix.groupby("climate_hazards")["vulnerability"]
             .sum()
             .to_frame()
-            .sort_values("vulnerability", ascending=False)
-        )
+            .sort_values("vulnerability", ascending=False))
 
         self.prioritized_components = (
             self.vulnerability_matrix.groupby("system_components")["vulnerability"]
             .sum()
             .to_frame()
-            .sort_values("vulnerability", ascending=False)
-        )
+            .sort_values("vulnerability", ascending=False))
 
         self.t3=[]
         self.t3.append(pn.pane.Markdown(
@@ -773,8 +648,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
             + " - according to your own assessment.  Most influential hazards appear first."
             +"If you expand each hazard item, you will find a go-to list of best-in-class climate information and data resources, curated by the Canadian Centre for Climate Services.  "
             +"Explore these resources first, to kick-start your understanding of present and future climate  impacts to your "
-            + self.system_type+ "!"
-        ))
+            + self.system_type+ "!"))
 
         self.dT = dt.date.today().year - self.system_lifespan[0].year
         if self.dT > 20.0:
@@ -787,9 +661,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
                     + " years old.  "
                     + "Climate has already changed quite a bit in this time!  In your climate change planning, be sure to consider that your "
                     + self.system_type
-                    + " has already experienced a significant amount of change in the severity and frequency of hazards you've identified!**"
-                )
-            )
+                    + " has already experienced a significant amount of change in the severity and frequency of hazards you've identified!**"))
 
         # Build list of hazards, that start with biggest hazards.  Make text red for higher impact hazards; scale to blacker and smaller.
         self.hazards = self.prioritized_hazards.index.values.tolist()
@@ -797,9 +669,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
         self.fontcolor = [(r, 0, 0) for r in np.linspace(255, 0, num=len(self.hazards))]
         self.statement_list = []
 
-        with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
-        ) as j:
+        with open(os.path.join(general_input_directory, "master_hazard_database.json"), "r") as j:
             self.full_hazards_dict = json.loads(j.read())
 
         self.hazard_panels = []  # list of per hazard WidgetPanes
@@ -807,8 +677,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
         # find nearest CPI point (use CRBCPI_i to index climate data for this point, from CRBCPI data dictionary)
         # Set up nearest neighbour search on the sphere
         self.CRBCPI_distance, self.CRBCPI_i = CRBCPI.nn_finder.query(
-            np.deg2rad([[self.lat, self.lon]]), k=1
-        )
+            np.deg2rad([[self.lat, self.lon]]), k=1)
         self.CRBCPI_i = self.CRBCPI_i[0][0]
 
         for n, h_formatted in enumerate(self.hazards):
@@ -820,34 +689,24 @@ class Summary_Report_Curated_Data(param.Parameterized):
                     general_input_directory,
                     "images",
                     "cropped_hazard_images",
-                    h.replace(" ", "-") + ".jpg",
-                )
+                    h.replace(" ", "-") + ".jpg")
                 self.hazard_jpg_pane = pn.pane.JPG(
-                    self.fname, width=int(plot_width * 0.9)
-                )  # this has to have same name as hazard, with exception of spaces (which get replaced by '-' as per replace code)width=plot_width,
+                    self.fname, width=int(plot_width * 0.9))  # this has to have same name as hazard, with exception of spaces (which get replaced by '-' as per replace code)width=plot_width,
 
                 # build up hazard-specific reporting box
                 self.hazard_details.append(
                     self.full_hazards_dict[h]["impact_statement"][
-                        system_category.replace(" ", "_")
-                    ]
-                    + "  "
-                    + self.full_hazards_dict[h]["direction_statement"]
-                )
+                        system_category.replace(" ", "_")]+ "  " + self.full_hazards_dict[h]["direction_statement"])
                 self.hazard_details.append(
                     self.full_hazards_dict[h]["direction_confidence"]
                     + "  "
-                    + self.full_hazards_dict[h]["magnitude_confidence"]
-                )
+                    + self.full_hazards_dict[h]["magnitude_confidence"])
                 self.hazard_details.append(
                     "Click below to explore these best-in-class, Canadian-focussed "
                     + h
-                    + "/climate change resources."
-                )
+                    + "/climate change resources.")
 
-                for resource, resource_details in self.full_hazards_dict[h][
-                    "resources"
-                ].items():
+                for resource, resource_details in self.full_hazards_dict[h]["resources"].items():
                     self.resource_items = []
                     self.resource_items.append(
                         "Information and/or data on "
@@ -857,8 +716,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
                         + ".  This "
                         + resource_details["type"]
                         + " "
-                        + resource_details["description"]
-                    )
+                        + resource_details["description"])
                     if resource_details["source"] == "ClimateData.ca":
                         self.url = (
                             resource_details["url"]
@@ -873,40 +731,34 @@ class Summary_Report_Curated_Data(param.Parameterized):
                             + resource_details["season"]
                             + "&rcp=rcp85&decade="
                             + str(2070)
-                            + "s&sector="
-                        )
+                            + "s&sector=")
                         self.resource_items.append(
                             "  Click here to explore this data in more detail for your location: ["
                             + resource
                             + "]("
                             + self.url
-                            + '){:target="_blank"}'
-                        )
+                            + '){:target="_blank"}')
                     elif (
                         resource_details["source"]
                         == "The Climate Resilient Buildings and Core Public Infrastructure Project"
                     ):
                         self.location = CRBCPI.CRBCPI_data["+0.5C"]["Location"][
-                            np.squeeze(self.CRBCPI_i)
-                        ]
+                            np.squeeze(self.CRBCPI_i)]
                         self.proximity = "{x:.0f}".format(
-                            x=np.squeeze(self.CRBCPI_distance) * 6378.0
-                        )  # convert distance from radians to kilometers, format for rounded-value printing
+                            x=np.squeeze(self.CRBCPI_distance) * 6378.0)  # convert distance from radians to kilometers, format for rounded-value printing
                         self.resource_items.append(
                             "In addition to regional information, it appears there is data available for "
                             + self.location
                             + ", around "
                             + self.proximity
-                            + " km away from your site."
-                        )
+                            + " km away from your site." )
                         self.url = resource_details["url"]
                         self.resource_items.append(
                             "###  Click here to explore this data in more detail: ["
                             + resource
                             + "]("
                             + self.url
-                            + ")"
-                        )
+                            + ")")
                     else:
                         self.url = resource_details["url"]
                         self.resource_items.append(
@@ -914,12 +766,10 @@ class Summary_Report_Curated_Data(param.Parameterized):
                             + resource
                             + "]("
                             + self.url
-                            + ")"
-                        )
+                            + ")")
 
                     self.hazard_details.append(
-                        pn.WidgetBox(*self.resource_items, width=int(plot_width * 0.9))
-                    )
+                        pn.WidgetBox(*self.resource_items, width=int(plot_width * 0.9)))
             else:
                 #TODO determine which picture to use if no hazard pic exists.
                 self.fname=os.path.join(general_input_directory, "images","cropped_hazard_images","generic.jpg")
@@ -942,10 +792,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
             pn.WidgetBox(
                 *self.t3,
                 pn.Accordion(*self.hazard_panels, width=plot_width),
-                css_classes=["custom-box"],
-            ),
-            **panel_options
-        )
+                css_classes=["custom-box"]),**panel_options)
     
 #%% Next_Steps
 '''
@@ -994,16 +841,14 @@ pipeline.add_stage(name="Next Steps", stage=Next_Steps)
 if debug_flag:
     DST_core = pn.Column(
         pipeline,
-        name="Decision Support Tool",
-    )
+        name="Decision Support Tool")
 else:
     DST_core = pn.Column(
         pipeline.stage,
         pipeline.buttons,
         width=plot_width,
         height=plot_height,
-        name="Decision Support Tool",
-    )
+        name="Decision Support Tool")
 
 #%% Deploy
 main_panel_widget = pn.widgets.RadioBoxGroup(name="", 
