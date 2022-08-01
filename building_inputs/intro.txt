@@ -1,12 +1,12 @@
-# Welcome to ClimateData.ca's Interactive Building Sector Climate Decision Support Tool
+### Welcome to ClimateData.ca's Interactive Building Sector Climate Decision Support Tool
 
-## This interactive tool is designed for engineers, architects, planners, and other professionals in the buildings sector.  The tool has two main goals:
+This interactive tool is designed for engineers, architects, planners, and other professionals in the buildings sector.  The tool has two main goals:
 
 - **GOAL 1** - Gain a better sense of how to select useful climate change information for building-specific climate change considerations, including risk assessments and long term planning.
 
 - **GOAL 2** - Help find some  useful climate change information for your building
 
-## You will be guided through the following 5 Steps:
+You will be guided through the following 5 Steps:
 
 - **STEP 1** - Provide basic information about your building
 - **STEP 2** - Develop an inventory of building components and systems
@@ -14,4 +14,4 @@
 - **STEP 4** - Explore the impacts of weather and climate hazards on building components and systems
 - **STEP 5** - Summary report and next steps
 
-## This process should take around 20 minutes to complete!  Have fun!
+This process should take around 20 minutes to complete!  Have fun!

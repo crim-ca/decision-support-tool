@@ -1,33 +1,13 @@
-# -*- coding: utf-8 -*-
-# ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.11.0
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
-
-# + tags=[]
-#### Module loads and general setup
-
+#%% Imports and setup
 import os
-import pathlib  # to do, convert all os-based path work to pathlib
 import param
-from bokeh.palettes import YlOrRd9
-from bokeh.events import Tap
 import holoviews as hv
 from holoviews.plotting.util import process_cmap
 from holoviews import opts
-import hvplot.xarray
 import geoviews as gv
 import panel as pn
 import xarray as xr
+import hvplot.xarray
 from cartopy import crs
 from pyproj import Proj, transform
 import pandas as pd  # also needs xlrd installed
@@ -37,9 +17,7 @@ from matplotlib.colors import to_hex as th
 import datetime as dt  # not available on Conda - access via PIP
 import json
 from sklearn.neighbors import BallTree
-from IPython import get_ipython
-import panel as pn
-from geopy.geocoders import Nominatim
+import utilities
 
 general_input_directory = "."
 
@@ -50,13 +28,11 @@ pn.config.raw_css.append(custom_css)
 
 hv.extension("bokeh")
 gv.extension("bokeh")
-pn.extension(raw_css=[custom_css])
+pn.extension(raw_css=[custom_css],sizing_mode='stretch_width')
 
-# + tags=[]
-# TODO: dynamically scale based on screen size
-plot_width = 900
+plot_width = 1200
 plot_height = 1500
-
+panel_options=dict(width=plot_width, width_policy='max', sizing_mode='stretch_both')
 
 class CRBCPI_class:
     def __init__(self):
@@ -108,209 +84,121 @@ class CRBCPI_class:
             ).swapaxes(1, 0),
             metric="haversine",
         )
-
-
 CRBCPI = CRBCPI_class()
 
+system_category="building"
+template=pn.template.BootstrapTemplate(title='Canadian Centre for Climate Services '+system_category+' Decision Support Tool',
+                                       favicon='images/logo.ico',
+                                       logo='images/logo.ico',
+                                       )
+#%% Welcome stage
+'''
+This code provides a welcome and any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
+Applied as a modal to the app.
+'''
 
-# -
+system_input_directory = system_category.replace(" ", "_") + "_inputs"
+jpg_pane = pn.pane.JPG(os.path.join(system_input_directory, "intro_header.jpg"),
+                       width=plot_width)
+with open(os.path.join(system_input_directory, "intro.txt")) as f:
+     lines = f.readlines()
+lines = "\n".join(lines)
+introduction = pn.pane.Markdown(lines)
 
-# # Decision support tool core pipeline
-#
-# Each of the following Notebook sections encapsulate code for one step in a [Panels Pipeline](https://panel.holoviz.org/user_guide/Pipelines.html) flow, which defines the interactive user-driven decision support tool process.  As per Panels Pipeline architecture, each step is defined as a Python Parameterized class.
+with open(os.path.join(general_input_directory, "disclaimer.txt")) as f:
+    lines = f.readlines()
+    lines = "\n".join(lines)
+disclaimer = pn.pane.Markdown(lines)
 
-# ## Sector choice stage
-#
-# This stage allows user to define the sector they are interested in.
+welcome = pn.Column(introduction,
+                    disclaimer,
+                    **panel_options)
 
-# + tags=[]
-class Sector_Definition(param.Parameterized):
-    def __init__(self, **params):
-        super().__init__(**params)
+#%% Core knowledge checklist stage
+'''
+Core knowledge checklist stage
+This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
+'''
 
-        with open(os.path.join(general_input_directory, "sector_choice.txt")) as f:
-            self.lines = f.readlines()
-        self.lines = "\n".join(self.lines)
-        self.t1 = pn.pane.Markdown(self.lines)
-
-        self.system_category_widget = pn.widgets.Select(
-            options=["Building", "Contaminated Site"]
-        )
-
-    @param.output(system_category=param.String())
-    def output(self):
-        sector_type = self.system_category_widget.value.lower()
-        return sector_type
-
-    def panel(self):
-        return pn.Column(
-            self.t1,
-            pn.WidgetBox(self.system_category_widget, css_classes=["custom-box"]),
-        )
-
-
-# -
-
-# ## Introduction stage
-#
-# This stage provides a general introduction to the process that users will undergo, as they step through the tool.
-
-# + tags=[]
-class Introduction(param.Parameterized):
-
-    # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
-
-    # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends("sector_type")
-    def __init__(self, **params):
-        super().__init__(**params)
-        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
-        self.jpg_pane = pn.pane.JPG(
-            os.path.join(self.system_input_directory, "intro_header.jpg"),
-            width=plot_width,
-        )
-        with open(os.path.join(self.system_input_directory, "intro.txt")) as f:
-            self.lines = f.readlines()
-        self.lines = "\n".join(self.lines)
-
-    def panel(self):
-        return pn.Column(
-            self.jpg_pane,
-            pn.pane.Markdown(self.lines),
-            width=plot_width,
-            height=plot_height,
-        )
-
-
-# -
-
-# ## Disclaimer stage
-#
-# This stage provides any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
-
-# + tags=[]
-class Disclaimer(param.Parameterized):
-
-    # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
-
-    def __init__(self, **params):
-        super().__init__(**params)
-        self.jpg_pane = pn.pane.JPG(
-            os.path.join(general_input_directory, "images/disclaimer.jpg"), height=200
-        )
-        with open(os.path.join(general_input_directory, "disclaimer.txt")) as f:
-            self.lines = f.readlines()
-        self.lines = "\n".join(self.lines)
-
-    def panel(self):
-        return pn.Column(
-            self.jpg_pane,
-            pn.pane.Markdown(self.lines),
-            width=plot_width,
-            height=plot_height,
-            name="Disclaimer",
-        )
-
-
-# TODO: add a 'Do you accept these conditions of use?' button that opens access to remainder of app.
-# -
-
-# ## Core knowledge checklist stage
-#
-# This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
-
-# + tags=[]
-class Core_Knowledge_Checklist(param.Parameterized):
-
-    # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
-
-    def __init__(self, **params):
-        super().__init__(**params)
-        self.jpg_pane = pn.pane.JPG(
+jpg_pane = pn.pane.JPG(
             os.path.join(general_input_directory, "images/core_knowledge.jpg"),
-            width=plot_width,
+            width=plot_width)
+t1 = pn.pane.Markdown(
+            "### Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
         )
-        self.t1 = pn.pane.Markdown(
-            "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
-        )
-        # Open general resources database and read each resource to dictionary
-        with open(
+# Open general resources database and read each resource to dictionary
+with open(
             os.path.join(
                 general_input_directory, "master_general_resources_database.json"
             ),
             "r",
         ) as j:
-            self.general_resources = json.loads(j.read())
+            general_resources = json.loads(j.read())
         # compile a list of markdown statements by iterating over dictionary
-        self.markdown_resource_links = [
-            self.general_resources[s]["background"]
+markdown_resource_links = [
+    general_resources[s]["background"]
             + "<br/>["
             + s
             + "]("
-            + self.general_resources[s]["url"]
+            + general_resources[s]["url"]
             + '){:target="_blank"}'
-            for s in self.general_resources
+            for s in general_resources
         ]
 
-    def panel(self):
-        return pn.Column(
-            self.jpg_pane,
-            self.t1,
-            *self.markdown_resource_links,  # splatted list of markdown statements
-            width=plot_width,
-            height=plot_height
-        )
 
+knowledge_checklist=pn.Column(
+            jpg_pane,
+            t1,
+            *markdown_resource_links,
+            **panel_options)
 
-# -
+#%% Project definition stage
+'''
+Project definition stage
+A key first step in any climate change impact/vulnerability assessment, is a clear-eyed and objective statement of the system ('project') in question. Project definition information is gathered here and is used to focus summary information and data extractions for the user on (for example) relevant time frames and locations.
+'''
 
-# ## Project definition stage
-#
-# A key first step in any climate change impact/vulnerability assessment, is a clear-eyed and objective statement of the system ('project') in question.  Project definition information is gathered here and is used to focus summary information and data extractions for the user on (for example) relevant time frames and locations.
-
-# + tags=[]
 class Project_Definition(param.Parameterized):
-
-    # Define information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends("sector_type")
     def __init__(self, **params):
         super().__init__(**params)
 
-        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
             os.path.join(self.system_input_directory, "site_info.jpg"),
             width=plot_width,
         )
         self.t1 = pn.pane.Markdown(
-            "# The first stage in understanding which climate data you need, is providing some basic information about your "
-            + self.system_category
-            + "!"
-        )
-        self.t11 = pn.pane.Markdown(
-            "## Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool."
+            "## The first stage in understanding which climate data you need, is providing some basic information about your "
+            + system_category
+            + ".  Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool."
         )
 
         self.t2 = pn.pane.Markdown(
-            "### What type of " + self.system_category + " are you assessing?"
+            "### What type of " + system_category + " are you assessing?"
         )
-
+        
+        #####REPLACE THIS BLOCK WITH CALL TO UTILITY FUNCITON
         # User provides an open-ended (typed) definition of system type.
         self.system_type_widget = pn.widgets.TextInput(
-            placeholder="Enter " + self.system_category + " type here..."
+            placeholder="Enter " + system_category + " type here..."
         )
 
+        self.system_type_selector,self.system_type_manual_input=utilities.selector_plus_custom_text(multi_select=False,
+                                                                                                    grouped_lists=True,
+                                                                                                    input_directory=system_category.replace(" ", "_") + "_inputs",
+                                                                                                    input_file='system_types.json',
+                                                                                                    selector_text='Select your '+system_category+' type if it exists in this list...',
+                                                                                                    custom_text='...or define it here yourself.')
+        
         # User provides a definition of system lifespan via manipulation of a slider
 
         self.t3 = pn.pane.Markdown(
-            "### What timeframe (past and future) do you need to make decisions on, with respect to your "
-            + self.system_category
-            + "?"
+            "### What timeframe are you considering (past and future)? Make your selection based on the realistic planned end of life of your "
+            + system_category
+            + "."
         )
 
         self.system_lifespan_widget = pn.widgets.DateRangeSlider(
@@ -320,93 +208,39 @@ class Project_Definition(param.Parameterized):
             bar_color="#FF0000",
         )
 
-        self.t4 = pn.pane.Markdown(
-            "Please enter the location of your "
-            + self.system_category.replace("_", " ")
-            + ", or use the map below to select a location manually."
-        )
-        # note: I want to chanve 'value' to 'placeholder' below, but doing so messes everything up...
-        self.system_address_widget = pn.widgets.TextInput(
-            placeholder="Type full or partial address here...", value=""
-        )
-        self.geocode_button = pn.widgets.Button(name="🔍", width=100)
-
-        latitude = 0.0
-        longitude = 0.0
-        location = "empty"
-
         self.t5 = pn.pane.Markdown(
-            "### Click on this zoomable map to provide the location of your "
-            + self.system_category
-            + ".  Be patient, it may take a moment for your point to appear on the map."
+            "### Click on the zoomable map to provide the location of your "
+            +system_category+"."
         )
-        # User provides location information via clicking on an interactive map display.
-        self.x = 0.0
-        self.y = 0.0
+
+        #User provides location information via clicking on an interactive map display.
+        self.x=0.
+        self.y=0.
         self.stream = hv.streams.Tap(x=None, y=None)
-        self.geocodeflag = 0
-
-        def b(event):
-            geolocator = Nominatim(user_agent="example")
-            address = self.system_address_widget.value
-            location = geolocator.geocode(address)
-            latitude = location.latitude
-            longitude = location.longitude
-            proj1 = Proj("epsg:4326", preserve_units=False)
-            proj2 = Proj("epsg:3785", preserve_units=False)
-            outProj = Proj(init="epsg:3857")
-            inProj = Proj(init="epsg:4326")
-            x1 = longitude
-            y1 = latitude
-            x2, y2 = transform(inProj, outProj, x1, y1)
-            self.x = x2
-            self.y = y2
-            self.geocodeflag = 1
-            self.stream.update(x=x2)
-
-        self.geocode_button.on_click(b)
-
-    # TO DO: inherit location information from geocode function, plot dot automatically
-    def map_constructor(self, x, y):
-        map_background = gv.tile_sources.CartoLight
-
-        Canada_x_bounds = (-15807400, -5677300)
-        Canada_y_bounds = (8012300, 11402300)
-        if self.geocodeflag == 0:
-            self.x = x
-            self.y = y
-            location_point = gv.Points(
-                (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
-            )
-        else:
-            location_point = gv.Points(
-                (self.x, self.y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
-            )
-        self.geocodeflag = 0
-        return (map_background * location_point).opts(
-            opts.Points(
-                global_extent=False,
-                xlim=Canada_x_bounds,
-                ylim=Canada_y_bounds,
-                width=700,
-                height=550,
-                size=12,
-                color="black",
-            )
-        )
-
-    def map_view(self):
-        mp = pn.bind(self.map_constructor, x=self.stream.param.x, y=self.stream.param.y)
+        
+    def map_constructor(self,x=0,y=0):
+        map_background = gv.tile_sources.Wikipedia
+        self.x=x
+        self.y=y
+        Canada_x_bounds=(-15807400,-5677300)
+        Canada_y_bounds=(8012300,  11402300)
+        location_point= gv.Points((x,y,'point'),vdims='Point',crs=crs.GOOGLE_MERCATOR)
+        return (map_background*location_point).opts(opts.Points(global_extent=False,
+                                          xlim=Canada_x_bounds,ylim=Canada_y_bounds, size=12, color='black'))
+    def map_view (self):
+        mp=pn.bind(self.map_constructor,x=self.stream.param.x,y=self.stream.param.y)
         return hv.DynamicMap(mp)
 
     # Gather output of this Pipeline stage for next stages of Pipeline
-    @param.output(
-        system_type=param.String(),
-        system_lifespan=param.Tuple(),
-        system_location=param.List(),
-    )
+    @param.output(system_type=param.String(),
+                  system_lifespan=param.Tuple(),
+                  system_location=param.List())
+    
     def output(self):
-        system_type = self.system_type_widget.value.lower()
+        if self.system_type_manual_input.value != "":
+            system_type = self.system_type_manual_input.value.lower()
+        else:
+            system_type = self.system_type_selector.value.lower()
         system_lifespan = self.system_lifespan_widget.value
         proj1 = Proj("epsg:4326", preserve_units=False)
         proj2 = Proj("epsg:3785", preserve_units=False)
@@ -418,42 +252,30 @@ class Project_Definition(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             self.t1,
-            self.t11,
-            pn.WidgetBox(self.t2, self.system_type_widget, css_classes=["custom-box"]),
-            pn.WidgetBox(
-                self.t3, self.system_lifespan_widget, css_classes=["custom-box"]
-            ),
-            pn.WidgetBox(
-                self.t4,
-                pn.Row(self.system_address_widget, self.geocode_button),
-                css_classes=["custom-box"],
-            ),
+            pn.WidgetBox(self.t2, self.system_type_selector,self.system_type_manual_input, css_classes=["custom-box"]),
+            pn.WidgetBox(self.t3, self.system_lifespan_widget, css_classes=["custom-box"]),
             pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
+    
+#%% Component inventory stage
+'''
+2) Component inventory stage
+To robustly understand climate impacts to and climate vulnerabilities of complex systems, they need to be broken down into major functional components and each component assessed separately. For example:
 
+an airport could be vulnerable to climate impacts either to specific impacts to the runway, or specific impacts to the control tower
+an ecosystem could be vulnerable to climate impacts either to a particular animal species, or a particular plant species High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
+'''
 
-# -
-
-# ## 2) Component inventory stage
-#
-# To robustly understand climate impacts to and climate vulnerabilities of complex systems, they need to be broken down into major functional components and each component assessed separately.  For example:
-# - an airport could be vulnerable to climate impacts either to specific impacts to the runway, or specific impacts to the control tower  
-# - an ecosystem could be vulnerable to climate impacts either to a particular animal species, or a particular plant species
-# High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
-
-# + tags=[]
 class Component_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
     system_type = param.String()
     system_lifespan = param.Tuple()
     system_location = param.List()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends("system_category", "system_type")
+    @param.depends("system_type")
 
     # Develop database
     def __init__(self, **params):
@@ -470,52 +292,25 @@ class Component_Inventory(param.Parameterized):
         )
 
         # Open hazards database and read each hazard item to dictionary
-        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
 
         self.jpg_pane = pn.pane.JPG(
             os.path.join(self.system_input_directory, "components.jpg"), height=200
         )
 
-        with open(
-            os.path.join(self.system_input_directory, "component_database.json"), "r"
-        ) as j:
-            self.components = json.loads(j.read())
-        # Get basic list of system components.  Some fancy Python to get this into a list from nested dictionary entries.
-        self.system_components = sum(
-            [self.components[c]["group"] for c in self.components], []
-        )
-        # Provide selector that lets user 'construct' their system.
-        # TODO: generalize this to allow for arbitrary input component files, for arbitrary systems
-        self.system_components_CrossSelector_widget = pn.widgets.CrossSelector(
-            name="Which "
-            + self.system_category
-            + " components would you like to include in this assessment?",
-            value=[],
-            options=self.system_components,
-        )
-        # Allow users to add arbitrary other components via text entry
-        self.t3 = pn.pane.Markdown(
-            "### Feel free to include other components of your "
-            + self.system_type
-            + ", that are not in the list above."
-        )
-        self.system_components_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter any number of "
-            + self.system_category
-            + " components, separated by commas..."
-        )
+        self.component_selector,self.component_manual_input=utilities.selector_plus_custom_text(multi_select=True,
+                                                                                                grouped_lists=True,
+                                                                                                input_directory=system_category.replace(" ", "_") + "_inputs",
+                                                                                                input_file='component_database.json',
+                                                                                                selector_text="Which " + self.system_type + " components would you like to include in this assessment?",
+                                                                                                custom_text="Enter any number of additional " + self.system_type + " components, separated by commas, here.")
 
     # Gather output of this Pipeline stage for next stages of Pipeline
     @param.output(system_components=param.List())
     def output(self):
-        system_components = self.system_components_CrossSelector_widget.value
-        if self.system_components_TextAreaInput_widget.value:
-            system_components = (
-                system_components
-                + self.system_components_TextAreaInput_widget.value.replace(
-                    " ", ""
-                ).split(",")
-            )
+        system_components = self.component_selector.value
+        if self.component_manual_input.value:
+            system_components = (system_components + self.component_manual_input.value.replace(" ", "").split(","))
         return system_components
 
     # Define Panel tab
@@ -525,31 +320,23 @@ class Component_Inventory(param.Parameterized):
             self.t1,
             pn.WidgetBox(
                 self.t2,
-                self.system_components_CrossSelector_widget,
+                self.component_selector,
+                self.component_manual_input,
                 css_classes=["custom-box"],
             ),
-            pn.WidgetBox(
-                self.t3,
-                self.system_components_TextAreaInput_widget,
-                css_classes=["custom-box"],
-            ),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
-
-
-# -
-
-# ## 3) Hazard inventory stage
-#
-# Once components of a system are defined, users need to think carefully about which hazards these components may be vulnerable to, today and in the future.  
-# High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
-
-# + tags=[]
+    
+#%% Hazard inventory stages
+'''
+3) Hazard inventory stage
+Once components of a system are defined, users need to think carefully about which hazards these components may be vulnerable to, today and in the future.  
+High level component information gathered here is used to define one axis of a vulnerability ranking matrix that is manipulated be the user to self-develop an understanding of component vulnerability rankings.
+'''
 class Present_Hazard_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
+
     system_type = param.String()
     system_lifespan = param.Tuple()
     system_location = param.List()
@@ -560,7 +347,7 @@ class Present_Hazard_Inventory(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
 
-        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
             os.path.join(self.system_input_directory, "present_hazard.jpg"), height=200
         )
@@ -574,43 +361,21 @@ class Present_Hazard_Inventory(param.Parameterized):
             + self.system_type
             + " is vulnerable to, today.  Add any additional hazards that are not listed."
         )
-
-        # Open hazards database and read each hazard item to dictionary
-        with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
-        ) as j:
-            self.full_hazards_dict = json.loads(j.read())
-        self.all_climate_hazards = [s for s in self.full_hazards_dict]
-        # Provide selector that lets user select hazards that pertain to their system.
-        self.climate_hazards_CrossSelector_widget = pn.widgets.CrossSelector(
-            name="Which climate hazards is your "
-            + self.system_type
-            + " is vulnerable to?",
-            value=[],
-            options=self.all_climate_hazards,
-        )
-        # Allow users to add arbitrary other component hazards via text entry
-        self.t3 = pn.pane.Markdown(
-            "### Include other hazards that your "
-            + self.system_type
-            + " is vulnerable to that are not in the list above."
-        )
-        self.climate_hazards_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter other hazards, separated by commas."
-        )
+        self.hazard_selector,self.hazard_manual_input=utilities.selector_plus_custom_text(multi_select=True,
+                                                                                          grouped_lists=False,
+                                                                                          input_directory=general_input_directory,
+                                                                                          input_file='master_hazard_database.json',
+                                                                                          selector_text="Which climate hazards is your " + self.system_type + " vulnerable to?",
+                                                                                          custom_text="Enter any number of additional hazards, separated by commas, here.")
 
     # Gather output of this Pipeline stage for next stages of Pipeline
-    @param.output(present_climate_hazards=param.List())
+    @param.output(all_climate_hazards=param.List(),present_climate_hazards=param.List())
     def output(self):
-        present_climate_hazards = self.climate_hazards_CrossSelector_widget.value
-        if self.climate_hazards_TextAreaInput_widget.value:
-            present_climate_hazards = (
-                present_climate_hazards
-                + self.climate_hazards_TextAreaInput_widget.value.replace(
-                    " ", ""
-                ).split(",")
-            )
-        return present_climate_hazards
+        all_climate_hazards = self.hazard_selector.options
+        present_climate_hazards = self.hazard_selector.value
+        if self.hazard_manual_input.value:
+            present_climate_hazards = (present_climate_hazards + self.hazard_manual_input.value.replace(" ", "").split(","))
+        return all_climate_hazards,present_climate_hazards
 
     # Define Panel tab
     def panel(self):
@@ -618,31 +383,27 @@ class Present_Hazard_Inventory(param.Parameterized):
             self.jpg_pane,
             self.t1,
             self.t2,
-            self.climate_hazards_CrossSelector_widget,
-            self.t3,
-            self.climate_hazards_TextAreaInput_widget,
-            width=plot_width,
-            height=plot_height,
+            self.hazard_selector,
+            self.hazard_manual_input,
+            **panel_options
         )
 
-
-# + tags=[]
 class Future_Hazard_Inventory(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
     system_type = param.String()
     system_lifespan = param.Tuple()
     system_location = param.List()
     system_components = param.List()
+    all_climate_hazards = param.List()
     present_climate_hazards = param.List()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
-    @param.depends("system_type", "present_climate_hazards")
+    @param.depends("system_type", "all_climate_hazards", "present_climate_hazards")
     def __init__(self, **params):
         super().__init__(**params)
 
-        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
             os.path.join(self.system_input_directory, "future_hazard.jpg"), height=200
         )
@@ -656,17 +417,8 @@ class Future_Hazard_Inventory(param.Parameterized):
             + " If so, let's add them to the list."
         )
 
-        # Re-open hazards database and read each hazard item to dictionary
-        with open(
-            os.path.join(general_input_directory, "master_hazard_database.json"), "r"
-        ) as j:
-            self.full_hazards_dict = json.loads(j.read())
-        self.all_climate_hazards = [s for s in self.full_hazards_dict]
-
-        # Trim list by previously selected hazards list
-        self.potential_future_climate_hazards = [
-            h for h in self.all_climate_hazards if h not in self.present_climate_hazards
-        ]
+        # Trim hazards list by previously selected hazards list
+        self.potential_future_climate_hazards = [h for h in self.all_climate_hazards if h not in self.present_climate_hazards]
 
         # Provide selector that lets user select hazards that pertain to their system.
         self.climate_hazards_CrossSelector_widget = pn.widgets.CrossSelector(
@@ -683,7 +435,7 @@ class Future_Hazard_Inventory(param.Parameterized):
             + " may be vulnerable to that are not in the list above."
         )
         self.climate_hazards_TextAreaInput_widget = pn.widgets.TextAreaInput(
-            placeholder="Enter other hazards, separated by commas."
+            placeholder="Enter any number of additional hazards, separated by commas."
         )
 
     # Gather output of this Pipeline stage for next stages of Pipeline
@@ -711,22 +463,18 @@ class Future_Hazard_Inventory(param.Parameterized):
             self.climate_hazards_CrossSelector_widget,
             self.t3,
             self.climate_hazards_TextAreaInput_widget,
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
+    
+#%% Vulnerability screening stage
+'''
+4) Vulnerability screening stage
+User-defined input regarding 1) project components and 2) potential climate hazards are combined in the following Pipeline tab into a 2-D heat map that represents a high level vulnerability screen. This heat map is dynamically user-defined (the number of vertical and horizontal elements is based on the number of project components and climate hazards, respectively). It is also interactive: users are prompted to set per-component/hazard vulnerabilities by clicking on individual heat map elements, to develop a heat map-based perspective on where greatest system vulnerabilities lie. This information is recorded and is a key input to the final tool summary.
+'''
 
-
-# + [markdown] tags=[]
-# ## 4) Vulnerability screening stage
-#
-# User-defined input regarding 1) project components and 2) potential climate hazards are combined in the following Pipeline tab into a 2-D heat map that represents a high level vulnerability screen.   This heat map is dynamically user-defined (the number of vertical and horizontal elements is based on the number of project components and climate hazards, respectively).  It is also interactive: users are prompted to set per-component/hazard vulnerabilities by clicking on individual heat map elements, to develop a heat map-based perspective on where greatest system vulnerabilities lie.  This information is recorded and is a key input to the final tool summary.
-
-# + tags=[]
 class Vulnerability_HeatMap(param.Parameterized):
 
     # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    # Access information provided by user earlier in pipeline, either for direct use, or to carry forward for future use.
-    system_category = param.String()
     system_type = param.String()
     system_lifespan = param.Tuple()
     system_location = param.List()
@@ -888,27 +636,22 @@ class Vulnerability_HeatMap(param.Parameterized):
             self.jpg_pane,
             *self.t1,
             pn.Row(self.matrix_view, self.legend_box),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
+    
+#%% Summary reporting stage
+'''
+5) Summary reporting stage
+Provided with project definition, project component and climate hazard information, and after user-led vulnerability screening, the tool returns a graphical summary of user inputs and text-based summaries that:
 
+Identifies the climate hazards that users rank as most consequential to system component vulnerabilities (based on axis-wise sums of the heatmap matrix)
+Identifies the components that users indicate are most vulnerable (based on axis-wise sums of the heatmap matrix)
+'''
 
-# -
-
-# ## 5) Summary reporting stage
-#
-# Provided with project definition, project component and climate hazard information, and after user-led vulnerability screening, the tool returns a graphical summary of user inputs and text-based summaries that:
-# - Identifies the climate hazards that users rank as most consequential to system component vulnerabilities (based on axis-wise sums of the heatmap matrix)
-# - Identifies the components that users indicate are most vulnerable (based on axis-wise sums of the heatmap matrix)
-#
-# Following this summary, the tool uses the provided resource links for each climate hazard relevant to system components, to develop a curated list of climate resources that are specific to the needs identified by the user.
-#
-
-# + tags=[]
 class Summary_Report_Hazard_Linkages(param.Parameterized):
 
     # Access information provided by user earlier in pipeline to provide a summary
-    system_category = param.String()
+
     system_type = param.String()
     system_lifespan = param.Tuple()
     system_location = param.List()
@@ -916,7 +659,6 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends(
-        "system_category",
         "system_type",
         "system_lifespan",
         "system_location",
@@ -931,9 +673,9 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
 
         self.t1 = pn.pane.Markdown(
             " # Great work!  You've described your "
-            + self.system_category
+            + system_category
             + " components, identified climate hazards and screened the vulnerability of your "
-            + self.system_category
+            + system_category
             + " components.  These are important steps towards finding good climate data."
         )
 
@@ -973,11 +715,14 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             pn.WidgetBox(
                 self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]
             ),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
     
     
+#%% Summary_Report_Curated_Data
+'''
+Provide resource links for each climate hazard relevant to system components, to develop a curated list of climate resources that are specific to the needs identified by the user.
+'''
 class Summary_Report_Curated_Data(param.Parameterized):
 
     # Access information provided by user earlier in pipeline to provide a summary
@@ -1084,7 +829,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
                 # build up hazard-specific reporting box
                 self.hazard_details.append(
                     self.full_hazards_dict[h]["impact_statement"][
-                        self.system_category.replace(" ", "_")
+                        system_category.replace(" ", "_")
                     ]
                     + "  "
                     + self.full_hazards_dict[h]["direction_statement"]
@@ -1199,17 +944,15 @@ class Summary_Report_Curated_Data(param.Parameterized):
                 pn.Accordion(*self.hazard_panels, width=plot_width),
                 css_classes=["custom-box"],
             ),
-            width=plot_width,
-            height=plot_height,
+            **panel_options
         )
+    
+#%% Next_Steps
+'''
+Next steps stage
+This stage serves a jumping off point for users to understand what their next steps are. This text is intended to align users to basics of risk assessment, followed by adaptation (if their risk assessment thinking indicates that an 'unacceptable' risk threshold will be crossed.
+'''
 
-
-# -
-
-# ## Next steps stage
-# This stage serves a jumping off point for users to understand what their next steps are. This text is intended to align users to basics of risk assessment, followed by adaptation (if their risk assessment thinking indicates that an 'unacceptable' risk threshold will be crossed.
-
-# + tags=[]
 class Next_Steps(param.Parameterized):
 
     system_category = param.String()
@@ -1223,7 +966,7 @@ class Next_Steps(param.Parameterized):
             os.path.join(general_input_directory, "images/report.jpg"),
             width=plot_width)
         
-        self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
+        self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
         # Open general resources database and read each resource to dictionary
         with open(os.path.join(self.system_input_directory, "next_steps.txt")) as f:
             self.lines = f.readlines()
@@ -1233,20 +976,12 @@ class Next_Steps(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             pn.pane.Markdown(self.lines),
-            width=plot_width, 
-            height=plot_height
-        )
+            **panel_options)
+    
+#%% Build pipeline
 
-
-# + tags=[]
-debug_flag = False
-
+debug_flag = True
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
-
-pipeline.add_stage(name="Sector Definition", stage=Sector_Definition)
-pipeline.add_stage(name="Introduction", stage=Introduction)
-pipeline.add_stage(name="Disclaimer", stage=Disclaimer)
-pipeline.add_stage(name="Core Knowledge Checklist", stage=Core_Knowledge_Checklist)
 pipeline.add_stage(name="Project Definition", stage=Project_Definition)
 pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
 pipeline.add_stage(name="Present Hazard Inventory", stage=Present_Hazard_Inventory)
@@ -1259,20 +994,34 @@ pipeline.add_stage(name="Next Steps", stage=Next_Steps)
 if debug_flag:
     DST_core = pn.Column(
         pipeline,
-        width=plot_width,
-        height=plot_height,
         name="Decision Support Tool",
     )
 else:
     DST_core = pn.Column(
-        pipeline.buttons,
         pipeline.stage,
+        pipeline.buttons,
         width=plot_width,
         height=plot_height,
         name="Decision Support Tool",
     )
 
-DST_core.servable()
-# -
+#%% Deploy
+main_panel_widget = pn.widgets.RadioBoxGroup(name="", 
+                                          options=['Welcome',
+                                                   'Knowledge Checklist',
+                                                   'Decision Support Tool'])
 
-
+@pn.depends(main_panel_widget_value=main_panel_widget)
+def main_panel(main_panel_widget_value):
+    if main_panel_widget_value == 'Welcome':
+        return welcome
+    elif main_panel_widget_value == 'Knowledge Checklist':
+        return knowledge_checklist
+    elif main_panel_widget_value == 'Decision Support Tool':
+        return DST_core
+    
+template.sidebar.append(pn.Column(main_panel_widget))
+template.main.append(pn.Column(main_panel))
+template.open_modal()
+#template.servable()
+template.show()
