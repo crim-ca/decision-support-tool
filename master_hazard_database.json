@@ -312,7 +312,7 @@
     "direction_confidence":"High confidence exists for projections of worsening wildfire intensity and severity.",
     "magnitude_confidence":"The precise magnitude of future wildfire increases may be uncertain at local scales due to details of wildfire fuel loads and local-scale combined projections of temperature, precipitation, wind and humidity.",
     "impact_statement":{
-        "building":"Wildfire can damage and destroy buildings directly, and also degrade interior air quality through smoke.",
+        "building":"Wildfire can damage and destroy buildings directly, and smoke can also degrade interior and exterior air quality.",
         "contaminated_site":"Wildfire can damage site infrastructure and increase airborne and aqueous contaminant mobilization."
     },
     "notes":""    

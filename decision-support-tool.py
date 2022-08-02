@@ -65,8 +65,7 @@ CRBCPI = CRBCPI_class()
 system_category="building"
 template=pn.template.BootstrapTemplate(title='Canadian Centre for Climate Services '+system_category+' Decision Support Tool',
                                        favicon='images/logo.ico',
-                                       logo='images/logo.ico',
-                                       )
+                                       logo='images/logo.ico')
 #%% Welcome stage
 '''
 This code provides a welcome and any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
@@ -86,7 +85,8 @@ with open(os.path.join(general_input_directory, "disclaimer.txt")) as f:
     lines = "\n".join(lines)
 disclaimer = pn.pane.Markdown(lines)
 
-welcome = pn.Column(introduction,
+welcome = pn.Column(jpg_pane,
+                    introduction,
                     disclaimer,
                     **panel_options)
 
@@ -123,7 +123,6 @@ knowledge_checklist=pn.Column(
 #%% Project definition stage
 '''
 Project definition stage
-A key first step in any climate change impact/vulnerability assessment, is a clear-eyed and objective statement of the system ('project') in question. Project definition information is gathered here and is used to focus summary information and data extractions for the user on (for example) relevant time frames and locations.
 '''
 
 class Project_Definition(param.Parameterized):
@@ -152,11 +151,11 @@ class Project_Definition(param.Parameterized):
             placeholder="Enter " + system_category + " type here...")
 
         self.system_type_selector,self.system_type_manual_input=utilities.selector_plus_custom_text(multi_select=False,
-                                                                                                    grouped_lists=True,
-                                                                                                    input_directory=system_category.replace(" ", "_") + "_inputs",
-                                                                                                    input_file='system_types.json',
-                                                                                                    selector_text='Select your '+system_category+' type if it exists in this list...',
-                                                                                                    custom_text='...or define it here yourself.')
+            grouped_lists=True,
+            input_directory=system_category.replace(" ", "_") + "_inputs",
+            input_file='system_types.json',
+            selector_text='Select your '+system_category+' type if it exists in this list...',
+            custom_text='...or define it here yourself.')
         
         # User provides a definition of system lifespan via manipulation of a slider
 
@@ -184,11 +183,12 @@ class Project_Definition(param.Parameterized):
         map_background = gv.tile_sources.Wikipedia
         self.x=x
         self.y=y
-        Canada_x_bounds=(-15807400,-5677300)
-        Canada_y_bounds=(8012300,  11402300)
+        Canada_x_bounds=(-16000000,-5600000)
+        Canada_y_bounds=(7500000,  15500000)
         location_point= gv.Points((x,y,'point'),vdims='Point',crs=crs.GOOGLE_MERCATOR)
-        return (map_background*location_point).opts(opts.Points(global_extent=False,
-                                          xlim=Canada_x_bounds,ylim=Canada_y_bounds, size=12, color='black'))
+        return (map_background*location_point).opts(opts.Points(global_extent=False,projection=crs.GOOGLE_MERCATOR,
+                                          xlim=Canada_x_bounds,ylim=Canada_y_bounds, size=12, color='black', width=plot_width, height=int(plot_height))) #only Google Mercator allows interaction... too bad.  Would rather use Lambert Conformal which is most commonly used by StatsCan
+
     def map_view (self):
         mp=pn.bind(self.map_constructor,x=self.stream.param.x,y=self.stream.param.y)
         return hv.DynamicMap(mp)
@@ -216,8 +216,8 @@ class Project_Definition(param.Parameterized):
             self.t1,
             pn.WidgetBox(self.t2, self.system_type_selector,self.system_type_manual_input, css_classes=["custom-box"]),
             pn.WidgetBox(self.t3, self.system_lifespan_widget, css_classes=["custom-box"]),
-            pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
-            **panel_options)
+            pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]))
+            #**panel_options)
     
 #%% Component inventory stage
 '''
@@ -827,7 +827,7 @@ class Next_Steps(param.Parameterized):
     
 #%% Build pipeline
 
-debug_flag = True
+debug_flag = False
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 pipeline.add_stage(name="Project Definition", stage=Project_Definition)
 pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
