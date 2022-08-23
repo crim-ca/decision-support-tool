@@ -1,0 +1,30 @@
+name: decision-support-tool
+channels:
+  - conda-forge 
+dependencies:
+  - os
+  - panel
+  - param
+  - bokeh
+  - holoviews
+  - geoviews
+  - xarray
+  - hvplot
+  - cartopy
+  - pyproj
+  - pandas
+  - numpy
+  - matplotlib
+  - json
+  - geopy
+  - jupyter-panel-proxy
+  - scikit-learn
+  
+  - pip:
+    - datetime
+
+import json
+from sklearn.neighbors import BallTree
+from IPython import get_ipython
+import panel as pn
+from geopy.geocoders import Nominatim
