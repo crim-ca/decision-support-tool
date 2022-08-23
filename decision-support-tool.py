@@ -1,4 +1,16 @@
-#%% Imports and setup
+# ---
+# jupyter:
+#   jupytext:
+#     cell_metadata_filter: title,-all
+#     formats: ipynb,py
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.14.0
+# ---
+
+# + Imports and setup
 import os
 import param
 import holoviews as hv
@@ -66,7 +78,7 @@ system_category="building"
 template=pn.template.BootstrapTemplate(title='Canadian Centre for Climate Services '+system_category+' Decision Support Tool',
                                        favicon='images/logo.ico',
                                        logo='images/logo.ico')
-#%% Welcome stage
+# + Welcome stage
 '''
 This code provides a welcome and any/all practical and legal disclaimers/conditions of use that users should be aware of before continuing.
 Applied as a modal to the app.
@@ -90,7 +102,7 @@ welcome = pn.Column(jpg_pane,
                     disclaimer,
                     **panel_options)
 
-#%% Core knowledge checklist stage
+# + Core knowledge checklist stage
 '''
 Core knowledge checklist stage
 This stage serves a set of general pre-learning resources.  These are intended to provide users with opportunity to gain some general - but important - climate change knowledge before they enter into the actual decision support tool process.  If new resources are added to master_general_resources_database.json file, they will automatically be displayed here.
@@ -120,7 +132,7 @@ knowledge_checklist=pn.Column(
             *markdown_resource_links,
             **panel_options)
 
-#%% Project definition stage
+# + Project definition stage
 '''
 Project definition stage
 '''
@@ -218,8 +230,8 @@ class Project_Definition(param.Parameterized):
             pn.WidgetBox(self.t3, self.system_lifespan_widget, css_classes=["custom-box"]),
             pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]))
             #**panel_options)
-    
-#%% Component inventory stage
+
+# + Component inventory stage
 '''
 2) Component inventory stage
 To robustly understand climate impacts to and climate vulnerabilities of complex systems, they need to be broken down into major functional components and each component assessed separately. For example:
@@ -275,8 +287,8 @@ class Component_Inventory(param.Parameterized):
                 self.component_manual_input,
                 css_classes=["custom-box"]),
             **panel_options)
-    
-#%% Hazard inventory stages
+
+# + Hazard inventory stages
 '''
 3) Hazard inventory stage
 Once components of a system are defined, users need to think carefully about which hazards these components may be vulnerable to, today and in the future.  
@@ -399,8 +411,8 @@ class Future_Hazard_Inventory(param.Parameterized):
             self.t3,
             self.climate_hazards_TextAreaInput_widget,
             **panel_options)
-    
-#%% Vulnerability screening stage
+
+# + Vulnerability screening stage
 '''
 4) Vulnerability screening stage
 User-defined input regarding 1) project components and 2) potential climate hazards are combined in the following Pipeline tab into a 2-D heat map that represents a high level vulnerability screen. This heat map is dynamically user-defined (the number of vertical and horizontal elements is based on the number of project components and climate hazards, respectively). It is also interactive: users are prompted to set per-component/hazard vulnerabilities by clicking on individual heat map elements, to develop a heat map-based perspective on where greatest system vulnerabilities lie. This information is recorded and is a key input to the final tool summary.
@@ -530,8 +542,8 @@ class Vulnerability_HeatMap(param.Parameterized):
             *self.t1,
             pn.Row(self.matrix_view, self.legend_box),
             **panel_options)
-    
-#%% Summary reporting stage
+
+# + Summary reporting stage
 '''
 5) Summary reporting stage
 Provided with project definition, project component and climate hazard information, and after user-led vulnerability screening, the tool returns a graphical summary of user inputs and text-based summaries that:
@@ -601,8 +613,8 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             pn.WidgetBox(
                 self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]),
             **panel_options)
-    
-#%% Summary_Report_Curated_Data
+
+# + Summary_Report_Curated_Data
 '''
 Provide resource links for each climate hazard relevant to system components, to develop a curated list of climate resources that are specific to the needs identified by the user.
 '''
@@ -793,8 +805,8 @@ class Summary_Report_Curated_Data(param.Parameterized):
                 *self.t3,
                 pn.Accordion(*self.hazard_panels, width=plot_width),
                 css_classes=["custom-box"]),**panel_options)
-    
-#%% Next_Steps
+
+# + Next_Steps
 '''
 Next steps stage
 This stage serves a jumping off point for users to understand what their next steps are. This text is intended to align users to basics of risk assessment, followed by adaptation (if their risk assessment thinking indicates that an 'unacceptable' risk threshold will be crossed.
@@ -824,8 +836,8 @@ class Next_Steps(param.Parameterized):
             self.jpg_pane,
             pn.pane.Markdown(self.lines),
             **panel_options)
-    
-#%% Build pipeline
+
+# + Build pipeline
 
 debug_flag = False
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
@@ -850,7 +862,7 @@ else:
         height=plot_height,
         name="Decision Support Tool")
 
-#%% Deploy
+# + Deploy
 main_panel_widget = pn.widgets.RadioBoxGroup(name="", 
                                           options=['Welcome',
                                                    'Knowledge Checklist',
