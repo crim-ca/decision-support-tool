@@ -10,7 +10,6 @@ pyproj
 pandas
 numpy
 matplotlib
-json
 geopy
 jupyter-panel-proxy
 scikit-learn
