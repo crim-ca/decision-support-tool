@@ -880,5 +880,5 @@ def main_panel(main_panel_widget_value):
 template.sidebar.append(pn.Column(main_panel_widget))
 template.main.append(pn.Column(main_panel))
 template.open_modal()
-#template.servable()
+template.servable()
 template.show()
