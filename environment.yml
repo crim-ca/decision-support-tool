@@ -2,6 +2,7 @@ name: decision-support-tool
 channels:
   - conda-forge 
 dependencies:
+  - python=3.9
   - panel
   - param
   - bokeh
