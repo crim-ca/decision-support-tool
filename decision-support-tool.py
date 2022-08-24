@@ -177,7 +177,7 @@ class Project_Definition(param.Parameterized):
         self.system_type_widget = pn.widgets.TextInput(
             placeholder="Enter " + system_category + " type here...")
 
-        self.system_type_selector,self.system_type_manual_input=utilities.selector_plus_custom_text(multi_select=False,
+        self.system_type_selector,self.system_type_manual_input=selector_plus_custom_text(multi_select=False,
             grouped_lists=True,
             input_directory=system_category.replace(" ", "_") + "_inputs",
             input_file='system_types.json',
@@ -276,7 +276,7 @@ class Component_Inventory(param.Parameterized):
 
         self.jpg_pane = pn.pane.JPG( os.path.join(self.system_input_directory, "components.jpg"), height=200)
 
-        self.component_selector,self.component_manual_input=utilities.selector_plus_custom_text(multi_select=True,
+        self.component_selector,self.component_manual_input=selector_plus_custom_text(multi_select=True,
                                                                                                 grouped_lists=True,
                                                                                                 input_directory=system_category.replace(" ", "_") + "_inputs",
                                                                                                 input_file='component_database.json',
@@ -334,7 +334,7 @@ class Present_Hazard_Inventory(param.Parameterized):
             "## Select any hazards that your "
             + self.system_type
             + " is vulnerable to, today.  Add any additional hazards that are not listed.")
-        self.hazard_selector,self.hazard_manual_input=utilities.selector_plus_custom_text(multi_select=True,
+        self.hazard_selector,self.hazard_manual_input=selector_plus_custom_text(multi_select=True,
                                                                                           grouped_lists=False,
                                                                                           input_directory=general_input_directory,
                                                                                           input_file='master_hazard_database.json',
