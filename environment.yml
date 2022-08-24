@@ -17,7 +17,6 @@ dependencies:
   - matplotlib
   - geopy
   - jupyter-panel-proxy
-  - scikit-learn
 
   - pip:
     - datetime

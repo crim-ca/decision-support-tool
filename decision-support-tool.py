@@ -28,7 +28,6 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import to_hex as th
 import datetime as dt  # not available on Conda - access via PIP
 import json
-from sklearn.neighbors import BallTree
 
 def selector_plus_custom_text(multi_select=False,grouped_lists=False,input_directory=None,input_file=None,selector_text=None,custom_text=None):
         # Open database from file and read each entry item into a dictionary
@@ -60,34 +59,6 @@ pn.extension(raw_css=[custom_css],sizing_mode='stretch_width')
 plot_width = 1200
 plot_height = 1500
 panel_options=dict(width=plot_width, width_policy='max', sizing_mode='stretch_both')
-
-class CRBCPI_class:
-    def __init__(self):
-        self.dT_levels = ["+0.5C", "+1.0C", "+1.5C", "+2.0C", "+2.5C", "+3.0C", "+3.5C"]
-        self.CRBCPI_data = {
-            self.dT_levels[0]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+0.5C_NBCC.xls"),
-            self.dT_levels[1]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+1.0C_NBCC.xls"),
-            self.dT_levels[2]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+1.5C_NBCC.xls"),
-            self.dT_levels[3]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+2.0C_NBCC.xls"),
-            self.dT_levels[4]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+2.5C_NBCC.xls"),
-            self.dT_levels[5]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+3.0C_NBCC.xls"),
-            self.dT_levels[6]: pd.read_excel("https://climate-scenarios.canada.ca/files/buildings_report/Appendix_1.2_NBCC/Appendix1.2_+3.5C_NBCC.xls")}
-
-        self.CRBCPI_dT_to_time = pd.DataFrame(
-            [[2023, 2023, 2023, 2023],
-             [2035, 2046, 2046, np.nan],
-             [2047, 2070, 2070, np.nan],
-             [2059, 2087, np.nan, np.nan],
-             [2069, np.nan, np.nan, np.nan],
-             [2080, np.nan, np.nan, np.nan],
-             [2090, np.nan, np.nan, np.nan]],
-            index=self.dT_levels,
-            columns=["RCP8.5", "RCP6.0", "RCP4.5", "RCP2.6"] )
-
-        self.nn_finder = BallTree( np.vstack((np.deg2rad(self.CRBCPI_data["+0.5C"]["Latitude"].values),
-                                   np.deg2rad(self.CRBCPI_data["+0.5C"]["Longitude"].values))).swapaxes(1, 0),
-            metric="haversine")
-CRBCPI = CRBCPI_class()
 
 system_category="building"
 template=pn.template.BootstrapTemplate(title='Canadian Centre for Climate Services '+system_category+' Decision Support Tool',
@@ -701,12 +672,6 @@ class Summary_Report_Curated_Data(param.Parameterized):
 
         self.hazard_panels = []  # list of per hazard WidgetPanes
 
-        # find nearest CPI point (use CRBCPI_i to index climate data for this point, from CRBCPI data dictionary)
-        # Set up nearest neighbour search on the sphere
-        self.CRBCPI_distance, self.CRBCPI_i = CRBCPI.nn_finder.query(
-            np.deg2rad([[self.lat, self.lon]]), k=1)
-        self.CRBCPI_i = self.CRBCPI_i[0][0]
-
         for n, h_formatted in enumerate(self.hazards):
             h = h_formatted.replace("\n", " ")
             self.hazard_details = []  # list of items for each hazard WidgetPane
@@ -769,23 +734,7 @@ class Summary_Report_Curated_Data(param.Parameterized):
                         resource_details["source"]
                         == "The Climate Resilient Buildings and Core Public Infrastructure Project"
                     ):
-                        self.location = CRBCPI.CRBCPI_data["+0.5C"]["Location"][
-                            np.squeeze(self.CRBCPI_i)]
-                        self.proximity = "{x:.0f}".format(
-                            x=np.squeeze(self.CRBCPI_distance) * 6378.0)  # convert distance from radians to kilometers, format for rounded-value printing
-                        self.resource_items.append(
-                            "In addition to regional information, it appears there is data available for "
-                            + self.location
-                            + ", around "
-                            + self.proximity
-                            + " km away from your site." )
-                        self.url = resource_details["url"]
-                        self.resource_items.append(
-                            "###  Click here to explore this data in more detail: ["
-                            + resource
-                            + "]("
-                            + self.url
-                            + ")")
+                        self.resource_items.append( "###  ToDo: link into DVE URL API")
                     else:
                         self.url = resource_details["url"]
                         self.resource_items.append(
@@ -896,4 +845,4 @@ template.sidebar.append(pn.Column(main_panel_widget))
 template.main.append(pn.Column(main_panel))
 template.open_modal()
 template.servable()
-#template.show()
+template.show()
