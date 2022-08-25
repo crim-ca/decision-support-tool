@@ -29,6 +29,10 @@ from matplotlib.colors import to_hex as th
 import datetime as dt  # not available on Conda - access via PIP
 import json
 
+debug_flag = False
+show_flag = False
+sync_ipynb_flag = False
+
 def selector_plus_custom_text(multi_select=False,grouped_lists=False,input_directory=None,input_file=None,selector_text=None,custom_text=None):
         # Open database from file and read each entry item into a dictionary
         with open(os.path.join(input_directory,input_file), "r") as j:
@@ -763,7 +767,6 @@ class Next_Steps(param.Parameterized):
 
 # + Build pipeline
 
-debug_flag = True
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 pipeline.add_stage(name="Project Definition", stage=Project_Definition)
 pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
@@ -805,4 +808,9 @@ template.sidebar.append(pn.Column(main_panel_widget))
 template.main.append(pn.Column(main_panel))
 template.open_modal()
 template.servable()
-template.show()
+
+if sync_ipynb_flag:
+    os.system('jupytext --sync decision-support-tool.ipynb')
+
+if show_flag:
+    template.show()
