@@ -48,7 +48,13 @@
             "url":"https://pavics.ouranos.ca/hydrology.html",
             "description":"provides an advanced tool for estimating changes to streamflow due to climate change.",
             "type":"tool"
-        },        
+        },
+        "CanFlood":{
+            "source":"CanFlood risk calculation toolbox",
+            "url":"https://canflood.readthedocs.io/en/latest/#",
+            "description":"provides a tool for converting hydraulic river water levels to measures of risk.",
+            "type":"tool"
+        },           
         "Maximum annual 1-day rain":{
             "source":"ClimateData.ca", 
             "url":"https://climatedata.ca/explore/variable/?coords=",
@@ -60,11 +66,29 @@
             "type":"data"
         },
         "Change in 1-in-50 year snow load":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
-            "var":"SLs",
-            "units": "%",
-            "description":"describes changes in extreme snow loads, based on levels of global warming.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"SL50",
+            "units": "kPa",
+            "description":"describes changes in extreme snow loads, which can be important for spring freshet flooding.  Data is based on levels of global warming.",
+            "type":"data",
+            "tier":"3"
+        },
+        "Change in 1-in-50 year rain-on-snow":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"RL50",
+            "units": "kPa",
+            "description":"describes changes in extreme rain-on-snow events, which can be important for spring freshet flooding. Data is based on levels of global warming.",
+            "type":"data",
+            "tier":"3"
+        },
+        "Change in 1-in-10 15 minute rainfall":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"R15m10",
+            "units": "mm",
+            "description":"describes changes in extreme short duration rainfall, which can be important for small-watershed flooding. Data is based on levels of global warming.",
             "type":"data",
             "tier":"3"
         }
@@ -76,8 +100,7 @@
         "building":"Riverine flooding has the potential to inundate nearby building interiors, erode foundations and surrounding property, and decrease user accessibility and even safety.",
         "contaminated_site":"Via riverine flooding can increase contaminant mobilization, grow, receptor pathways, and damage site infrastructure."
     },
-    "type":"continuous",
-    "notes":"Add in CanFlood and PAVICS Raven resources"
+    "notes":""
 },
 "pluvial flooding":{
     "resources":{
@@ -107,14 +130,33 @@
             "description":"describes maximum annual 5-day rainfall.",
             "type":"data"
         },        
-        "Change in 1-in-50 year annual 15 minute and 1-day rain":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#4.2-one_day_rain_and_15_min_rain",
-            "var":"Rn15m and Rn1Day",
-            "units": "%",
-            "description":"describes changes to the likelihood of rare short term and daily rain events.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+        "Change in 1-in-50 year rain-on-snow":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"RL50",
+            "units": "kPa",
+            "description":"describes changes in extreme rain-on-snow events, which can be important for local flooding. Data is based on levels of global warming.",
             "type":"data",
-            "tier":"2" 
+            "tier":"3"
+        },
+        "Change in 1-in-10 15 minute rainfall":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"R15m10",
+            "units": "mm",
+            "description":"describes changes in extreme short duration rainfall, which can be important for local flooding. Data is based on levels of global warming.",
+            "type":"data",
+            "tier":"3"
+        },
+        "Future-shifted IDF data":{
+               "source":"ClimateData.ca", 
+               "url":"https://climatedata.ca/explore/variable/?coords=",
+               "var":"idf",
+               "units":"millimeters",
+               "group":"precipitation",
+               "season":"ann",
+               "description":"describes historical and future extreme rainfall using the intensity-duration-frequency approach.",
+               "type":"data"
         }
     },
     "direction_statement": "Climate change is expected to cause extreme rain events to become more frequent and severe.",
@@ -149,11 +191,11 @@
 "extreme snow":{
     "resources":{
         "Change in 1-in-50 year snow load":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#6.1-snow_loads",
-            "var":"SLs",
-            "units": "%",
-            "description":"describes changes in extreme snow loads, based on levels of global warming.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"SL50",
+            "units": "kPa",
+            "description":"describes changes in extreme snow loads.  Data is based on levels of global warming.",
             "type":"data",
             "tier":"3"
         }
@@ -180,14 +222,34 @@
            "description":" describes the days that require building cooling.",
            "type":"data"
         },
-        "Change in July 2.5% wet and dry design temperatures":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",        
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
-            "var":"TJuly and TwJuly",
+        "Tropical nights":{
+           "source":"ClimateData.ca",
+           "url":"https://climatedata.ca/explore/variable/?coords=",
+           "var":"tr_18",
+           "group":"other",
+           "season":"ann",
+           "units": "days",
+           "description":" describes number of days with nighttime minimum temperatures above 18C.",
+           "type":"data"
+        },        
+        "Change in July 97.5% wet bulb design temperatures":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"TwJul97.5",
             "units":"Degrees Celcius",
-            "description":"describes changes in building-relevant changes to mid-summer extreme warm temperatures.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+            "description":"describes changes in changes to mid-summer extreme warm and humid daily temperatures.",
             "type":"data",
             "tier":"1"
+        },
+        "humidex":{
+            "source":"ClimateData.ca",
+            "url":"https://climatedata.ca/explore/variable/?coords=",
+           "var":"PLACEHOLDER_DATA_NOT_AVAILABLE",
+           "group":"other",
+           "season":"ann",
+           "units": "cooling degree days",
+           "description":" describes a measure of extremely warm, humid days.",
+           "type":"data"
         }
     },
     "direction_statement":"Climate change is expected to cause hot summer conditions to increase in frequency and intensity.",
@@ -211,17 +273,27 @@
            "description":"describes the days that require building heating.",
            "type":"data"
         },
-        "Change in January 1% and 2.5% design temperatures":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",        
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#3.1-heating_degree_days_design_temperatures_and_minimum_and_maximum_daily_mean_temperature",      
-            "var":"TJan10 and TJan25",
+        "Average coldest day":{
+           "source":"ClimateData.ca",
+           "url":"https://climatedata.ca/explore/variable/?coords=",
+           "var":"tn_min",
+           "group":"other",
+           "season":"ann",
+           "units": "Degrees Celcius",
+           "description":"describes the coldest minimum temperatures.",
+           "type":"data"
+        },
+        "Change in January 1% design temperatures":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"TJan1.0",
             "units":"Degrees Celcius",
-            "description":"describes changes in building-relevant changes to mid-winter extreme cold temperatures.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+            "description":"describes changes in changes to mid-winter extreme cold daily temperatures.",
             "type":"data",
             "tier":"1"
         }
     },
-    "direction_statement":"Climate change is expected to cause cold summer days to decrease in frequency and intensity.",
+    "direction_statement":"Climate change is expected to cause cold winter days to decrease in frequency and intensity.",
     "direction_confidence":"High confidence exists in the projected trend towards less cold winter conditions, as part of overall climate warming.",
     "magnitude_confidence":"Since temperature is typically reasonably well captured by climate models, the magnitude of temperatures changes in future projections is reasonably well constrained, for particular future emission scenarios.",
     "impact_statement":{
@@ -259,22 +331,24 @@
 },
 "high winds":{
     "resources":{
-            "Change in 1-in-10 and 1-in-50 year wind pressures":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
-            "units":"%",
-            "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+        "Change in 1-in-10 annual maximum wind pressure":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"WP10",
+            "units":"kPa",
+            "description":"describes changes in changes in extreme winds.",
             "type":"data",
-            "tier":"3"   
+            "tier":"3"
         },
-        "Change in 1-in-5 year driving rain wind pressures":{
-            "source":"The Climate Resilient Buildings and Core Public Infrastructure Project",
-            "url":"https://climate-scenarios.canada.ca/?page=buildings-report#7.3-wind_pressures",
-            "units":"%",
-            "description":"describes changes to building-relevant extreme high wind pressures, resulting from high wind speeds combined with rain.  Interactive data exploration is also available at https://services.pacificclimate.org/dev/dv-explorer/.",
+        "Change in 1-in-50 annual maximum wind pressure":{
+            "source":"PCIC Design Value Explorer",
+            "url":"https://services.pacificclimate.org/dev/dv-explorer/?dv=",
+            "var":"WP50",
+            "units":"kPa",
+            "description":"describes changes in changes in rare, extreme winds.",
             "type":"data",
-            "tier":"3"         
-        }
+            "tier":"3"
+        }           
     },
     "direction_statement":"The severity and frequency of high wind speeds and related pressures are currently not projected to change dramatically, although significant uncertainty exists in these projections.",
     "direction_confidence":"There is relatively low confidence in the direction of changes of extreme wind speed severity and frequency, particularly at local scales.",
@@ -290,8 +364,8 @@
         "Fire weather index (FWI)":{
             "source":"ClimateData.ca",
             "url":"climatedata.ca/wildfire",
-            "var":"FWI",
-            "units":"FWI",
+            "var":"PLACEHOLDER_DATA_NOT_AVAILABLE",
+            "units":"",
             "group":"other",
             "season":"ann",
             "description":"describes changes to the upper percentiles of FWI, an index used to determine the potential for wildfire in forests and grasslands.",
@@ -319,4 +393,3 @@
 }
 
 }
-

@@ -1,4 +1,4 @@
-# Let's Summarize What You've Done - and - What You Still Need to Do to Ensure Your Building's Climate Resiliency!
+## Let's summarize what you've done - and - what you still need to do to ensure your building's climate resiliency!
 
 1. You described your building's basics, including expected lifetime and major components
 2. You identified some important present and future climate hazards for your region
@@ -11,4 +11,4 @@
 7. Undertake impact, vulnerability or risk assessments for present and future conditions if you want to understand how these will change for each of your components over time due to climate change
 8. Consider developing adaptation plans and actions to ensure your building's resilience, now and in the future!
 
-# Well done, and good luck with using this climate information and training to increase your building's resilience to climate change!
+## Well done, and good luck with using this climate information and training to increase your building's resilience to climate change!

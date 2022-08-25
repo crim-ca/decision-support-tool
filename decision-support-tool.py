@@ -141,24 +141,20 @@ class Project_Definition(param.Parameterized):
             + ".  Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool.")
 
         self.t2 = pn.pane.Markdown(
-            "### What type of " + system_category + " are you assessing?")
+            "What type of " + system_category + " are you assessing?" + 
+            '  Select your building type from this list or define it yourself.')
         
-        #####REPLACE THIS BLOCK WITH CALL TO UTILITY FUNCITON
-        # User provides an open-ended (typed) definition of system type.
-        self.system_type_widget = pn.widgets.TextInput(
-            placeholder="Enter " + system_category + " type here...")
-
         self.system_type_selector,self.system_type_manual_input=selector_plus_custom_text(multi_select=False,
             grouped_lists=True,
             input_directory=system_category.replace(" ", "_") + "_inputs",
             input_file='system_types.json',
-            selector_text='Select your '+system_category+' type if it exists in this list...',
-            custom_text='...or define it here yourself.')
+            selector_text='',
+            custom_text='Custom building type')
         
         # User provides a definition of system lifespan via manipulation of a slider
 
         self.t3 = pn.pane.Markdown(
-            "### What timeframe are you considering (past and future)? Make your selection based on the realistic planned end of life of your "
+            "What timeframe are you considering (past and future)? Make your selection based on the realistic stard and planned end of life of your "
             + system_category
             + ".")
 
@@ -168,9 +164,7 @@ class Project_Definition(param.Parameterized):
             value=(dt.datetime(2021, 1, 1), dt.datetime(2061, 1, 1)),
             bar_color="#FF0000")
 
-        self.t5 = pn.pane.Markdown(
-            "### Click on the zoomable map to provide the location of your "
-            +system_category+".")
+        self.t5 = pn.pane.Markdown("Where is your "+system_category+"?  Click on the (zoomable) map to provide the location.")
 
         #User provides location information via clicking on an interactive map display.
         self.x=0.
@@ -239,8 +233,8 @@ class Component_Inventory(param.Parameterized):
     # Develop database
     def __init__(self, **params):
         super().__init__(**params)
-        self.t1 = pn.pane.Markdown( "# Next, think carefully about the basic elements of your " + str(self.system_type) + ".")
-        self.t2 = pn.pane.Markdown("### Please select the components from this list that are important aspects of your " + str(self.system_type) + ".")
+        self.t1 = pn.pane.Markdown( "### Next, think carefully about the basic elements of your " + str(self.system_type) + ".")
+        self.t2 = pn.pane.Markdown("Please select the components from this list that are important aspects of your " + str(self.system_type) + ".")
 
         # Open hazards database and read each hazard item to dictionary
         self.system_input_directory = system_category.replace(" ", "_") + "_inputs"
@@ -299,10 +293,10 @@ class Present_Hazard_Inventory(param.Parameterized):
             os.path.join(self.system_input_directory, "present_hazard.jpg"), height=200)
 
         self.t1 = pn.pane.Markdown(
-            "# Next, you need to think about *present-day* weather and climate hazards in your region.")
+            "## Next, you need to think about *present-day* weather and climate hazards in your region.")
 
         self.t2 = pn.pane.Markdown(
-            "## Select any hazards that your "
+            "Select any hazards that your "
             + self.system_type
             + " is vulnerable to, today.  Add any additional hazards that are not listed.")
         self.hazard_selector,self.hazard_manual_input=selector_plus_custom_text(multi_select=True,
@@ -351,9 +345,9 @@ class Future_Hazard_Inventory(param.Parameterized):
             os.path.join(self.system_input_directory, "future_hazard.jpg"), height=200)
 
         self.t1 = pn.pane.Markdown(
-            "# Now let's think about hazards that might emerge in the future because of climate change.")
+            "## Now let's think about hazards that might emerge in the future because of climate change.")
         self.t2 = pn.pane.Markdown(
-            "## Consider the remaining hazards in the list.  Is there ANY chance that any of these hazards could impact your "
+            "Consider the remaining hazards in the list.  Is there ANY chance that any of these hazards could impact your "
             + self.system_type
             + " in the future?"
             + " If so, let's add them to the list.")
@@ -425,25 +419,17 @@ class Vulnerability_HeatMap(param.Parameterized):
         self.t1 = []
         self.t1.append(
             pn.pane.Markdown(
-                "# Now the fun part: screening the impact of each hazard you identified, against each major component of your "
+                "## Now the fun part: screening the impact of each hazard you identified, against each major component of your "
                 + self.system_type.lower()
                 + ".  This is crucial for prioritizing your climate data and information needs." ))
         self.t1.append(
             pn.pane.Markdown(
                 "This matrix contains a box, for each combination of hazards (columns) and "
                 + self.system_type.lower()
-                + " components (rows) that you identified."))
-        self.t1.append(
-            pn.pane.Markdown(
-                'For each combination, think carefully about how vulnerable that component might be - today or in the future - to that climate hazard, across the scale from "no vulnerability" to "extreme vulnerability".'))
-        self.t1.append(
-            pn.pane.Markdown(
-                "Click on the box one or more times to set that vulnerability level, for that hazard/component combination.  Then move on to the next box!"))
-        self.t1.append(
-            pn.pane.Markdown(
-                'When you are done, step back and take a broad look at your completed "vulnerability heat map".  Does it match with your intuition about what your '
-                + self.system_type.lower()
-                + " is sensitive to?  If so: on to the final step!"))
+                + ' components (rows) that you identified. For each combination, think carefully about how vulnerable that component might be - today or in the future - to that climate hazard, across the scale from "no vulnerability" to "extreme vulnerability".'
+                + "Click on the box one or more times to set that vulnerability level, for that hazard/component combination.  Then move on to the next box.  "
+                + 'When you are done, step back and take a broad look at your completed "vulnerability heat map".  Does it match with your intuition about what your '
+                + self.system_type.lower()+ " is sensitive to?"))
 
         # Define an xarray data array dimensioned by the # of hazards and # of components
         self.vulnerability_matrix = xr.DataArray(
@@ -557,18 +543,18 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             width=plot_width)
 
         self.t1 = pn.pane.Markdown(
-            " # Great work!  You've described your "
+            " ## Great work!  You've described your "
             + system_category
             + " components, identified climate hazards and screened the vulnerability of your "
             + system_category
-            + " components.  These are important steps towards finding good climate data.")
-
-        self.t2=pn.pane.Markdown("# Here's how climate hazards relate to the components of your "+self.system_type+".\n")
+            + " components.  These are important steps towards finding good climate data."
+            + "Here's how climate hazards relate to the components of your "+self.system_type+".")
 
         self.hazard_cmap = process_cmap("YlOrRd",ncolors=len(self.vulnerability_matrix["climate_hazards"]))
         self.hazard_color_dict={h:self.hazard_cmap[n] for n,h in enumerate(self.vulnerability_matrix["climate_hazards"])}
         self.component_cmap = process_cmap("glasbey_dark",ncolors=len(self.vulnerability_matrix["system_components"]))
-        self.component_color_dict={c:self.component_cmap[n] for n,c in enumerate(self.vulnerability_matrix["system_components"])}
+        self.component_color_dict={c:'black' for n,c in enumerate(self.vulnerability_matrix["system_components"])}  
+        #self.component_color_dict={c:self.component_cmap[n] for n,c in enumerate(self.vulnerability_matrix["system_components"])}
         self.sankey_cmap={**self.hazard_color_dict,**self.component_color_dict} #https://www.geeksforgeeks.org/python-merging-two-dictionaries/
         
         # Make a Sankey flow graphic that maps hazards to components
@@ -584,20 +570,19 @@ class Summary_Report_Hazard_Linkages(param.Parameterized):
             cmap=self.sankey_cmap,
             node_sort=True)
         
-        self.t22=pn.pane.Markdown("### How does this infographic work?\n"
+        self.t2=pn.pane.Markdown("### *How does this infographic work?*\n"
                 + "By summarizing the main climate hazards (on the left) linking these to the components of your "
-                + self.system_type+ " (on the right), it helps you prioritize your climate data search and - as a result - your climate risk assessment and adaptation planning.  For example:\n"
-                +" components with thicker bars are those that have greater present-day or potential future vulnerabilites to one (or more!) climate hazards.  You may want to focus first on assessments of climate risk to these components.\n"
-                +"Similarly, hazards with thicker bars are those that have the greatest potential to damage one or more aspects of your "+self.system_type+".  You may want to focus most energy on finding good climate change information for these hazards.\n"
-                + "**Pro tip: before you leave this stage of the tool, go back and refine the component/hazard identification and vulnerability screening steps of this tool, to remake this infographic a few times.  Question your original assumptions!"
-                + "Climate adaptation work is best done iteratively and a great first iteration is improving your confidence in the relationship between present and future climate hazards, and the components of your "+self.system_type+".**")
+                + self.system_type+ " (on the right), it helps you prioritize your climate data search, climate risk assessment and adaptation planning.  For example:\n"
+                +" components with thicker bars are those that have greater present-day or potential future vulnerabilites to one (or more!) climate hazards.  You should focus on climate risk to these components.\n"
+                +"Similarly, hazards with thicker bars are those that have the greatest potential to damage one or more aspects of your "+self.system_type+".  You should focus on understanding how climate change will affect these hazards.\n"
+                + "**Pro tip: before you leave this stage, go back and confirm the component/hazard identification and vulnerability screening steps of this tool.  Question your original assumptions to make sure you're confident with these results!**")
 
     def panel(self):
         return pn.Column(
             self.jpg_pane,
             self.t1,
             pn.WidgetBox(
-                self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]),
+                self.sankey, self.t2, width=plot_width, css_classes=["custom-box"]),
             **panel_options)
 
 # + Summary_Report_Curated_Data
@@ -641,9 +626,9 @@ class Summary_Report_Curated_Data(param.Parameterized):
 
         self.t3=[]
         self.t3.append(pn.pane.Markdown(
-            "# Here is a list of climate information and data resources, curated for you.\n"
+            "## Here is a list of climate information and data resources, curated for you.\n"
             "This list is based on the hazards *you* identified, and is ranked in terms of their impact on your "+ self.system_type
-            + " - according to your own assessment.  Most influential hazards appear first."
+            + " - according to your own assessment.  Most influential hazards appear first.  "
             +"If you expand each hazard item, you will find a go-to list of best-in-class climate information and data resources, curated by the Canadian Centre for Climate Services.  "
             +"Explore these resources first, to kick-start your understanding of present and future climate  impacts to your "
             + self.system_type+ "!"))
@@ -652,14 +637,9 @@ class Summary_Report_Curated_Data(param.Parameterized):
         if self.dT > 20.0:
             self.t3.append(
                 pn.pane.Markdown(
-                    "**Pro tip: It looks like your "
-                    + self.system_type
-                    + " is already "
-                    + str(int(self.dT))
-                    + " years old.  "
+                    "**Pro tip: It looks like your " + self.system_type + " is already " + str(int(self.dT)) + " years old.  "
                     + "Climate has already changed quite a bit in this time!  In your climate change planning, be sure to consider that your "
-                    + self.system_type
-                    + " has already experienced a significant amount of change in the severity and frequency of hazards you've identified!**"))
+                    + self.system_type + " has already experienced a significant amount of change in the severity and frequency of hazards you've identified!**"))
 
         # Build list of hazards, that start with biggest hazards.  Make text red for higher impact hazards; scale to blacker and smaller.
         self.hazards = self.prioritized_hazards.index.values.tolist()
@@ -686,17 +666,10 @@ class Summary_Report_Curated_Data(param.Parameterized):
                     self.fname, width=int(plot_width * 0.9))  # this has to have same name as hazard, with exception of spaces (which get replaced by '-' as per replace code)width=plot_width,
 
                 # build up hazard-specific reporting box
-                self.hazard_details.append(
-                    self.full_hazards_dict[h]["impact_statement"][
-                        system_category.replace(" ", "_")]+ "  " + self.full_hazards_dict[h]["direction_statement"])
-                self.hazard_details.append(
-                    self.full_hazards_dict[h]["direction_confidence"]
-                    + "  "
-                    + self.full_hazards_dict[h]["magnitude_confidence"])
-                self.hazard_details.append(
-                    "Click below to explore these best-in-class, Canadian-focussed "
-                    + h
-                    + "/climate change resources.")
+                self.hazard_details.append(self.full_hazards_dict[h]["impact_statement"][
+                    system_category.replace(" ", "_")]+ "  " + self.full_hazards_dict[h]["direction_statement"] +
+                    self.full_hazards_dict[h]["direction_confidence"] + "  " + self.full_hazards_dict[h]["magnitude_confidence"] +
+                    "**Click below to explore these best-in-class, Canadian-focussed " + h + "/climate change resources.**")
 
                 for resource, resource_details in self.full_hazards_dict[h]["resources"].items():
                     self.resource_items = []
@@ -724,26 +697,13 @@ class Summary_Report_Curated_Data(param.Parameterized):
                             + "&rcp=rcp85&decade="
                             + str(2070)
                             + "s&sector=")
-                        self.resource_items.append(
-                            "  Click here to explore this data in more detail for your location: ["
-                            + resource
-                            + "]("
-                            + self.url
-                            + '){:target="_blank"}')
-                    elif (
-                        resource_details["source"]
-                        == "The Climate Resilient Buildings and Core Public Infrastructure Project"
-                    ):
-                        self.resource_items.append( "###  ToDo: link into DVE URL API")
+                    elif resource_details["source"] == "PCIC Design Value Explorer":
+                        self.url= resource_details["url"] + resource_details["var"]
                     else:
                         self.url = resource_details["url"]
-                        self.resource_items.append(
-                            "###  Click here to explore this information in more detail: ["
-                            + resource
-                            + "]("
-                            + self.url
-                            + ")")
-
+                    self.resource_items.append(
+                        "### Click here to explore this information in more detail: ["
+                        + resource+ "](" + self.url + '){:target="_blank"}')
                     self.hazard_details.append(
                         pn.WidgetBox(*self.resource_items, width=int(plot_width * 0.9)))
             else:
@@ -803,7 +763,7 @@ class Next_Steps(param.Parameterized):
 
 # + Build pipeline
 
-debug_flag = False
+debug_flag = True
 pipeline = pn.pipeline.Pipeline(inherit_params=True, debug=debug_flag)
 pipeline.add_stage(name="Project Definition", stage=Project_Definition)
 pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
