@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
@@ -38,6 +39,7 @@ import json
 from sklearn.neighbors import BallTree
 from IPython import get_ipython
 import panel as pn
+from geopy.geocoders import Nominatim
 
 general_input_directory = "."
 
@@ -144,8 +146,6 @@ class Sector_Definition(param.Parameterized):
         return pn.Column(
             self.t1,
             pn.WidgetBox(self.system_category_widget, css_classes=["custom-box"]),
-            width=plot_width,
-            height=plot_height,
         )
 
 
@@ -234,7 +234,7 @@ class Core_Knowledge_Checklist(param.Parameterized):
             width=plot_width,
         )
         self.t1 = pn.pane.Markdown(
-            "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!".upper()
+            "# Before we begin, it is important that you are comfortable with some important concepts and programs related to use of future climate data in decision making!"
         )
         # Open general resources database and read each resource to dictionary
         with open(
@@ -288,28 +288,29 @@ class Project_Definition(param.Parameterized):
             width=plot_width,
         )
         self.t1 = pn.pane.Markdown(
-            "# Let's get started!  Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool.".upper(),
-            sizing_mode="stretch_width",
+            "# The first stage in understanding which climate data you need, is providing some basic information about your "
+            + self.system_category
+            + "!"
+        )
+        self.t11 = pn.pane.Markdown(
+            "## Please fill in the following information, which will help curate specific climate data for you in subsequent steps of this tool."
         )
 
         self.t2 = pn.pane.Markdown(
-            "## What type of building are you working with?",
-            sizing_mode="stretch_width",
+            "### What type of " + self.system_category + " are you assessing?"
         )
 
         # User provides an open-ended (typed) definition of system type.
         self.system_type_widget = pn.widgets.TextInput(
-            placeholder="Enter " + self.system_category + " type here...",
-            sizing_mode="stretch_width",
+            placeholder="Enter " + self.system_category + " type here..."
         )
 
         # User provides a definition of system lifespan via manipulation of a slider
 
         self.t3 = pn.pane.Markdown(
-            "## What timeframe (past and future) do you need to make decisions on, with respect to your "
+            "### What timeframe (past and future) do you need to make decisions on, with respect to your "
             + self.system_category
-            + "?",
-            sizing_mode="stretch_width",
+            + "?"
         )
 
         self.system_lifespan_widget = pn.widgets.DateRangeSlider(
@@ -317,38 +318,78 @@ class Project_Definition(param.Parameterized):
             end=dt.datetime(2100, 1, 1),
             value=(dt.datetime(2021, 1, 1), dt.datetime(2061, 1, 1)),
             bar_color="#FF0000",
-            sizing_mode="stretch_width",
         )
 
         self.t4 = pn.pane.Markdown(
-            "## Click on this zoomable map to provide the location of your "
+            "Please enter the location of your "
+            + self.system_category.replace("_", " ")
+            + ", or use the map below to select a location manually."
+        )
+        # note: I want to chanve 'value' to 'placeholder' below, but doing so messes everything up...
+        self.system_address_widget = pn.widgets.TextInput(
+            placeholder="Type full or partial address here...", value=""
+        )
+        self.geocode_button = pn.widgets.Button(name="🔍", width=100)
+
+        latitude = -8677300
+        longitude = 9012300
+        location = "empty"
+
+        self.t5 = pn.pane.Markdown(
+            "### Click on this zoomable map to provide the location of your "
             + self.system_category
-            + ".",
-            sizing_mode="stretch_width",
+            + ".  Be patient, it may take a moment for your point to appear on the map."
         )
         # User provides location information via clicking on an interactive map display.
-        self.x = 0.0
-        self.y = 0.0
-        self.stream = hv.streams.Tap(x=None, y=None)
-
-    def map_constructor(self, x=0, y=0):
-        map_background = gv.tile_sources.Wikipedia
-        self.x = x
-        self.y = y
-        Canada_x_bounds = (-15807400, -5677300)
-        Canada_y_bounds = (8012300, 11402300)
         self.x = -8677300
         self.y = 9012300
-        location_point = gv.Points(
-            (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
-        )
+        self.stream = hv.streams.Tap(x=None, y=None)
+        self.geocodeflag = 0
+
+        def b(event):
+            geolocator = Nominatim(user_agent="example")
+            address = self.system_address_widget.value
+            location = geolocator.geocode(address)
+            latitude = location.latitude
+            longitude = location.longitude
+            proj1 = Proj("epsg:4326", preserve_units=False)
+            proj2 = Proj("epsg:3785", preserve_units=False)
+            outProj = Proj(init="epsg:3857")
+            inProj = Proj(init="epsg:4326")
+            x1 = longitude
+            y1 = latitude
+            x2, y2 = transform(inProj, outProj, x1, y1)
+            self.x = x2
+            self.y = y2
+            self.geocodeflag = 1
+            self.stream.update(x=x2)
+
+        self.geocode_button.on_click(b)
+
+    # TO DO: inherit location information from geocode function, plot dot automatically
+    def map_constructor(self, x, y):
+        map_background = gv.tile_sources.CartoLight
+
+        Canada_x_bounds = (-15807400, -5677300)
+        Canada_y_bounds = (8012300, 11402300)
+        if self.geocodeflag == 0:
+            self.x = -8677300
+            self.y = 9012300
+            location_point = gv.Points(
+                (x, y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
+            )
+        else:
+            location_point = gv.Points(
+                (self.x, self.y, "point"), vdims="Point", crs=crs.GOOGLE_MERCATOR
+            )
+        self.geocodeflag = 0
         return (map_background * location_point).opts(
             opts.Points(
                 global_extent=False,
                 xlim=Canada_x_bounds,
                 ylim=Canada_y_bounds,
-                width=500,
-                height=475,
+                width=700,
+                height=550,
                 size=12,
                 color="black",
             )
@@ -377,13 +418,19 @@ class Project_Definition(param.Parameterized):
         return pn.Column(
             self.jpg_pane,
             self.t1,
-            self.t2,
-            self.system_type_widget,
-            self.t3,
-            self.system_lifespan_widget,
-            self.t4,
-            self.map_view,
-            width_policy="max",
+            self.t11,
+            pn.WidgetBox(self.t2, self.system_type_widget, css_classes=["custom-box"]),
+            pn.WidgetBox(
+                self.t3, self.system_lifespan_widget, css_classes=["custom-box"]
+            ),
+            pn.WidgetBox(
+                self.t4,
+                pn.Row(self.system_address_widget, self.geocode_button),
+                css_classes=["custom-box"],
+            ),
+            pn.WidgetBox(self.t5, self.map_view, css_classes=["custom-box"]),
+            width=plot_width,
+            height=plot_height,
         )
 
 
@@ -412,9 +459,9 @@ class Component_Inventory(param.Parameterized):
     def __init__(self, **params):
         super().__init__(**params)
         self.t1 = pn.pane.Markdown(
-            "# Next, think carefully about the basic elements of your ".upper()
-            + str(self.system_type).upper()
-            + ".".upper()
+            "# Next, think carefully about the basic elements of your "
+            + str(self.system_type)
+            + "."
         )
         self.t2 = pn.pane.Markdown(
             "### Please select the components from this list that are important aspects of your "
@@ -515,11 +562,11 @@ class Present_Hazard_Inventory(param.Parameterized):
 
         self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
-            os.path.join(self.system_input_directory, "hazard.jpg"), height=200
+            os.path.join(self.system_input_directory, "present_hazard.jpg"), height=200
         )
 
         self.t1 = pn.pane.Markdown(
-            "# Next, you need to think about *present-day* weather and climate hazards in your region.".upper()
+            "# Next, you need to think about *present-day* weather and climate hazards in your region."
         )
 
         self.t2 = pn.pane.Markdown(
@@ -597,12 +644,11 @@ class Future_Hazard_Inventory(param.Parameterized):
 
         self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
         self.jpg_pane = pn.pane.JPG(
-            os.path.join(self.system_input_directory, "hazard.jpg"), height=200
+            os.path.join(self.system_input_directory, "future_hazard.jpg"), height=200
         )
 
         self.t1 = pn.pane.Markdown(
-            "# Now let's think about hazards that might emerge in the future because of climate change.".upper()
-        )
+            "# Now let's think about hazards that might emerge in the future because of climate change.")
         self.t2 = pn.pane.Markdown(
             "## Consider the remaining hazards in the list.  Is there ANY chance that any of these hazards could impact your "
             + self.system_type
@@ -700,9 +746,9 @@ class Vulnerability_HeatMap(param.Parameterized):
         self.t1 = []
         self.t1.append(
             pn.pane.Markdown(
-                "# Now the fun part: screening the impact of each hazard you identified, against each major component of your ".upper()
-                + self.system_type.upper()
-                + ".  This is crucial for prioritizing your climate data and information needs.".upper()
+                "# Now the fun part: screening the impact of each hazard you identified, against each major component of your "
+                + self.system_type.lower()
+                + ".  This is crucial for prioritizing your climate data and information needs."
             )
         )
         self.t1.append(
@@ -832,7 +878,8 @@ class Vulnerability_HeatMap(param.Parameterized):
     # Gather output of this Pipeline stage for next stages of Pipeline
     @param.output(vulnerability_matrix=param.DataFrame())
     def output(self):
-        vulnerability_matrix = self.vulnerability_matrix.to_dataframe().reset_index()
+        vulnerability_matrix = self.vulnerability_matrix.to_dataframe().reset_index() #convert to Pandas tidy-like datafram
+        vulnerability_matrix = vulnerability_matrix[vulnerability_matrix["vulnerability"] > 0] #exclude zero-vulnerabilities 
         return vulnerability_matrix
 
     # Define Panel tab
@@ -858,15 +905,13 @@ class Vulnerability_HeatMap(param.Parameterized):
 #
 
 # + tags=[]
-class Summary_Report(param.Parameterized):
+class Summary_Report_Hazard_Linkages(param.Parameterized):
 
     # Access information provided by user earlier in pipeline to provide a summary
     system_category = param.String()
     system_type = param.String()
     system_lifespan = param.Tuple()
     system_location = param.List()
-    system_components = param.List()
-    climate_hazards = param.List()
     vulnerability_matrix = param.DataFrame()
 
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
@@ -882,8 +927,81 @@ class Summary_Report(param.Parameterized):
 
         self.jpg_pane = pn.pane.JPG(
             os.path.join(general_input_directory, "images/report.jpg"),
-            width=plot_width,
+            width=plot_width)
+
+        self.t1 = pn.pane.Markdown(
+            " # Great work!  You've described your "
+            + self.system_category
+            + " components, identified climate hazards and screened the vulnerability of your "
+            + self.system_category
+            + " components.  These are important steps towards finding good climate data."
         )
+
+        self.t2=pn.pane.Markdown("# Here's how climate hazards relate to the components of your "+self.system_type+".\n")
+
+        self.hazard_cmap = process_cmap("YlOrRd",ncolors=len(self.vulnerability_matrix["climate_hazards"]))
+        self.hazard_color_dict={h:self.hazard_cmap[n] for n,h in enumerate(self.vulnerability_matrix["climate_hazards"])}
+        self.component_cmap = process_cmap("glasbey_dark",ncolors=len(self.vulnerability_matrix["system_components"]))
+        self.component_color_dict={c:self.component_cmap[n] for n,c in enumerate(self.vulnerability_matrix["system_components"])}
+        self.sankey_cmap={**self.hazard_color_dict,**self.component_color_dict} #https://www.geeksforgeeks.org/python-merging-two-dictionaries/
+        
+        # Make a Sankey flow graphic that maps hazards to components
+        self.sankey = hv.Sankey(self.vulnerability_matrix, label="")
+        self.sankey.opts(edge_color='climate_hazards',
+            node_color='climate_hazards',
+            width=plot_width,
+            toolbar=None,
+            tools=[],
+            show_values=False,
+            label_position="outer",
+            label_text_font_size='15pt',
+            cmap=self.sankey_cmap,
+            node_sort=True)
+        
+        self.t22=pn.pane.Markdown("### How does this infographic work?\n"
+                + "By summarizing the main climate hazards (on the left) linking these to the components of your "
+                + self.system_type+ " (on the right), it helps you prioritize your climate data search and - as a result - your climate risk assessment and adaptation planning.  For example:\n"
+                +" components with thicker bars are those that have greater present-day or potential future vulnerabilites to one (or more!) climate hazards.  You may want to focus first on assessments of climate risk to these components.\n"
+                +"Similarly, hazards with thicker bars are those that have the greatest potential to damage one or more aspects of your "+self.system_type+".  You may want to focus most energy on finding good climate change information for these hazards.\n"
+                + "**Pro tip: before you leave this stage of the tool, go back and refine the component/hazard identification and vulnerability screening steps of this tool, to remake this infographic a few times.  Question your original assumptions!"
+                + "Climate adaptation work is best done iteratively and a great first iteration is improving your confidence in the relationship between present and future climate hazards, and the components of your "+self.system_type+".**")
+
+    def panel(self):
+        return pn.Column(
+            self.jpg_pane,
+            self.t1,
+            pn.WidgetBox(
+                self.t2, self.sankey, self.t22, width=plot_width, css_classes=["custom-box"]
+            ),
+            width=plot_width,
+            height=plot_height,
+        )
+    
+    
+class Summary_Report_Curated_Data(param.Parameterized):
+
+    # Access information provided by user earlier in pipeline to provide a summary
+    system_category = param.String()
+    system_type = param.String()
+    system_lifespan = param.Tuple()
+    system_location = param.List()
+    vulnerability_matrix = param.DataFrame()
+
+    # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
+    @param.depends(
+        "system_category",
+        "system_type",
+        "system_lifespan",
+        "system_location",
+        "vulnerability_matrix",
+    )
+    
+    def __init__(self, **params):
+        super().__init__(**params)
+
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(general_input_directory, "images/report.jpg"),
+            width=plot_width)
 
         self.lat = self.system_location[0][0]
         self.lon = self.system_location[0][1]
@@ -903,47 +1021,15 @@ class Summary_Report(param.Parameterized):
             .sort_values("vulnerability", ascending=False)
         )
 
-        self.t1 = pn.pane.Markdown(
-            " # Great work!  You've described your ".upper()
-            + self.system_category.upper()
-            + " components, identified climate hazards and screened the vulnerability of your ".upper()
-            + self.system_category.upper()
-            + " components.  These are important steps towards finding good climate data.".upper()
-        )
-
-        self.t2 = pn.pane.Markdown(
-            "# Here's how climate hazards relate to the components of your "
-            + self.system_type
-            + ".\n"
-        )
-
-        self.t22 = pn.pane.Markdown(
-            "### How does this infographic work?\n"
-            + "By summarizing the main climate hazards (on the left) linking these to the components of your "
-            + self.system_type
-            + " (on the right), it helps you prioritize your climate data search and - as a result - your climate risk assessment and adaptation planning.  For example:\n"
-            + " components with thicker bars are those that have greater present-day or potential future vulnerabilites to one (or more!) climate hazards.  You may want to focus first on assessments of climate risk to these components.\n"
-            + "Similarly, hazards with thicker bars are those that have the greatest potential to damage one or more aspects of your "
-            + self.system_type
-            + ".  You may want to focus most energy on finding good climate change information for these hazards.\n"
-            + "**Pro tip: before you leave this stage of the tool, go back and refine the component/hazard identification and vulnerability screening steps of this tool, to remake this infographic a few times.  Question your original assumptions!"
-            + "Climate adaptation work is best done iteratively and a great first iteration is improving your confidence in the relationship between present and future climate hazards, and the components of your "
-            + self.system_type
-            + ".**"
-        )
-        self.t3 = []
-        self.t3.append(
-            pn.pane.Markdown(
-                "# Here is a list of climate information and data resources, curated for you.\n"
-                "This list is based on the hazards *you* identified, and is ranked in terms of their impact on your "
-                + self.system_type
-                + " - according to your own assessment.  Most influential hazards appear first."
-                + "If you expand each hazard item, you will find a go-to list of best-in-class climate information and data resources, curated by the Canadian Centre for Climate Services.  "
-                + "Explore these resources first, to kick-start your understanding of present and future climate  impacts to your "
-                + self.system_type
-                + "!"
-            )
-        )
+        self.t3=[]
+        self.t3.append(pn.pane.Markdown(
+            "# Here is a list of climate information and data resources, curated for you.\n"
+            "This list is based on the hazards *you* identified, and is ranked in terms of their impact on your "+ self.system_type
+            + " - according to your own assessment.  Most influential hazards appear first."
+            +"If you expand each hazard item, you will find a go-to list of best-in-class climate information and data resources, curated by the Canadian Centre for Climate Services.  "
+            +"Explore these resources first, to kick-start your understanding of present and future climate  impacts to your "
+            + self.system_type+ "!"
+        ))
 
         self.dT = dt.date.today().year - self.system_lifespan[0].year
         if self.dT > 20.0:
@@ -1090,79 +1176,24 @@ class Summary_Report(param.Parameterized):
                         pn.WidgetBox(*self.resource_items, width=int(plot_width * 0.9))
                     )
             else:
-                # TODO determine which picture to use if no hazard pic exists.
-                self.fname = os.path.join(
-                    general_input_directory,
-                    "images",
-                    "cropped_hazard_images",
-                    "generic.jpg",
-                )
-                self.hazard_jpg_pane = pn.pane.JPG(
-                    self.fname, width=int(plot_width * 0.9)
-                )
-                self.hazard_details.append(
-                    "### Please contact the [Canadian Centre for Climate Services Support Desk](https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services.html) to help find information on how "
-                    + h
-                    + " may change in the future with climate change!"
-                )
-            self.hazard_panels.append(
-                pn.Column(
-                    self.hazard_jpg_pane,
-                    *self.hazard_details,
-                    name=h.capitalize(),
-                    width=plot_width,
-                )
-            )
+                #TODO determine which picture to use if no hazard pic exists.
+                self.fname=os.path.join(general_input_directory, "images","cropped_hazard_images","generic.jpg")
+                self.hazard_jpg_pane = pn.pane.JPG(self.fname,width=int(plot_width* 0.9))
+                self.hazard_details.append("### Please contact the [Canadian Centre for Climate Services Support Desk](https://www.canada.ca/en/environment-climate-change/services/climate-change/canadian-centre-climate-services.html) to help find information on how "
+                    +h+ " may change in the future with climate change!")
+            self.hazard_panels.append(pn.Column(self.hazard_jpg_pane,*self.hazard_details, name=h.capitalize(), width=plot_width))
 
-        self.vulnerability_matrix = self.vulnerability_matrix[
-            self.vulnerability_matrix["vulnerability"] > 0
-        ]
+        self.vulnerability_matrix = self.vulnerability_matrix[self.vulnerability_matrix["vulnerability"] > 0]
 
-        self.hazard_cmap = process_cmap(
-            "YlOrRd", ncolors=len(self.vulnerability_matrix["climate_hazards"])
-        )
-        self.hazard_color_dict = {
-            h: self.hazard_cmap[n]
-            for n, h in enumerate(self.vulnerability_matrix["climate_hazards"])
-        }
-        self.component_cmap = process_cmap(
-            "glasbey_dark", ncolors=len(self.vulnerability_matrix["system_components"])
-        )
-        self.component_color_dict = {
-            c: self.component_cmap[n]
-            for n, c in enumerate(self.vulnerability_matrix["system_components"])
-        }
-        self.sankey_cmap = {
-            **self.hazard_color_dict,
-            **self.component_color_dict,
-        }  # https://www.geeksforgeeks.org/python-merging-two-dictionaries/
-
-        # Make a Sankey flow graphic that maps hazards to components
-        self.sankey = hv.Sankey(self.vulnerability_matrix, label="")
-        self.sankey.opts(
-            edge_color="climate_hazards",
-            node_color="climate_hazards",
-            width=plot_width,
-            toolbar=None,
-            tools=[],
-            show_values=False,
-            label_position="outer",
-            label_text_font_size="15pt",
-            cmap=self.sankey_cmap,
-            node_sort=True,
-        )
+        self.hazard_cmap = process_cmap("YlOrRd",ncolors=len(self.vulnerability_matrix["climate_hazards"]))
+        self.hazard_color_dict={h:self.hazard_cmap[n] for n,h in enumerate(self.vulnerability_matrix["climate_hazards"])}
+        self.component_cmap = process_cmap("glasbey_dark",ncolors=len(self.vulnerability_matrix["system_components"]))
+        self.component_color_dict={c:self.component_cmap[n] for n,c in enumerate(self.vulnerability_matrix["system_components"])}
+        self.sankey_cmap={**self.hazard_color_dict,**self.component_color_dict} #https://www.geeksforgeeks.org/python-merging-two-dictionaries/
 
     def panel(self):
         return pn.Column(
             self.jpg_pane,
-            self.t1,
-            pn.WidgetBox(
-                self.t2,
-                self.sankey,
-                self.t22,
-                width=plot_width,
-                css_classes=["custom-box"],
-            ),
             pn.WidgetBox(
                 *self.t3,
                 pn.Accordion(*self.hazard_panels, width=plot_width),
@@ -1184,8 +1215,14 @@ class Next_Steps(param.Parameterized):
     system_category = param.String()
     # State dependence of code in this Pipeline block, to previously-entered information from previous blocks.
     @param.depends("system_category")
+    
     def __init__(self, **params):
         super().__init__(**params)
+        
+        self.jpg_pane = pn.pane.JPG(
+            os.path.join(general_input_directory, "images/report.jpg"),
+            width=plot_width)
+        
         self.system_input_directory = self.system_category.replace(" ", "_") + "_inputs"
         # Open general resources database and read each resource to dictionary
         with open(os.path.join(self.system_input_directory, "next_steps.txt")) as f:
@@ -1194,7 +1231,10 @@ class Next_Steps(param.Parameterized):
 
     def panel(self):
         return pn.Column(
-            pn.pane.Markdown(self.lines), width=plot_width, height=plot_height
+            self.jpg_pane,
+            pn.pane.Markdown(self.lines),
+            width=plot_width, 
+            height=plot_height
         )
 
 
@@ -1212,7 +1252,8 @@ pipeline.add_stage(name="Component Inventory", stage=Component_Inventory)
 pipeline.add_stage(name="Present Hazard Inventory", stage=Present_Hazard_Inventory)
 pipeline.add_stage(name="Future Hazard Inventory", stage=Future_Hazard_Inventory)
 pipeline.add_stage(name="Vulnerability Heat Map", stage=Vulnerability_HeatMap)
-pipeline.add_stage(name="Summary Report", stage=Summary_Report)
+pipeline.add_stage(name="Summary Report: Hazard Linkages", stage=Summary_Report_Hazard_Linkages)
+pipeline.add_stage(name="Summary Report: Curated Data", stage=Summary_Report_Curated_Data)
 pipeline.add_stage(name="Next Steps", stage=Next_Steps)
 
 if debug_flag:
@@ -1233,7 +1274,5 @@ else:
 
 DST_core.servable()
 # -
-
-
 
 

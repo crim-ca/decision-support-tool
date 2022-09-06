@@ -5,7 +5,7 @@ bokeh
 holoviews
 hvplot
 geoviews
-panel
+panel==0.12.7
 xarray
 cartopy
 pyproj
@@ -17,3 +17,4 @@ sklearn
 jupyterlab
 pytest
 selenium
+geopy
